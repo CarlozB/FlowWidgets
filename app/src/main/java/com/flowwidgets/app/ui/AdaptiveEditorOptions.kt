@@ -23,8 +23,8 @@ fun AdaptiveEditorOptions(config: WidgetConfig, change: (WidgetConfig) -> Unit) 
     Text("Al ampliar aparecen más detalles y controles. El tamaño final depende del launcher.")
     Text("Opacidad")
     Slider(config.opacity, { change(config.copy(opacity = it)) }, valueRange = .25f..1f)
-    if (config.style == WidgetStyle.GLASS) {
-        Text("Soft Light Glass · Transparencia")
+    run {
+        Text("LiquidGlass · Transparencia del fondo")
         Slider(
             config.glassOpacity,
             { change(config.copy(glassOpacity = it)) },

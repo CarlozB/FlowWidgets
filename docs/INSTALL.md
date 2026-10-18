@@ -74,3 +74,9 @@ Primero verifica apertura y una nota sin permisos. Después prueba reloj, bater�
 ## Cambios del reloj compacto en 1.2.2
 
 Tras actualizar, los relojes 1×1/2×2 muestran solo la esfera grande. Fecha, reloj digital e información adicional se reservan para tamaños mayores. No hace falta reconfigurar la instancia para activar este comportamiento. Si el launcher mantiene una vista antigua, abre Mis widgets y guarda esa instancia; después prueba reducir y ampliar. One UI desaparece del selector; sus instancias conservan colores y contenido bajo Classic.
+
+## Material LiquidGlass · 1.3.0
+
+Instala sobre 1.2.2 para conservar los ajustes. El editor permite ajustar transparencia, iluminación y esquinas del fondo en las tres familias. Compara las manecillas, play/pausa y la línea de tiempo en tamaños pequeños y grandes; las acciones musicales deben seguir funcionando con una sesión real.
+
+El fondo utiliza una adaptación del núcleo óptico de LiquidGlass para bitmaps de widgets. Es un material difuso generado con reflejos; no captura ni desenfoca el fondo de pantalla. Consulta la licencia en Ajustes y los límites en [LIQUID_GLASS.md](LIQUID_GLASS.md).

@@ -1,5 +1,14 @@
 # Cambios
 
+## 1.3.0 · Núcleo LiquidGlass y superficies reflectantes
+
+- Núcleo oficial LiquidGlass fijado por commit, sin modificar, con licencia Apache 2.0 y procedencia verificable.
+- Adaptador de óptica SDF/lente para fondos difusos, refracción de borde y brillo, compartido entre previews y RemoteViews. Sin captura ni blur en vivo del launcher.
+- Reflejos en manecillas y controles musicales, conservando geometrías y acciones; esfera y números sin cambios.
+- Barra de progreso translúcida con reflejo y fracción real de reproducción.
+- Ajustes de material disponibles en las tres familias, caché acotada y sin bucles de refresco adicionales.
+
+
 ## 1.2.2 · Relojes compactos y retirada de One UI
 
 - Reloj compacto: solo esfera analógica grande y centrada, sin fecha ni contenido adicional, también en instancias antes digitales.

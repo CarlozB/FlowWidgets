@@ -5,21 +5,21 @@
 | Comprobación | Resultado |
 | --- | --- |
 | `./gradlew assembleDebug` | Correcta; APK generado |
-| `./gradlew testDebugUnitTest` | **37 pasadas, 0 fallidas, 0 omitidas** |
-| `./gradlew lintDebug` | **0 errores, 92 advertencias** |
+| `./gradlew testDebugUnitTest` | **41 pasadas, 0 fallidas, 0 omitidas** |
+| `./gradlew lintDebug` | **0 errores, 93 advertencias** |
 | `./gradlew assembleDebugAndroidTest` | APK de pruebas instrumentadas compilado |
 | `apksigner verify --verbose` | Firma v2 válida, un firmante |
 | `zipalign -c 4` | Correcta |
 | Inspección de APK/manifiesto | Paquete `com.flowwidgets.app`, minSdk 33, target/compile 36; ocho proveedores registrados |
 | Open-Meteo por HTTPS desde el entorno | Comprobación anterior de geocodificación/pronóstico válida; la nueva consulta de cinco días recibió HTTP 403 en esta sesión. El esquema ampliado y su caché se verificaron con fixtures; falta consulta desde el APK |
 
-La última ejecución completa de verificación terminó con código 0. Los informes originales están en [`reports/`](reports/): cinco XML JUnit, informe Lint y registro de compilación/verificación. Las advertencias Lint son recomendaciones de versiones, orden de parámetros Compose, extensiones KTX, posiciones físicas de RemoteViews (izquierda/derecha) y recursos antiguos conservados para compatibilidad de actualización; no se deshabilitaron comprobaciones ni se creó un baseline para ocultar errores.
+La última ejecución completa de verificación terminó con código 0. Los informes originales están en [`reports/`](reports/): seis XML JUnit, informe Lint y registro de compilación/verificación. Las advertencias Lint son recomendaciones de versiones, orden de parámetros Compose, extensiones KTX, posiciones físicas de RemoteViews (izquierda/derecha) y recursos antiguos conservados para compatibilidad de actualización; no se deshabilitaron comprobaciones ni se creó un baseline para ocultar errores.
 
-## Qué cubren las 37 pruebas locales
+## Qué cubren las 41 pruebas locales
 
 - Nueve pruebas de repositorios: serialización de todos los ajustes, valores por defecto, persistencia DataStore, aislamiento entre widgets, actualización/borrado, tema, listas dañadas, calendario sin permiso, caché meteorológica por coordenadas, timestamp y fallback offline sin peticiones de red, códigos meteorológicos y pronóstico ampliado con campos opcionales.
 - Cinco pruebas de widgets: registro y metadatos de los ocho proveedores; aplicación de RemoteViews de cada tipo; reloj analógico y tres estilos; conservación al redimensionar y limpieza al borrar; notas compactas y layouts de fuentes de reloj.
-- Siete pruebas gráficas nativas: ocho tipos en siete proporciones (56 renders), límites de memoria/transparencia, recorte frente a ajuste real, iconos meteorológicos distintos, reloj sin agujas congeladas, colores y exportación de ejemplos desde el renderer de producción.
+- Nueve pruebas gráficas nativas: ocho tipos en siete proporciones (56 renders), límites de memoria/transparencia, recorte frente a ajuste real, iconos meteorológicos distintos, reloj sin agujas congeladas, colores y exportación de ejemplos desde el renderer de producción.
 - Seis pruebas adaptativas: tamaños reportados y fallback de orientación, límite de 16 variantes, presupuesto global, grids, reaplicación al encoger, transacciones entre instancias, caché Glass, once proporciones y mapa RemoteViews de los ocho tipos.
 - Diez regresiones de colocación y tipografía: primera actualización sin callback en los tres estilos actuales, callbacks previos/tardíos/duplicados y concurrencia, paleta explícita, pesos reales de Inter en Canvas y TextClock, cifras tabulares, ajuste de números y esfera cuadrada/centrada tras medir vistas Android.
 - Las pruebas de host se ejecutan con Robolectric API 35. No equivalen a una prueba del launcher Xiaomi.
@@ -46,9 +46,9 @@ Ver [`INSTALL.md`](INSTALL.md) y la lista manual del README. No se garantiza una
 
 - Archivo final: `dist/FlowWidgets-debug.apk`
 - Certificado de depuración: coincide con el APK 1.2 ya publicado, por lo que la actualización conserva datos si se instala sobre él.
-- Tamaño: 30,664,986 bytes
-- SHA-256: `409e690136291ba7bcb6df7a608f2a96715e5d244d95304024d2d6acf946d16f`
-- Versión: `1.2.2` (5), compilación de depuración, no release de Play Store.
+- Tamaño: 30,664,455 bytes
+- SHA-256: `ffb1f9fbc872f6dfc49b78550c4e69a81f018555b9cabff4d2afcac372345a4b`
+- Versión: `1.3.0` (6), compilación de depuración, no release de Play Store.
 
 ## Cambios visuales y límites de esta validación
 
@@ -79,3 +79,11 @@ Se añadieron comprobaciones de los relojes compactos en 80, 132, 180, 240 y 280
 Se comprobó la migración de ONE a Classic sin perder colores, contenido ni peso de fuente, y que el selector solo ofrece Classic, Glass y Material. Las láminas y el preview del reloj se regeneraron con el motor actualizado. El APK conserva la firma de la versión anterior. Falta validar esta versión en el launcher HyperOS del usuario; no se volvió a iniciar el emulador.
 
 Se comprobó además que el AnalogClock compacto se centra en el tamaño final del host aunque sus dimensiones difieran de los dp anunciados: usa el espacio real del padre con márgenes simétricos. La esfera nativa mantiene su proporción circular.
+
+## LiquidGlass y superficies reflectantes · 1.3.0
+
+La suite incluye dos pruebas adicionales de reflejos en manecillas/controles y fracción/límites de la barra, y dos pruebas del adaptador de fondo: máscara, perfiles, óptica oficial, caché, opacidad/iluminación y lámina exportada. El test de centrado del calendario ahora identifica los glifos por un color exclusivo, manteniendo la misma tolerancia y evitando confundir reflejos del fondo con texto.
+
+Se verificó que los cinco archivos del núcleo coinciden byte por byte con el commit oficial fijado. La función que dibuja la esfera y los números es idéntica a la de 1.2.2. La lámina [FlowWidgets-LiquidGlass.png](images/FlowWidgets-LiquidGlass.png) usa el motor real con fixtures de test y no es una captura del launcher.
+
+La integración es un adaptador CPU de las funciones SDF/lente del núcleo, con fondo de luz difusa generado. No ejecuta el renderer AGSL ni desenfoca el fondo del launcher. El APK conserva acciones multimedia y relojes nativos. Más detalles y licencia en [LIQUID_GLASS.md](LIQUID_GLASS.md). No se probó la nueva APK ni el consumo en hardware físico; se mantienen cuatro pruebas instrumentadas compiladas y no ejecutadas.

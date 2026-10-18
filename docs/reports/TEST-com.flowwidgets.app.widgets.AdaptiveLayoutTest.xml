@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.flowwidgets.app.widgets.AdaptiveLayoutTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-18T17:08:18.513Z" hostname="c068ee609df7" time="7.942">
+<testsuite name="com.flowwidgets.app.widgets.AdaptiveLayoutTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-18T17:20:52.981Z" hostname="c068ee609df7" time="7.965">
   <properties/>
-  <testcase name="expansionAddsContentAndGridsStayInsideBounds" classname="com.flowwidgets.app.widgets.AdaptiveLayoutTest" time="3.325"/>
-  <testcase name="shrinkingRemovesZonesAndTaskTargets" classname="com.flowwidgets.app.widgets.AdaptiveLayoutTest" time="1.753"/>
-  <testcase name="glassCacheAndAllAdaptiveProfilesRender" classname="com.flowwidgets.app.widgets.AdaptiveLayoutTest" time="1.969"/>
-  <testcase name="sizeMapBuildsAndAppliesForEveryProvider" classname="com.flowwidgets.app.widgets.AdaptiveLayoutTest" time="0.795"/>
-  <testcase name="hostSizesAreDeduplicatedAndRespectFrameworkLimit" classname="com.flowwidgets.app.widgets.AdaptiveLayoutTest" time="0.036"/>
-  <testcase name="listUpdatesPreserveOtherInstancesAndOldSettings" classname="com.flowwidgets.app.widgets.AdaptiveLayoutTest" time="0.062"/>
+  <testcase name="expansionAddsContentAndGridsStayInsideBounds" classname="com.flowwidgets.app.widgets.AdaptiveLayoutTest" time="3.101"/>
+  <testcase name="shrinkingRemovesZonesAndTaskTargets" classname="com.flowwidgets.app.widgets.AdaptiveLayoutTest" time="1.471"/>
+  <testcase name="glassCacheAndAllAdaptiveProfilesRender" classname="com.flowwidgets.app.widgets.AdaptiveLayoutTest" time="2.6"/>
+  <testcase name="sizeMapBuildsAndAppliesForEveryProvider" classname="com.flowwidgets.app.widgets.AdaptiveLayoutTest" time="0.725"/>
+  <testcase name="hostSizesAreDeduplicatedAndRespectFrameworkLimit" classname="com.flowwidgets.app.widgets.AdaptiveLayoutTest" time="0.032"/>
+  <testcase name="listUpdatesPreserveOtherInstancesAndOldSettings" classname="com.flowwidgets.app.widgets.AdaptiveLayoutTest" time="0.036"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

@@ -4,6 +4,14 @@ Aplicación Android nativa para personalizar la pantalla de inicio con ocho tipo
 
 **Paquete:** `com.flowwidgets.app` · **Android:** 13–16 (API mínima 33, target/compile 36).
 
+## LiquidGlass y reflejos · 1.3
+
+Fondo de cristal esmerilado con bordes refractados usando el núcleo oficial de LiquidGlass, adaptado a bitmaps de RemoteViews. Manecillas, controles de música y barra de progreso incorporan reflejos; la esfera y sus números se mantienen.
+
+![Componentes LiquidGlass](docs/images/FlowWidgets-LiquidGlass.png)
+
+[Integración, licencia y límites](docs/LIQUID_GLASS.md). El fondo es una composición de luz y transparencia compatible con el escritorio: **no desenfoca en vivo el fondo del launcher**. Las vistas previas muestran el mismo material que los widgets.
+
 ## Relojes compactos centrados · 1.2.2
 
 Los relojes compactos (incluidos 1×1 y 2×2) muestran únicamente la esfera circular grande, centrada horizontal y verticalmente, sin fecha, zonas ni agenda. En tamaños mayores se conservan las opciones adicionales. El calendario pequeño centra visualmente el número del día. Los tamaños se deciden por los dp que comunica el launcher, no por un número de celdas supuesto.

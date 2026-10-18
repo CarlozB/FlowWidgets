@@ -238,7 +238,7 @@ object VisualWidgetRenderer {
         )
         val p = palette(c)
         canvas.drawBitmap(
-            SoftLightGlassRenderer.background(c, bitmap.width, bitmap.height),
+            SoftLightGlassRenderer.background(c, bitmap.width, bitmap.height, radius * factor),
             null,
             RectF(0f, 0f, w, h),
             Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG),
@@ -458,6 +458,23 @@ object VisualWidgetRenderer {
                 strokeWidth = if (second) 2f else if (minute) 5f else 7f
                 strokeCap = Paint.Cap.ROUND
             }
+        val tint = if (second) accent else foreground ?: if (light) white else ink
+        cv.drawLine(
+            16f,
+            if (minute) 35f else 70f,
+            16f,
+            if (second) 186f else 174f,
+            Paint(paint).apply {
+                color = tint
+                alpha = 190
+            },
+        )
+        paint.strokeWidth *= .65f
+        paint.shader =
+            SoftLightGlassRenderer.reflectionShader(
+                RectF(12f, if (minute) 35f else 70f, 20f, 186f),
+                tint,
+            )
         cv.drawLine(16f, if (minute) 35f else 70f, 16f, if (second) 186f else 174f, paint)
         cv.drawCircle(16f, 160f, if (second) 4f else 5f, paint)
         return b
@@ -1395,21 +1412,11 @@ object VisualWidgetRenderer {
                     r.width() > 10
             ) {
                 val y = r.top + 4
-                val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = alpha(p.foreground, 35) }
-                cv.drawRoundRect(RectF(r.left, y, r.right, y + 3), 2f, 2f, paint)
-                paint.color = p.foreground
-                cv.drawRoundRect(
-                    RectF(
-                        r.left,
-                        y,
-                        r.left +
-                            r.width() *
-                                (media.positionMs.toFloat() / media.durationMs).coerceIn(0f, 1f),
-                        y + 3,
-                    ),
-                    2f,
-                    2f,
-                    paint,
+                SoftLightGlassRenderer.progress(
+                    cv,
+                    RectF(r.left, y, r.right, y + 5),
+                    media.positionMs.toFloat() / media.durationMs,
+                    p.foreground,
                 )
                 text(cv, elapsed(media.positionMs), r.left, r.bottom - 2, 8f, p.foreground, c)
                 text(
@@ -1584,7 +1591,11 @@ object VisualWidgetRenderer {
     fun transportIcon(action: String, color: Int): Bitmap {
         val b = Bitmap.createBitmap(96, 96, Bitmap.Config.ARGB_8888)
         val cv = Canvas(b)
-        val p = Paint(Paint.ANTI_ALIAS_FLAG).apply { this.color = color }
+        val p =
+            Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                this.color = color
+                shader = SoftLightGlassRenderer.reflectionShader(RectF(28f, 27f, 69f, 69f), color)
+            }
         when (action) {
             "pause" -> {
                 cv.drawRoundRect(RectF(33f, 29f, 43f, 67f), 2f, 2f, p)

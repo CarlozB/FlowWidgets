@@ -115,6 +115,38 @@ class VisualWidgetRendererTest {
     }
 
     @Test
+    fun glassHandsAndTransportGlyphsHaveReflectionsAndKeepTransparentBounds() {
+        val hand = VisualWidgetRenderer.hand(true, false, Color.RED, true)
+        assertEquals(0, Color.alpha(hand.getPixel(0, 0)))
+        assertNotEquals(hand.getPixel(16, 80), hand.getPixel(16, 140))
+        for (action in listOf("play", "pause", "previous", "next")) {
+            val bitmap = VisualWidgetRenderer.transportIcon(action, Color.WHITE)
+            assertEquals(0, Color.alpha(bitmap.getPixel(0, 0)))
+            val shades = mutableSetOf<Int>()
+            for (y in 0 until bitmap.height) for (x in 0 until bitmap.width) {
+                val color = bitmap.getPixel(x, y)
+                if (Color.alpha(color) > 220) shades.add(Color.red(color))
+            }
+            assertTrue("Visible reflected gradient for $action", shades.size > 8)
+        }
+    }
+
+    @Test
+    fun glassTimelineKeepsItsRealProgressAndDoesNotDrawOutsideTrack() {
+        val bitmap = Bitmap.createBitmap(220, 30, Bitmap.Config.ARGB_8888)
+        SoftLightGlassRenderer.progress(
+            Canvas(bitmap),
+            RectF(10f, 10f, 210f, 20f),
+            .5f,
+            Color.WHITE,
+        )
+        assertEquals(0, Color.alpha(bitmap.getPixel(0, 15)))
+        assertTrue(Color.alpha(bitmap.getPixel(60, 15)) > Color.alpha(bitmap.getPixel(160, 15)))
+        assertNotEquals(bitmap.getPixel(40, 15), bitmap.getPixel(90, 15))
+        assertEquals(0, Color.alpha(bitmap.getPixel(215, 15)))
+    }
+
+    @Test
     fun exportDesignBoardFromTheProductionRenderer() {
         val board = Bitmap.createBitmap(1280, 870, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(board)

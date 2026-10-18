@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.flowwidgets.app.widgets.LiquidGlassBackgroundTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-18T17:21:00.956Z" hostname="c068ee609df7" time="0.256">
+  <properties/>
+  <testcase name="exportGlassComponentsFromProductionRenderer" classname="com.flowwidgets.app.widgets.LiquidGlassBackgroundTest" time="0.152"/>
+  <testcase name="opticsMaskAndSettingsRemainCorrectAtEveryWidgetAspect" classname="com.flowwidgets.app.widgets.LiquidGlassBackgroundTest" time="0.103"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

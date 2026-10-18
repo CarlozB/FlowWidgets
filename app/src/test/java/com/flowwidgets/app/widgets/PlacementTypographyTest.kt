@@ -324,7 +324,7 @@ class PlacementTypographyTest {
                     WidgetConfig(
                         kind = WidgetKind.CALENDAR,
                         background = 0xFF000000,
-                        textColor = 0xFFFFFFFF,
+                        textColor = 0xFF00FF00,
                         automaticColors = false,
                     ),
                     size,
@@ -336,7 +336,9 @@ class PlacementTypographyTest {
             var right = 0
             var bottom = 0
             for (y in 0 until bitmap.height) for (x in 0 until bitmap.width) if (
-                Color.red(bitmap.getPixel(x, y)) > 210
+                Color.green(bitmap.getPixel(x, y)) > 210 &&
+                    Color.red(bitmap.getPixel(x, y)) < 40 &&
+                    Color.blue(bitmap.getPixel(x, y)) < 40
             ) {
                 left = minOf(left, x)
                 right = maxOf(right, x)

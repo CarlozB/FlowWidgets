@@ -25,7 +25,12 @@ object SoftLightGlassRenderer {
             override fun sizeOf(key: Key, value: Bitmap) = maxOf(1, value.byteCount / 1024)
         }
 
-    fun background(c: WidgetConfig, width: Int, height: Int): Bitmap {
+    fun background(
+        c: WidgetConfig,
+        width: Int,
+        height: Int,
+        radiusPx: Float = radius(c, width.toFloat(), height.toFloat()),
+    ): Bitmap {
         val palette = VisualWidgetRenderer.palette(c)
         val key =
             Key(
@@ -37,82 +42,77 @@ object SoftLightGlassRenderer {
                 c.opacity,
                 c.glassOpacity,
                 c.glassLighting,
-                c.glassCorner,
+                radiusPx,
             )
         cache.get(key)?.let {
             return it
         }
         val b =
-            Bitmap.createBitmap(
+            LiquidGlassWidgetBackground.render(
+                c,
                 width.coerceAtLeast(1),
                 height.coerceAtLeast(1),
-                Bitmap.Config.ARGB_8888,
+                radiusPx,
             )
-        val cv = Canvas(b)
-        val w = width.toFloat()
-        val h = height.toFloat()
-        val glass = c.style == WidgetStyle.GLASS
-        val a =
-            (Color.alpha(palette.background) * c.opacity * (if (glass) c.glassOpacity else 1f))
-                .roundToInt()
-                .coerceIn(0, 255)
-        val base = (palette.background and 0xFFFFFF) or (a shl 24)
-        val p = Paint(Paint.ANTI_ALIAS_FLAG)
-        p.shader =
-            LinearGradient(
-                0f,
-                0f,
-                w,
-                h,
-                intArrayOf(
-                    mix(base, Color.WHITE, if (glass) .28f else .10f),
-                    base,
-                    mix(base, palette.accent, if (glass) .13f else .03f),
-                ),
-                null,
-                Shader.TileMode.CLAMP,
-            )
-        cv.drawRect(0f, 0f, w, h, p)
-        val strength = if (glass) c.glassLighting else .12f
-        p.shader =
-            RadialGradient(
-                w * .15f,
-                h * .03f,
-                maxOf(w, h) * .8f,
-                Color.argb((120 * strength).roundToInt(), 255, 255, 255),
-                Color.TRANSPARENT,
-                Shader.TileMode.CLAMP,
-            )
-        cv.drawRect(0f, 0f, w, h, p)
-        if (glass) {
-            p.shader =
-                RadialGradient(
-                    w * .92f,
-                    h * .8f,
-                    maxOf(w, h) * .7f,
-                    (palette.accent and 0xFFFFFF) or ((45 * strength).roundToInt() shl 24),
-                    Color.TRANSPARENT,
-                    Shader.TileMode.CLAMP,
-                )
-            cv.drawRect(0f, 0f, w, h, p)
-            p.shader = null
-            p.color = Color.argb((70 * strength).roundToInt(), 255, 255, 255)
-            p.strokeWidth = maxOf(1f, minOf(w, h) * .004f)
-            p.style = Paint.Style.STROKE
-            cv.drawPath(
-                Path().apply {
-                    moveTo(-w * .1f, h * .38f)
-                    cubicTo(w * .2f, -h * .1f, w * .7f, h * .36f, w * 1.1f, -h * .02f)
-                },
-                p,
-            )
-        }
         cache.put(key, b)
         return b
     }
 
+    /** Small reflective surfaces, suitable for native-clock bitmaps and RemoteViews controls. */
+    fun reflectionShader(bounds: RectF, tint: Int, opacity: Int = 235): Shader {
+        val base = mix(tint, Color.BLACK, .22f)
+        return LinearGradient(
+            bounds.left,
+            bounds.top,
+            bounds.right,
+            bounds.bottom,
+            intArrayOf(
+                withAlpha(mix(base, Color.WHITE, .2f), opacity),
+                withAlpha(mix(base, Color.WHITE, .85f), opacity),
+                withAlpha(mix(base, Color.WHITE, .55f), opacity),
+                withAlpha(base, opacity),
+                withAlpha(mix(base, Color.WHITE, .65f), opacity),
+            ),
+            floatArrayOf(0f, .28f, .34f, .65f, 1f),
+            Shader.TileMode.CLAMP,
+        )
+    }
+
+    fun progress(canvas: Canvas, bounds: RectF, fraction: Float, tint: Int) {
+        if (bounds.width() <= 0 || bounds.height() <= 0) return
+        val radius = bounds.height() / 2
+        val paint =
+            Paint(Paint.ANTI_ALIAS_FLAG).apply { shader = reflectionShader(bounds, tint, 65) }
+        canvas.drawRoundRect(bounds, radius, radius, paint)
+        val amount = fraction.coerceIn(0f, 1f)
+        if (amount > 0) {
+            val filled =
+                RectF(bounds.left, bounds.top, bounds.left + bounds.width() * amount, bounds.bottom)
+            paint.shader = reflectionShader(bounds, tint)
+            canvas.drawRoundRect(filled, radius, radius, paint)
+            canvas.save()
+            canvas.clipPath(
+                Path().apply { addRoundRect(filled, radius, radius, Path.Direction.CW) }
+            )
+            paint.shader = null
+            paint.color = Color.argb(160, 255, 255, 255)
+            paint.strokeWidth = maxOf(.6f, bounds.height() * .16f)
+            canvas.drawLine(
+                filled.left,
+                filled.top + paint.strokeWidth,
+                filled.right,
+                filled.top + paint.strokeWidth,
+                paint,
+            )
+            canvas.restore()
+        }
+    }
+
+    private fun withAlpha(color: Int, alpha: Int) =
+        (color and 0xFFFFFF) or (alpha.coerceIn(0, 255) shl 24)
+
     fun radius(c: WidgetConfig, width: Float, height: Float) =
-        minOf(if (c.style == WidgetStyle.GLASS) c.glassCorner else 22f, minOf(width, height) * .2f)
+        minOf(c.glassCorner, minOf(width, height) * .2f)
 
     private fun mix(a: Int, b: Int, t: Float) =
         Color.argb(
