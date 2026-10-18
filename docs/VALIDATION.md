@@ -5,8 +5,8 @@
 | Comprobación | Resultado |
 | --- | --- |
 | `./gradlew assembleDebug` | Correcta; APK generado |
-| `./gradlew testDebugUnitTest` | **13 pasadas, 0 fallidas, 0 omitidas** |
-| `./gradlew lintDebug` | **0 errores, 16 advertencias** |
+| `./gradlew testDebugUnitTest` | **20 pasadas, 0 fallidas, 0 omitidas** |
+| `./gradlew lintDebug` | **0 errores, 24 advertencias** |
 | `./gradlew assembleDebugAndroidTest` | APK de pruebas instrumentadas compilado |
 | `apksigner verify --verbose` | Firma v2 válida, un firmante |
 | `zipalign -c 4` | Correcta |
@@ -15,10 +15,11 @@
 
 La última ejecución completa de verificación terminó con código 0. Los informes originales están en [`reports/`](reports/): dos XML JUnit, informe Lint y registro de compilación/verificación. Las advertencias Lint son recomendaciones de versiones, orden de parámetros Compose y extensiones KTX; no se deshabilitaron comprobaciones ni se creó un baseline para ocultar errores.
 
-## Qué cubren las 13 pruebas locales
+## Qué cubren las 20 pruebas locales
 
 - Ocho pruebas de repositorios: serialización de todos los ajustes, valores por defecto, persistencia DataStore, aislamiento entre widgets, actualización/borrado, tema, listas dañadas, calendario sin permiso, caché meteorológica por coordenadas, timestamp y fallback offline sin peticiones de red, códigos meteorológicos.
 - Cinco pruebas de widgets: registro y metadatos de los ocho proveedores; aplicación de RemoteViews de cada tipo; reloj analógico y cuatro estilos; conservación al redimensionar y limpieza al borrar; notas compactas y layouts de fuentes de reloj.
+- Siete pruebas gráficas nativas: ocho tipos en siete proporciones (56 renders), límites de memoria/transparencia, recorte frente a ajuste real, iconos meteorológicos distintos, reloj sin agujas congeladas, colores y exportación de ejemplos desde el renderer de producción.
 - Las pruebas de host se ejecutan con Robolectric API 35. No equivalen a una prueba del launcher Xiaomi.
 
 ## Pruebas instrumentadas no ejecutadas
@@ -42,6 +43,17 @@ Ver [`INSTALL.md`](INSTALL.md) y la lista manual del README. No se garantiza una
 ## Identificación del APK
 
 - Archivo final: `dist/FlowWidgets-debug.apk`
-- Tamaño: 29,621,751 bytes
-- SHA-256: `9bcdec96e1237b14faf6a1e8ebee31af8c92a7968272c911caf3e42b29547b5a`
-- Versión: `1.0.0` (1), compilación de depuración, no release de Play Store.
+- Certificado de depuración: coincide con el APK 1.0 ya publicado, por lo que la actualización conserva datos si se instala sobre él.
+- Tamaño: 29,799,725 bytes
+- SHA-256: `710245403607b103cd9484552ca6a63fac1722d49fd1dea86f18939009e408a0`
+- Versión: `1.1.0` (2), compilación de depuración, no release de Play Store.
+
+## Cambios visuales y límites de esta validación
+
+Se revisó la lámina generada con el mismo motor que usa el escritorio: [`images/FlowWidgets-design.png`](images/FlowWidgets-design.png). Es una exportación de pruebas, no una captura de la app ejecutada en HyperOS; sus cifras, fecha y portada abstracta son fixtures exclusivos del test. No se introducen estos datos en el APK. Los previews del selector muestran estados vacíos sin inventar batería, clima ni canciones.
+
+Las notas, el clima, la batería, el mes y los accesos se dibujan con Canvas. Fotos y portadas son imágenes reales seleccionadas/publicadas por sus fuentes. El reloj mantiene componentes nativos con esfera y agujas propias; el reproductor conserva controles clicables separados del dibujo. Las vistas previas Compose usan el mismo motor, por lo que no son maquetas independientes del widget real.
+
+Se mantuvieron los IDs de layouts antiguos y se añadieron layouts de escritorio nuevos, para que el launcher pueda reinflar la composición durante una actualización; también se atiende MY_PACKAGE_REPLACED. El resultado de esa migración en Xiaomi se debe comprobar en el dispositivo. Si aparece una vista antigua, quitar y añadir de nuevo el widget. Las instancias digitales anteriores conservan su preferencia: activar Reloj analógico para ver la esfera.
+
+No se volvió a iniciar el emulador, conforme a la indicación del usuario. Las tres pruebas instrumentadas compilan pero siguen sin ejecutarse; la apertura real y los permisos/sesiones de terceros requieren la tablet.

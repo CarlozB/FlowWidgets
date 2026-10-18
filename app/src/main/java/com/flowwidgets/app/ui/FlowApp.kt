@@ -175,7 +175,11 @@ fun FlowApp(
                                 color = Muted,
                             )
                             Spacer(Modifier.height(18.dp))
-                            Text("Flow Widgets · 1.0", fontSize = 11.sp, color = Muted)
+                            Text(
+                                "Flow Widgets · ${com.flowwidgets.app.BuildConfig.VERSION_NAME}",
+                                fontSize = 11.sp,
+                                color = Muted,
+                            )
                         }
                     Column(Modifier.weight(1f)) {
                         if (!wide) {
@@ -584,7 +588,7 @@ private fun SettingsScreen(theme: String, onTheme: (String) -> Unit) {
             lineHeight = 22.sp,
         )
         Text(
-            "Flow Widgets 1.0\nDiseñado para que tu pantalla respire.",
+            "Flow Widgets ${com.flowwidgets.app.BuildConfig.VERSION_NAME}\nDiseñado para que tu pantalla respire.",
             fontSize = 12.sp,
             color = Muted,
         )

@@ -37,7 +37,7 @@ data class WidgetConfig(
     val shortcutPackage: String? = null,
     val shortcutUri: String? = null,
     val clock24: Boolean = true,
-    val analog: Boolean = false,
+    val analog: Boolean = true,
     val showDate: Boolean = true,
     val showSeconds: Boolean = false,
     val weekStartsMonday: Boolean = true,
@@ -68,6 +68,7 @@ data class WeatherSnapshot(
     val low: Double,
     val hours: List<WeatherHour>,
     val updatedAt: Long,
+    val code: Int = -1,
 )
 
 data class MediaInfo(

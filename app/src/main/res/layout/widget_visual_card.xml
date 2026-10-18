@@ -1,0 +1,11 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/widget_root" android:layout_width="match_parent" android:layout_height="match_parent">
+    <ImageView android:id="@+id/widget_image" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitXY" android:contentDescription="@string/widget_image_description" />
+    <TextClock android:id="@+id/widget_clock" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="center" android:singleLine="true" android:fontFamily="sans" android:padding="6dp" android:textColor="#FFFFFF" android:visibility="gone" />
+    <AnalogClock android:id="@+id/widget_analog" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" android:contentDescription="@string/widget_analog_description" />
+    <TextClock android:id="@+id/widget_date" android:layout_width="match_parent" android:layout_height="24dp" android:layout_gravity="bottom" android:layout_marginBottom="5dp" android:gravity="center" android:textSize="11sp" android:visibility="gone" />
+    <LinearLayout android:id="@+id/widget_media_controls" android:layout_width="match_parent" android:layout_height="46dp" android:layout_gravity="bottom" android:layout_marginHorizontal="12dp" android:layout_marginBottom="4dp" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
+        <ImageView android:id="@+id/widget_previous" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:scaleType="fitCenter" android:contentDescription="@string/widget_previous_description" />
+        <ImageView android:id="@+id/widget_play" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:scaleType="fitCenter" android:contentDescription="@string/widget_play_description" />
+        <ImageView android:id="@+id/widget_next" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:scaleType="fitCenter" android:contentDescription="@string/widget_next_description" />
+    </LinearLayout>
+</FrameLayout>

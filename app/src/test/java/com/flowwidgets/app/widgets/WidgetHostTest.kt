@@ -7,7 +7,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import com.flowwidgets.app.R
 import com.flowwidgets.app.data.*
@@ -66,11 +65,14 @@ class WidgetHostTest {
                 AdaptiveWidgetProvider.buildViews(context, manager, id, kind.name.lowercase())
             val applied = views.apply(context, FrameLayout(context))
             assertNotNull("RemoteViews for $kind", applied.findViewById<View>(R.id.widget_root))
+            assertNotNull(
+                applied.findViewById<android.widget.ImageView>(R.id.widget_image).drawable
+            )
             if (kind == WidgetKind.NOTE)
                 assertTrue(
                     applied
-                        .findViewById<TextView>(R.id.widget_detail)
-                        .text
+                        .findViewById<View>(R.id.widget_image)
+                        .contentDescription
                         .contains("Una nota persistente")
                 )
             FlowRepository.delete(context, id)
@@ -99,7 +101,7 @@ class WidgetHostTest {
         org.robolectric.Shadows.shadowOf(manager).setAlwaysRecreateViewsDuringUpdate(true)
         val id =
             org.robolectric.Shadows.shadowOf(manager)
-                .createWidget(NoteWidget::class.java, R.layout.widget_card)
+                .createWidget(NoteWidget::class.java, R.layout.widget_visual_card)
         val config =
             WidgetConfig(id = id, kind = WidgetKind.NOTE, note = "Conservar al redimensionar")
         FlowRepository.save(context, config)
@@ -122,7 +124,7 @@ class WidgetHostTest {
     fun compactNotesKeepBodyAndClockFontLayoutsApply() = runBlocking {
         val id =
             org.robolectric.Shadows.shadowOf(manager)
-                .createWidget(NoteWidget::class.java, R.layout.widget_card)
+                .createWidget(NoteWidget::class.java, R.layout.widget_visual_card)
         manager.updateAppWidgetOptions(
             id,
             Bundle().apply {
@@ -137,15 +139,14 @@ class WidgetHostTest {
         val note =
             AdaptiveWidgetProvider.buildViews(context, manager, id, "note")
                 .apply(context, FrameLayout(context))
-        assertEquals(
-            "Visible en 4×1",
-            note.findViewById<TextView>(R.id.widget_title).text.toString(),
+        assertTrue(
+            note.findViewById<View>(R.id.widget_image).contentDescription.contains("Visible en 4×1")
         )
-        assertEquals(View.GONE, note.findViewById<View>(R.id.widget_detail).visibility)
+        assertNotNull(note.findViewById<android.widget.ImageView>(R.id.widget_image).drawable)
         for (font in listOf("sans", "serif", "monospace")) {
             FlowRepository.save(
                 context,
-                WidgetConfig(id = id, kind = WidgetKind.CLOCK, font = font),
+                WidgetConfig(id = id, kind = WidgetKind.CLOCK, font = font, analog = false),
             )
             val clock =
                 AdaptiveWidgetProvider.buildViews(context, manager, id, "clock")

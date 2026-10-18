@@ -9,6 +9,12 @@
 
 El APK está firmado para depuración. Si existe otra instalación con el mismo paquete y distinta firma, Android rechazará actualizarla. Desinstalar esa versión eliminará sus datos; conserva antes cualquier nota o configuración que necesites.
 
+## Actualizar a la versión visual 1.1
+
+Instala el APK nuevo sobre el anterior; tiene el mismo paquete y mantiene tus configuraciones. El sistema debe aceptar la misma firma de depuración. En un reloj existente, activa **Reloj analógico** para mostrar la esfera; el ajuste digital anterior se conserva intencionadamente. Puedes personalizar los ocho tipos desde su editor.
+
+Si HyperOS mantiene una tarjeta antigua, quítala del escritorio y vuelve a añadirla. Para ver fotografías debes seleccionarlas; para ver portadas, habilita el acceso multimedia y reproduce contenido en una app compatible. No se incluyen fotos ni canciones simuladas.
+
 ## Añadir widgets
 
 En la app, abre el catálogo, elige un tipo y personalízalo. Pulsa **Añadir a la pantalla de inicio** y confirma el diálogo del launcher.

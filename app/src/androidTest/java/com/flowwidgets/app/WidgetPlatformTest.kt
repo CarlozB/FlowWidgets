@@ -67,19 +67,16 @@ class WidgetPlatformTest {
         instrumentation.runOnMainSync {
             val photo = views.apply(context, FrameLayout(context))
             assertEquals(
-                android.view.View.GONE,
-                photo.findViewById<android.view.View>(R.id.widget_label).visibility,
+                "Fotografía seleccionada",
+                photo.findViewById<android.view.View>(R.id.widget_image).contentDescription,
             )
-            assertEquals(
-                android.view.View.GONE,
-                photo.findViewById<android.view.View>(R.id.widget_title).visibility,
-            )
+
             assertEquals(
                 android.view.View.VISIBLE,
                 photo.findViewById<android.view.View>(R.id.widget_image).visibility,
             )
             assertEquals(
-                android.widget.ImageView.ScaleType.FIT_CENTER,
+                android.widget.ImageView.ScaleType.FIT_XY,
                 photo.findViewById<android.widget.ImageView>(R.id.widget_image).scaleType,
             )
         }

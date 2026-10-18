@@ -52,6 +52,9 @@ Picked up JAVA_TOOL_OPTIONS:  -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cac
 > Task :app:processDebugUnitTestManifest UP-TO-DATE
 > Task :app:generateDebugUnitTestConfig UP-TO-DATE
 > Task :app:processDebugUnitTestJavaRes UP-TO-DATE
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect UP-TO-DATE
+> Task :app:assembleDebug
 > Task :app:testDebugUnitTest UP-TO-DATE
 > Task :app:preDebugAndroidTestBuild SKIPPED
 > Task :app:generateDebugAndroidTestResValues UP-TO-DATE
@@ -98,9 +101,6 @@ Picked up JAVA_TOOL_OPTIONS:  -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cac
 > Task :app:packageDebugAndroidTest UP-TO-DATE
 > Task :app:createDebugAndroidTestApkListingFileRedirect UP-TO-DATE
 > Task :app:assembleDebugAndroidTest UP-TO-DATE
-> Task :app:packageDebug
-> Task :app:createDebugApkListingFileRedirect UP-TO-DATE
-> Task :app:assembleDebug
 
 BUILD SUCCESSFUL in 1s
 87 actionable tasks: 2 executed, 85 up-to-date

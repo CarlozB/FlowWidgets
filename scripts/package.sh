@@ -19,3 +19,14 @@ PY
   cd dist
   sha256sum FlowWidgets-debug.apk FlowWidgets-source.zip > SHA256SUMS
 )
+
+python3 - <<'PY_BUNDLE'
+from pathlib import Path
+from zipfile import ZipFile, ZIP_DEFLATED
+root = Path.cwd()
+with ZipFile(root / 'dist/FlowWidgets-entrega.zip', 'w', ZIP_DEFLATED) as archive:
+    for name in ['dist/FlowWidgets-debug.apk', 'dist/FlowWidgets-source.zip', 'dist/SHA256SUMS', 'docs/INSTALL.md', 'docs/VALIDATION.md', 'README.md', 'docs/images/FlowWidgets-design.png']:
+        file = root / name
+        if file.exists():
+            archive.write(file, file.name)
+PY_BUNDLE

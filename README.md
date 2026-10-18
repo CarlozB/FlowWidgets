@@ -4,6 +4,18 @@ Aplicación Android nativa para personalizar la pantalla de inicio con ocho tipo
 
 **Paquete:** `com.flowwidgets.app` · **Android:** 13–16 (API mínima 33, target/compile 36).
 
+## Nuevo diseño visual · 1.1
+
+Los widgets del escritorio ahora usan un motor gráfico original (`VisualWidgetRenderer`) compartido con las vistas previas de Compose. Las esferas, agujas, iconos del clima, anillos de batería, papel de notas y controles se dibujan desde código. Las fotos y portadas provienen únicamente de tu selección o sesión multimedia. No hacen falta assets de Apple ni fuentes propietarias.
+
+![Lámina de diseño](docs/images/FlowWidgets-design.png)
+
+La lámina usa datos ilustrativos de las pruebas, no datos introducidos en la aplicación. El widget real consulta el dispositivo y muestra estados vacíos cuando faltan datos o permisos. Los relojes de escritorio siguen siendo TextClock/AnalogClock nativos: las agujas no son una imagen de hora congelada. Los controles multimedia permanecen como acciones nativas sobre la composición dibujada.
+
+Instala el APK sobre la versión anterior para conservar tus ajustes. Un reloj existente configurado como digital seguirá siendo digital: activa **Reloj analógico** en su editor para ver la nueva esfera. Si el launcher conserva una vista vieja después de actualizar, quita ese widget y vuelve a añadirlo. Las nuevas instancias de reloj comienzan en modo analógico.
+
+Las vistas del selector de widgets también se generan con el mismo código; muestran guiones o instrucciones cuando no hay un dato real. Android sigue decidiendo la cuadrícula final. La apertura y la apariencia en HyperOS requieren comprobación física.
+
 ## Compilar e instalar
 
 Requisitos: JDK 21, Android SDK API 36, Build Tools 36.0.0. El wrapper fija Gradle 8.13 y verifica SHA-256; Android Gradle Plugin 8.13.0 y Kotlin 2.1.20.
@@ -74,7 +86,7 @@ app/src/main/java/com/flowwidgets/app/
   FlowApplication.kt       Trabajo periódico y eventos de batería
   ui/                      Catálogo, bienvenida, editor, ajustes y vistas previas
   data/                    Modelos, DataStore, fuentes reales y caché meteorológica
-  widgets/                 Ocho proveedores, configuración, fijado y acciones
+  widgets/                 Motor gráfico Canvas, reloj nativo, ocho proveedores y acciones
 app/src/test/              Persistencia, permisos, caché y host RemoteViews
 app/src/androidTest/       Recorrido Compose en Android
 ```

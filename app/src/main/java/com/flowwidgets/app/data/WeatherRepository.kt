@@ -98,6 +98,7 @@ object WeatherRepository {
                         daily.getJSONArray("temperature_2m_min").getDouble(0),
                         hours,
                         System.currentTimeMillis(),
+                        current.getInt("weather_code"),
                     )
                 context
                     .getSharedPreferences("weather_cache", Context.MODE_PRIVATE)
@@ -152,6 +153,7 @@ object WeatherRepository {
             .put("high", s.high)
             .put("low", s.low)
             .put("updatedAt", s.updatedAt)
+            .put("code", s.code)
             .put(
                 "hours",
                 JSONArray().apply {
@@ -178,6 +180,7 @@ object WeatherRepository {
                 WeatherHour(o.getString("time"), o.getDouble("temp"), o.getInt("code"))
             },
             j.getLong("updatedAt"),
+            j.optInt("code", -1),
         )
     }
 }

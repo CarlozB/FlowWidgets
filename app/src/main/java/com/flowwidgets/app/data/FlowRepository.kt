@@ -121,7 +121,7 @@ object FlowRepository {
             shortcutPackage = optional("shortcutPackage"),
             shortcutUri = optional("shortcutUri"),
             clock24 = j.optBoolean("clock24", true),
-            analog = j.optBoolean("analog"),
+            analog = j.optBoolean("analog", d.analog),
             showDate = j.optBoolean("showDate", true),
             showSeconds = j.optBoolean("showSeconds"),
             weekStartsMonday = j.optBoolean("weekStartsMonday", true),

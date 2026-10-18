@@ -16,7 +16,7 @@
    MavenCentral dependency, and connects to the library every time, which
    makes it more flexible but also much slower.
 
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/WidgetPreview.kt:42: Warning: Modifier parameter should be the first optional parameter [ModifierParameter from androidx.compose.ui]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/WidgetPreview.kt:36: Warning: Modifier parameter should be the first optional parameter [ModifierParameter from androidx.compose.ui]
     modifier: Modifier = Modifier,
     ~~~~~~~~
 
@@ -32,42 +32,100 @@
    Identifier: androidx.compose.ui
    Feedback: https://issuetracker.google.com/issues/new?component=612128
 
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:193: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
-                            Uri.parse(
-                            ^
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:254: Warning: Use the KTX extension function Bitmap.scale instead? [UseKtx]
-                            Bitmap.createScaledBitmap(it, 320, 320, true),
-                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:292: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
-                                                    Uri.parse(uri),
-                                                    ~~~~~~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:364: Warning: Use the KTX function createBitmap instead? [UseKtx]
-                            val iconBitmap = Bitmap.createBitmap(192, 192, Bitmap.Config.ARGB_8888)
-                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:379: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
-                                        else Intent(Intent.ACTION_VIEW, Uri.parse(it))
-                                                                        ~~~~~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:520: Warning: Use the KTX function createBitmap instead? [UseKtx]
-            val result = Bitmap.createBitmap(outputWidth, outputHeight, Bitmap.Config.ARGB_8888)
-                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:560: Warning: Use the KTX function createBitmap instead? [UseKtx]
-            val result = Bitmap.createBitmap(320, 180, Bitmap.Config.ARGB_8888)
-                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:584: Warning: Use the KTX function createBitmap instead? [UseKtx]
-            val bitmap = Bitmap.createBitmap(420, 285, Bitmap.Config.ARGB_8888)
-                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/drawable/widget_background_glass.xml:1: Warning: The resource R.drawable.widget_background_glass appears to be unused [UnusedResources]
+<shape xmlns:android="http://schemas.android.com/apk/res/android"><solid android:color="#FF20272D"/><corners android:radius="24dp"/><stroke android:width="2dp" android:color="#80FFFFFF"/></shape>
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/drawable/widget_background_material.xml:1: Warning: The resource R.drawable.widget_background_material appears to be unused [UnusedResources]
+<shape xmlns:android="http://schemas.android.com/apk/res/android"><solid android:color="#FF20272D"/><corners android:radius="40dp"/><stroke android:width="0dp" android:color="#80FFFFFF"/></shape>
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/drawable/widget_background_one.xml:1: Warning: The resource R.drawable.widget_background_one appears to be unused [UnusedResources]
+<shape xmlns:android="http://schemas.android.com/apk/res/android"><solid android:color="#FF20272D"/><corners android:radius="32dp"/><stroke android:width="0dp" android:color="#80FFFFFF"/></shape>
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UnusedResources":
+   Unused resources make applications larger and slow down builds.
+
+
+   The unused resource check can ignore tests. If you want to include
+   resources that are only referenced from tests, consider packaging them in a
+   test source set instead.
+
+   You can include test sources in the unused resource check by setting the
+   system property lint.unused-resources.include-tests =true, and to exclude
+   them (usually for performance reasons), use
+   lint.unused-resources.exclude-tests =true.
+   ,
+
+   Available options:
+
+   **skip-libraries** (default is true):
+   Whether the unused resource check should skip reporting unused resources in libraries.
+
+   Many libraries will declare resources that are part of the library surface; other modules depending on the library will also reference the resources. To avoid reporting all these resources as unused (in the context of a library), the unused resource check normally skips reporting unused resources in libraries. Instead, run the unused resource check on the consuming app module (along with `checkDependencies=true`).
+
+   However, there are cases where you want to check that all the resources declared in a library are used; in that case, you can disable the skip option.
+
+   To configure this option, use a `lint.xml` file with an <option> like this:
+
+   ```xml
+   <lint>
+       <issue id="UnusedResources">
+           <option name="skip-libraries" value="true" />
+       </issue>
+   </lint>
+   ```
+
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:301: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+                            Uri.parse("content://com.android.calendar/time/${state.now}"),
+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:306: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+                            else Intent(Intent.ACTION_VIEW, Uri.parse(it))
+                                                            ~~~~~~~~~~~~~
 /workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/FlowApp.kt:124: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
                             context
                             ^
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/FlowApp.kt:572: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/FlowApp.kt:576: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
                         Uri.parse("package:${context.packageName}"),
                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/data/WeatherRepository.kt:102: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:97: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+                                            Uri.parse(uri),
+                                            ~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:125: Warning: Use the KTX function createBitmap instead? [UseKtx]
+                    Bitmap.createBitmap(160, 160, Bitmap.Config.ARGB_8888).also {
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:155: Warning: Use the KTX function createBitmap instead? [UseKtx]
+            Bitmap.createBitmap(
+            ^
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:240: Warning: Use the KTX extension function Canvas.withRotation instead? [UseKtx]
+                cv.save()
+                ~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:251: Warning: Use the KTX extension function Canvas.withRotation instead? [UseKtx]
+                cv.save()
+                ~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:302: Warning: Use the KTX function createBitmap instead? [UseKtx]
+        val b = Bitmap.createBitmap(320, 320, Bitmap.Config.ARGB_8888)
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:346: Warning: Use the KTX function createBitmap instead? [UseKtx]
+        val b = Bitmap.createBitmap(32, 320, Bitmap.Config.ARGB_8888)
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:659: Warning: Use the KTX extension function Canvas.withTranslation instead? [UseKtx]
+        cv.save()
+        ~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:996: Warning: Use the KTX function createBitmap instead? [UseKtx]
+        val b = Bitmap.createBitmap(96, 96, Bitmap.Config.ARGB_8888)
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1006: Warning: Use the KTX extension function Canvas.withSave instead? [UseKtx]
+                cv.save()
+                ~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1057: Warning: Use the KTX extension function Canvas.withSave instead? [UseKtx]
+        cv.save()
+        ~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1146: Warning: Use the KTX extension function Canvas.withTranslation instead? [UseKtx]
+        cv.save()
+        ~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/data/WeatherRepository.kt:103: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
                 context
                 ^
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/WidgetPreview.kt:462: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
-                                                android.net.Uri.parse(it),
-                                                ~~~~~~~~~~~~~~~~~~~~~~~~~
 
    Explanation for issues of type "UseKtx":
    The Android KTX libraries decorates the Android platform SDK as well as
@@ -125,4 +183,4 @@
    </lint>
    ```
 
-0 errors, 16 warnings
+0 errors, 24 warnings
