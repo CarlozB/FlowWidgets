@@ -9,11 +9,15 @@
 
 El APK está firmado para depuración. Si existe otra instalación con el mismo paquete y distinta firma, Android rechazará actualizarla. Desinstalar esa versión eliminará sus datos; conserva antes cualquier nota o configuración que necesites.
 
-## Actualizar a la versión adaptativa 1.2
+## Actualizar a la versión 1.2.1 con Inter
 
 Instala el APK nuevo sobre el anterior; tiene el mismo paquete y mantiene tus configuraciones. El sistema debe aceptar la misma firma de depuración. En un reloj existente, activa **Reloj analógico** para mostrar la esfera; el ajuste digital anterior se conserva intencionadamente. Puedes personalizar los ocho tipos desde su editor.
 
 Si HyperOS mantiene una tarjeta antigua, quítala del escritorio y vuelve a añadirla. Para ver fotografías debes seleccionarlas; para ver portadas, habilita el acceso multimedia y reproduce contenido en una app compatible. No se incluyen fotos ni canciones simuladas.
+
+Después de actualizar, edita desde **Mis widgets** las instancias que quedaron con Classic o colores incorrectos y guarda el estilo deseado. No se pueden recuperar colores que la versión anterior no vinculó a esa instancia. Las nuevas colocaciones guardan el diseño antes de solicitarlo al launcher.
+
+En el editor, elige **Inter** y **Automático** o uno de sus cinco pesos. Amplía/reduce y compara cifras como 11:11 y 08:08; deben mantener un ancho estable. Comprueba el centrado del reloj compacto y la separación de la fecha. La licencia se puede consultar en Ajustes.
 
 ## Añadir widgets
 

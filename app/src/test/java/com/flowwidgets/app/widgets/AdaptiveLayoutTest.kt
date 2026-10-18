@@ -24,6 +24,15 @@ import org.robolectric.annotation.GraphicsMode
 @Config(sdk = [35], application = Application::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 class AdaptiveLayoutTest {
+    @org.junit.Before
+    fun initializeTypography() {
+        WidgetTypography.initialize(
+            androidx.test.core.app.ApplicationProvider.getApplicationContext<
+                android.content.Context
+            >()
+        )
+    }
+
     private val engine = AdaptiveWidgetLayoutEngine
 
     @Test

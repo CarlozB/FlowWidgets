@@ -17,6 +17,8 @@ private val Context.flowStore by preferencesDataStore("flow_widgets")
 
 object FlowRepository {
     private val widgets = stringPreferencesKey("widgets")
+    private val templates = stringPreferencesKey("widget_templates")
+    private val pinOrigins = stringPreferencesKey("pin_origins")
     private val themeKey = stringPreferencesKey("theme")
 
     fun configs(context: Context): Flow<List<WidgetConfig>> =
@@ -44,7 +46,88 @@ object FlowRepository {
             }
             result.put(encode(config))
             prefs[widgets] = result.toString()
+            val origins = JSONObject(prefs[pinOrigins] ?: "{}")
+            origins.remove(config.id.toString())
+            prefs[pinOrigins] = origins.toString()
         }
+    }
+
+    /** Persist before asking the launcher, which may render before delivering its pin callback. */
+    suspend fun preparePin(context: Context, config: WidgetConfig, draftId: Int) {
+        require(draftId < 0)
+        context.applicationContext.flowStore.edit { prefs ->
+            val draft = config.copy(id = draftId)
+            val saved = decodeConfigs(prefs[widgets] ?: "[]").filterNot { it.id == draftId }
+            prefs[widgets] =
+                JSONArray()
+                    .apply {
+                        (saved.filter { it.id >= 0 } +
+                                saved.filter { it.id < 0 }.takeLast(15) +
+                                draft)
+                            .forEach { put(encode(it)) }
+                    }
+                    .toString()
+            val byKind = JSONObject(prefs[templates] ?: "{}")
+            byKind.put(config.kind.name, encode(draft))
+            prefs[templates] = byKind.toString()
+        }
+    }
+
+    /** Hosts without a callback still get the last explicitly chosen design for this type. */
+    suspend fun ensureWidget(context: Context, id: Int, kind: WidgetKind): WidgetConfig {
+        var result = WidgetConfig(id = id, kind = kind)
+        context.applicationContext.flowStore.edit { prefs ->
+            val saved = decodeConfigs(prefs[widgets] ?: "[]")
+            val existing = saved.find { it.id == id }
+            if (existing != null) {
+                result = existing
+                return@edit
+            }
+            val template =
+                runCatching {
+                        JSONObject(prefs[templates] ?: "{}").optJSONObject(kind.name)?.let(::decode)
+                    }
+                    .getOrNull()
+            result = (template ?: result).copy(id = id, kind = kind)
+            prefs[widgets] =
+                JSONArray().apply { (saved + result).forEach { put(encode(it)) } }.toString()
+            if (template != null) {
+                val origins = JSONObject(prefs[pinOrigins] ?: "{}")
+                origins.put(id.toString(), template.id)
+                prefs[pinOrigins] = origins.toString()
+            }
+        }
+        return result
+    }
+
+    /** Atomically bind the exact request; duplicate/late callbacks never undo an edited widget. */
+    suspend fun completePin(context: Context, draftId: Int, id: Int): WidgetConfig? {
+        var result: WidgetConfig? = null
+        context.applicationContext.flowStore.edit { prefs ->
+            val saved = decodeConfigs(prefs[widgets] ?: "[]")
+            val draft = saved.find { it.id == draftId } ?: return@edit
+            val existing = saved.find { it.id == id }
+            val origins = JSONObject(prefs[pinOrigins] ?: "{}")
+            result =
+                if (
+                    existing == null ||
+                        (origins.has(id.toString()) && origins.optInt(id.toString()) != draftId)
+                )
+                    draft.copy(id = id)
+                else existing
+            prefs[widgets] =
+                JSONArray()
+                    .apply {
+                        saved
+                            .filterNot { it.id == draftId || it.id == id }
+                            .forEach { put(encode(it)) }
+                        put(encode(result!!))
+                    }
+                    .toString()
+            origins.remove(id.toString())
+            prefs[pinOrigins] = origins.toString()
+        }
+        return result
     }
 
     suspend fun update(context: Context, id: Int, transform: (WidgetConfig) -> WidgetConfig) {
@@ -70,6 +153,9 @@ object FlowRepository {
                 if (item.optInt("id") != id) result.put(item)
             }
             prefs[widgets] = result.toString()
+            val origins = JSONObject(prefs[pinOrigins] ?: "{}")
+            origins.remove(id.toString())
+            prefs[pinOrigins] = origins.toString()
         }
     }
 
@@ -109,6 +195,8 @@ object FlowRepository {
             put("latitude", c.latitude)
             put("longitude", c.longitude)
             put("font", c.font)
+            put("fontWeight", c.fontWeight)
+            put("automaticColors", c.automaticColors)
             put("alignment", c.alignment)
             put("photoScale", c.photoScale)
             put("shortcutIcon", c.shortcutIcon)
@@ -184,7 +272,10 @@ object FlowRepository {
             longitude =
                 if (j.has("longitude") && !j.isNull("longitude")) j.getDouble("longitude")
                 else null,
-            font = j.optString("font", d.font),
+            automaticColors = j.optBoolean("automaticColors", true),
+            font = j.optString("font", d.font).let { if (it == "sans") "inter" else it },
+            fontWeight =
+                j.optInt("fontWeight", 0).takeIf { it in listOf(0, 300, 400, 500, 600, 700) } ?: 0,
             alignment = j.optString("alignment", d.alignment),
             photoScale = j.optString("photoScale", d.photoScale),
             shortcutIcon = j.optString("shortcutIcon", d.shortcutIcon),

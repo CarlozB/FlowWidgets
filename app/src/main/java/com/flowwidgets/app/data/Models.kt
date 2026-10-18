@@ -45,7 +45,7 @@ data class WidgetConfig(
     val city: String = "",
     val latitude: Double? = null,
     val longitude: Double? = null,
-    val font: String = "sans",
+    val font: String = "inter",
     val alignment: String = "start",
     val photoScale: String = "crop",
     val shortcutIcon: String = "app",
@@ -56,6 +56,8 @@ data class WidgetConfig(
     val glassOpacity: Float = .82f,
     val glassLighting: Float = .6f,
     val glassCorner: Float = 24f,
+    val fontWeight: Int = 0,
+    val automaticColors: Boolean = true,
 )
 
 data class ShortcutEntry(

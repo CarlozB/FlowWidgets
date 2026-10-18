@@ -4,6 +4,14 @@ Aplicación Android nativa para personalizar la pantalla de inicio con ocho tipo
 
 **Paquete:** `com.flowwidgets.app` · **Android:** 13–16 (API mínima 33, target/compile 36).
 
+## Correcciones e Inter · 1.2.1
+
+Se conserva el estilo y los colores elegidos desde la primera colocación, incluso si el launcher actualiza antes de confirmar. El reloj compacto usa una esfera cuadrada y centrada. Inter oficial es la fuente predeterminada, con cinco pesos seleccionables, números tabulares y ajuste al espacio disponible, también en TextClock del escritorio.
+
+![Inter y relojes compactos](docs/images/FlowWidgets-Inter.png)
+
+[Fuente, licencia, correcciones y límites](docs/TYPOGRAPHY.md). Instala sobre la versión anterior. Para los widgets que ya quedaron con ajustes por defecto, abre **Mis widgets → Editar** y guarda el diseño deseado; la versión anterior no conservó esa selección en la instancia afectada.
+
 ## Widgets adaptativos · 1.2
 
 El mismo widget cambia su composición al redimensionarlo desde el escritorio: aparecen más detalles, controles, collages y accesos. El editor permite simular once proporciones, configurar zonas horarias, listas de tareas, varios accesos y Soft Light Glass. Los ajustes se conservan por instancia.
@@ -66,7 +74,7 @@ La configuración se conserva por `appWidgetId`, incluidas dos instancias del mi
 | Fotos | Selector moderno de imágenes, una o varias fotos, ajuste/relleno, bordes redondeados y rotación opcional cada 30 minutos aproximados. |
 | Accesos | Apps con actividad de lanzamiento, contacto seleccionado por el selector del sistema y pantallas oficiales de ajustes. Icono de la app o símbolos personalizables. |
 
-La interfaz admite modo sistema/claro/oscuro y navegación lateral en pantallas grandes. Las fuentes sans, serif y monospace son familias suministradas legalmente por Android; no se incluyen recursos propietarios de Apple ni Samsung. Glass utiliza transparencias y superficies compatibles con RemoteViews, **no desenfoque del fondo de pantalla**. Material toma los colores dinámicos del sistema al seleccionar la familia, y permite personalizarlos después.
+La interfaz admite modo sistema/claro/oscuro y navegación lateral en pantallas grandes. Inter se distribuye bajo SIL OFL 1.1, con atribución y licencia incluidas en el APK; las opciones Sistema, serif y monospace proceden de Android; no se incluyen recursos propietarios de Apple ni Samsung. Glass utiliza transparencias y superficies compatibles con RemoteViews, **no desenfoque del fondo de pantalla**. Material toma los colores dinámicos del sistema al seleccionar la familia, y permite personalizarlos después.
 
 ## Privacidad y permisos
 

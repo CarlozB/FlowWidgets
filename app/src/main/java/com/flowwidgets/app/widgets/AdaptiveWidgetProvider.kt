@@ -107,8 +107,13 @@ open class AdaptiveWidgetProvider : AppWidgetProvider() {
             options: Bundle = manager.getAppWidgetOptions(id),
         ): RemoteViews {
             val config =
-                runBlocking(Dispatchers.IO) { FlowRepository.read(context, id) }
-                    ?: WidgetConfig(id = id, kind = WidgetKind.valueOf(kind.uppercase(Locale.ROOT)))
+                runBlocking(Dispatchers.IO) {
+                    FlowRepository.ensureWidget(
+                        context,
+                        id,
+                        WidgetKind.valueOf(kind.uppercase(Locale.ROOT)),
+                    )
+                }
             val sizes = AdaptiveWidgetLayoutEngine.sizes(options)
             val plans =
                 sizes.map { AdaptiveWidgetLayoutEngine.plan(config.kind, it.width, it.height) }
@@ -153,12 +158,8 @@ open class AdaptiveWidgetProvider : AppWidgetProvider() {
             state: VisualWidgetRenderer.State,
             scale: Float = 2f,
         ): RemoteViews {
-            val layout =
-                when (c.font) {
-                    "serif" -> R.layout.widget_adaptive_card_serif
-                    "monospace" -> R.layout.widget_adaptive_card_mono
-                    else -> R.layout.widget_adaptive_card
-                }
+            WidgetTypography.initialize(context)
+            val layout = WidgetTypography.layout(c)
             val v = RemoteViews(context.packageName, layout)
             val palette = VisualWidgetRenderer.palette(c)
             v.setImageViewBitmap(
@@ -392,7 +393,7 @@ open class AdaptiveWidgetProvider : AppWidgetProvider() {
                     "setDial",
                     android.graphics.drawable.Icon.createWithBitmap(
                         artwork(
-                            "dial:${c.style}:${c.accent}:${c.textColor}:${c.font}:${c.textScale}"
+                            "dial:${c.style}:${c.accent}:${c.textColor}:${c.font}:${c.fontWeight}:${c.textScale}:${c.background}:${c.automaticColors}"
                         ) {
                             VisualWidgetRenderer.dial(c)
                         }
@@ -402,12 +403,15 @@ open class AdaptiveWidgetProvider : AppWidgetProvider() {
                     R.id.widget_analog,
                     "setHourHand",
                     android.graphics.drawable.Icon.createWithBitmap(
-                        artwork("hour:${palette.accent}:${c.style}") {
+                        artwork(
+                            "hour:${palette.accent}:${c.style}:${palette.foreground}:${c.automaticColors}"
+                        ) {
                             VisualWidgetRenderer.hand(
                                 false,
                                 false,
                                 palette.accent,
                                 c.style == WidgetStyle.GLASS,
+                                if (c.automaticColors) null else palette.foreground,
                             )
                         }
                     ),
@@ -416,12 +420,15 @@ open class AdaptiveWidgetProvider : AppWidgetProvider() {
                     R.id.widget_analog,
                     "setMinuteHand",
                     android.graphics.drawable.Icon.createWithBitmap(
-                        artwork("minute:${palette.accent}:${c.style}") {
+                        artwork(
+                            "minute:${palette.accent}:${c.style}:${palette.foreground}:${c.automaticColors}"
+                        ) {
                             VisualWidgetRenderer.hand(
                                 true,
                                 false,
                                 palette.accent,
                                 c.style == WidgetStyle.GLASS,
+                                if (c.automaticColors) null else palette.foreground,
                             )
                         }
                     ),
@@ -447,7 +454,13 @@ open class AdaptiveWidgetProvider : AppWidgetProvider() {
                         g.face.width() / (if (c.showSeconds && !p.tiny) 5.8f else 3.4f),
                         g.face.height() * .64f,
                     ) * c.textScale
-                clockText(v, R.id.widget_clock, g.face, format, null, font, palette.foreground)
+                val sample =
+                    (if (c.clock24) "88:88" else "88:88") +
+                        (if (c.showSeconds && !p.tiny) ":88" else "") +
+                        (if (!c.clock24 && !p.tiny) " PM" else "")
+                val fitted =
+                    WidgetTypography.fit(c, sample, font, g.face.width() - 8, g.face.height() - 4)
+                clockText(v, R.id.widget_clock, g.face, format, null, fitted, palette.foreground, c)
             }
             g.date?.let {
                 clockText(
@@ -458,6 +471,7 @@ open class AdaptiveWidgetProvider : AppWidgetProvider() {
                     null,
                     minOf(12f, it.width() / 7),
                     palette.foreground,
+                    c,
                 )
             }
             g.zones.forEachIndexed { i, r ->
@@ -470,6 +484,7 @@ open class AdaptiveWidgetProvider : AppWidgetProvider() {
                     c.timeZones[i],
                     minOf(17f, r.width() / 4),
                     palette.foreground,
+                    c,
                 )
             }
         }
@@ -482,6 +497,7 @@ open class AdaptiveWidgetProvider : AppWidgetProvider() {
             zone: String?,
             size: Float,
             color: Int,
+            c: WidgetConfig,
         ) {
             v.setViewVisibility(id, View.VISIBLE)
             place(v, id, r)
@@ -490,10 +506,22 @@ open class AdaptiveWidgetProvider : AppWidgetProvider() {
             if (zone != null) v.setString(id, "setTimeZone", zone)
             v.setTextViewTextSize(
                 id,
-                android.util.TypedValue.COMPLEX_UNIT_SP,
+                android.util.TypedValue.COMPLEX_UNIT_DIP,
                 size.coerceAtLeast(7f),
             )
             v.setTextColor(id, color)
+            v.setFloat(
+                id,
+                "setLetterSpacing",
+                if (size >= 28) -.025f else if (size >= 16) -.012f else .005f,
+            )
+            v.setString(id, "setFontFeatureSettings", "'tnum' 1, 'lnum' 1")
+            if (c.font in listOf("inter", "sans"))
+                v.setString(
+                    id,
+                    "setFontVariationSettings",
+                    "'wght' ${WidgetTypography.weight(c,size,false)}, 'opsz' ${size.coerceIn(14f,32f)}",
+                )
         }
 
         private fun place(v: RemoteViews, id: Int, r: android.graphics.RectF) {

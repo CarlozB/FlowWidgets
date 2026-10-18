@@ -242,7 +242,17 @@ object AdaptiveWidgetLayoutEngine {
                 p.wide -> c.timeZones.take(1).map { RectF(w * .52f, 12f, w - 12, h * .5f) }
                 else -> emptyList()
             }
-        return ClockGeometry(face, date, calendar, zones, events)
+        val fittedFace =
+            if (c.analog) {
+                val side = minOf(face.width(), face.height()).coerceAtLeast(1f)
+                RectF(
+                    face.centerX() - side / 2,
+                    face.centerY() - side / 2,
+                    face.centerX() + side / 2,
+                    face.centerY() + side / 2,
+                )
+            } else face
+        return ClockGeometry(fittedFace, date, calendar, zones, events)
     }
 
     fun media(p: Plan): MediaGeometry {

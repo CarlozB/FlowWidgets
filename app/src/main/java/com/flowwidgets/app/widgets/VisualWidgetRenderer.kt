@@ -47,7 +47,8 @@ object VisualWidgetRenderer {
 
     fun palette(c: WidgetConfig): Palette {
         val automatic =
-            c.style == WidgetStyle.CLASSIC &&
+            c.automaticColors &&
+                c.style == WidgetStyle.CLASSIC &&
                 c.background == 0xFF20272D &&
                 c.textColor == 0xFFFFFFFF
         val bg =
@@ -71,7 +72,7 @@ object VisualWidgetRenderer {
                 ink
             else c.textColor.toInt()
         val accent =
-            if (c.accent == 0xFFFF725E)
+            if (c.automaticColors && c.accent == 0xFFFF725E)
                 when (c.kind) {
                     WidgetKind.NOTE -> Color.rgb(255, 207, 37)
                     WidgetKind.BATTERY -> Color.rgb(146, 234, 91)
@@ -127,6 +128,7 @@ object VisualWidgetRenderer {
         photoLimit: Int = 1,
         shortcutLimit: Int = 16,
     ): State {
+        WidgetTypography.initialize(context)
         val photos =
             if (c.kind == WidgetKind.PHOTO) {
                 val uris = (c.photoUris.ifEmpty { listOfNotNull(c.photoUri) }).distinct()
@@ -291,7 +293,13 @@ object VisualWidgetRenderer {
                     cv.save()
                     cv.rotate(angle, 160f, 160f)
                     cv.drawBitmap(
-                        hand(long, false, p.accent, c.style == WidgetStyle.GLASS),
+                        hand(
+                            long,
+                            false,
+                            p.accent,
+                            c.style == WidgetStyle.GLASS,
+                            if (c.automaticColors) null else p.foreground,
+                        ),
                         144f,
                         0f,
                         null,
@@ -315,12 +323,24 @@ object VisualWidgetRenderer {
                         rect.width() / (if (c.showSeconds && !plan.tiny) 5.8f else 3.4f),
                         rect.height() * .64f,
                     )
+                val sample =
+                    "88:88" +
+                        (if (c.showSeconds && !plan.tiny) ":88" else "") +
+                        (if (!c.clock24 && !plan.tiny) " PM" else "")
+                val fitted =
+                    WidgetTypography.fit(
+                        c,
+                        sample,
+                        font * c.textScale,
+                        rect.width() - 8,
+                        rect.height() - 4,
+                    ) / c.textScale
                 text(
                     cv,
                     date(s.now, format),
                     rect.centerX(),
-                    rect.centerY() + font * .34f,
-                    font,
+                    rect.centerY() + fitted * c.textScale * .34f,
+                    fitted,
                     p.foreground,
                     c,
                     align = Paint.Align.CENTER,
@@ -377,8 +397,13 @@ object VisualWidgetRenderer {
     fun dial(c: WidgetConfig): Bitmap {
         val b = Bitmap.createBitmap(320, 320, Bitmap.Config.ARGB_8888)
         val cv = Canvas(b)
-        val face = if (c.style == WidgetStyle.GLASS) Color.rgb(35, 40, 48) else white
-        val fg = if (c.style == WidgetStyle.GLASS) white else ink
+        val automaticFace =
+            c.automaticColors &&
+                c.style != WidgetStyle.GLASS &&
+                c.background == 0xFF20272D &&
+                c.textColor == 0xFFFFFFFF
+        val face = if (automaticFace) white else palette(c).background
+        val fg = if (automaticFace) ink else palette(c).foreground
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = face }
         cv.drawCircle(160f, 160f, 155f, paint)
         paint.color = alpha(fg, 30)
@@ -418,12 +443,18 @@ object VisualWidgetRenderer {
         return b
     }
 
-    fun hand(minute: Boolean, second: Boolean, accent: Int, light: Boolean = false): Bitmap {
+    fun hand(
+        minute: Boolean,
+        second: Boolean,
+        accent: Int,
+        light: Boolean = false,
+        foreground: Int? = null,
+    ): Bitmap {
         val b = Bitmap.createBitmap(32, 320, Bitmap.Config.ARGB_8888)
         val cv = Canvas(b)
         val paint =
             Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                color = if (second) accent else if (light) white else ink
+                color = if (second) accent else foreground ?: if (light) white else ink
                 strokeWidth = if (second) 2f else if (minute) 5f else 7f
                 strokeCap = Paint.Cap.ROUND
             }
@@ -1653,7 +1684,7 @@ object VisualWidgetRenderer {
             TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
                 this.color = color
                 textSize = (size * c.textScale).coerceAtLeast(5f)
-                typeface = Typeface.create(c.font, if (bold) Typeface.BOLD else Typeface.NORMAL)
+                WidgetTypography.style(this, c, textSize, bold, value.any(Char::isDigit))
                 textAlign = align
             }
         val shown =
@@ -1681,7 +1712,7 @@ object VisualWidgetRenderer {
             TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
                 this.color = color
                 textSize = effectiveSize.coerceAtLeast(7f)
-                typeface = Typeface.create(c.font, if (bold) Typeface.BOLD else Typeface.NORMAL)
+                WidgetTypography.style(this, c, textSize, bold, value.any(Char::isDigit))
             }
         val layout =
             StaticLayout.Builder.obtain(

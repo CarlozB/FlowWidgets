@@ -15,6 +15,15 @@ import org.robolectric.annotation.GraphicsMode
 @Config(sdk = [35], application = Application::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 class VisualWidgetRendererTest {
+    @org.junit.Before
+    fun initializeTypography() {
+        WidgetTypography.initialize(
+            androidx.test.core.app.ApplicationProvider.getApplicationContext<
+                android.content.Context
+            >()
+        )
+    }
+
     private val now = 1_760_522_940_000L
     private val weather =
         WeatherSnapshot(

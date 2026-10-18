@@ -33,9 +33,7 @@ class MainActivity : ComponentActivity() {
                     }
                     .getOrDefault(WidgetKind.CLOCK)
             val initial =
-                if (configuring)
-                    FlowRepository.read(this@MainActivity, widgetId)
-                        ?: WidgetConfig(id = widgetId, kind = kind)
+                if (configuring) FlowRepository.ensureWidget(this@MainActivity, widgetId, kind)
                 else null
             setContent {
                 FlowApp(

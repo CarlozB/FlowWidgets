@@ -10,11 +10,11 @@ object WidgetActions {
     /** True means the launcher accepted the pin request; final allocation happens in callback. */
     suspend fun pin(context: Context, config: WidgetConfig): Boolean {
         val manager = AppWidgetManager.getInstance(context)
-        if (!manager.isRequestPinAppWidgetSupported) return false
         val draftId =
             if (config.id < 0) config.id
             else -((System.currentTimeMillis() % 2000000000).toInt().coerceAtLeast(1))
-        FlowRepository.save(context, config.copy(id = draftId))
+        FlowRepository.preparePin(context, config, draftId)
+        if (!manager.isRequestPinAppWidgetSupported) return false
         val type =
             AdaptiveWidgetProvider.providers.first {
                 it.simpleName.equals(config.kind.name + "Widget", true)
@@ -23,10 +23,26 @@ object WidgetActions {
             PendingIntent.getBroadcast(
                 context,
                 draftId,
-                Intent(context, WidgetPinnedReceiver::class.java).putExtra("draft_id", draftId),
+                Intent(context, WidgetPinnedReceiver::class.java)
+                    .setData(android.net.Uri.parse("flowwidgets://pin/$draftId"))
+                    .putExtra("draft_id", draftId),
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE,
             )
-        return manager.requestPinAppWidget(ComponentName(context, type), null, callback)
+        val previewPlan = AdaptiveWidgetLayoutEngine.plan(config.kind, 180f, 180f)
+        val preview =
+            withContext(Dispatchers.IO) {
+                AdaptiveWidgetProvider.buildVariant(
+                    context,
+                    config.copy(id = draftId),
+                    previewPlan,
+                    VisualWidgetRenderer.snapshot(context, config),
+                )
+            }
+        val extras =
+            android.os.Bundle().apply {
+                putParcelable(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW, preview)
+            }
+        return manager.requestPinAppWidget(ComponentName(context, type), extras, callback)
     }
 
     fun update(context: Context) = AdaptiveWidgetProvider.updateAll(context)
@@ -44,11 +60,14 @@ class WidgetPinnedReceiver : BroadcastReceiver() {
         val pending = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                FlowRepository.read(context, draftId)?.let {
-                    FlowRepository.save(context, it.copy(id = id))
-                    FlowRepository.delete(context, draftId)
+                FlowRepository.completePin(context, draftId, id)?.let { config ->
+                    AdaptiveWidgetProvider.render(
+                        context,
+                        AppWidgetManager.getInstance(context),
+                        id,
+                        config.kind.name.lowercase(),
+                    )
                 }
-                AdaptiveWidgetProvider.updateAll(context)
             } finally {
                 pending.finish()
             }

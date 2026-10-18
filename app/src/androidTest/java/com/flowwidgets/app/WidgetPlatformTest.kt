@@ -16,6 +16,40 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class WidgetPlatformTest {
     @Test
+    fun interLoadsInNativeDesktopClocksWithAllFiveWeights() {
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val context = instrumentation.targetContext
+        com.flowwidgets.app.widgets.WidgetTypography.initialize(context)
+        instrumentation.runOnMainSync {
+            for (weight in listOf(300, 400, 500, 600, 700)) {
+                val config = WidgetConfig(analog = false, fontWeight = weight)
+                val plan =
+                    com.flowwidgets.app.widgets.AdaptiveWidgetLayoutEngine.plan(
+                        config.kind,
+                        184f,
+                        184f,
+                    )
+                val root =
+                    AdaptiveWidgetProvider.buildVariant(
+                            context,
+                            config,
+                            plan,
+                            com.flowwidgets.app.widgets.VisualWidgetRenderer.State(),
+                        )
+                        .apply(context, FrameLayout(context))
+                val clock =
+                    root.findViewById<android.widget.TextClock>(
+                        com.flowwidgets.app.R.id.widget_clock
+                    )
+                assertEquals(weight, clock.typeface.weight)
+                val paint = android.graphics.Paint(clock.paint)
+                assertEquals(paint.measureText("1111"), paint.measureText("8888"), .1f)
+                assertTrue(clock.fontFeatureSettings?.contains("tnum") == true)
+            }
+        }
+    }
+
+    @Test
     fun eightWidgetsHaveValidPlatformRemoteViews() = runBlocking {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val context = instrumentation.targetContext

@@ -31,6 +31,7 @@ fun Editor(
     onDone: (WidgetConfig) -> Unit,
 ) {
     var config by remember(initial) { mutableStateOf(initial) }
+    val visiblePalette = com.flowwidgets.app.widgets.VisualWidgetRenderer.palette(config)
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val systemDark = isSystemInDarkTheme()
@@ -124,6 +125,7 @@ fun Editor(
                                 else dynamicLightColorScheme(context)
                             config.copy(
                                 style = style,
+                                automaticColors = style == WidgetStyle.CLASSIC,
                                 background =
                                     palette.surfaceContainer.toArgb().toLong() and 0xFFFFFFFFL,
                                 accent = palette.primary.toArgb().toLong() and 0xFFFFFFFFL,
@@ -133,6 +135,7 @@ fun Editor(
                         WidgetStyle.ONE ->
                             config.copy(
                                 style = style,
+                                automaticColors = style == WidgetStyle.CLASSIC,
                                 background = 0xFFEEEFE8,
                                 accent = 0xFF728663,
                                 textColor = 0xFF242925,
@@ -140,6 +143,7 @@ fun Editor(
                         WidgetStyle.GLASS ->
                             config.copy(
                                 style = style,
+                                automaticColors = style == WidgetStyle.CLASSIC,
                                 background = 0xCC27333C,
                                 accent = 0xFFA9C5D5,
                                 textColor = 0xFFFFFFFF,
@@ -147,6 +151,7 @@ fun Editor(
                         WidgetStyle.CLASSIC ->
                             config.copy(
                                 style = style,
+                                automaticColors = style == WidgetStyle.CLASSIC,
                                 background = 0xFF20272D,
                                 accent = 0xFFFF725E,
                                 textColor = 0xFFFFFFFF,
@@ -154,24 +159,50 @@ fun Editor(
                     }
             }
             Text("Color de acento", fontSize = 18.sp)
-            Swatches(config.accent) { config = config.copy(accent = it) }
+            Swatches(visiblePalette.accent.toLong() and 0xFFFFFFFFL) {
+                config = explicitPalette(config).copy(accent = it)
+            }
             Text("Fondo", fontSize = 18.sp)
-            Swatches(config.background) { config = config.copy(background = it) }
+            Swatches(visiblePalette.background.toLong() and 0xFFFFFFFFL) {
+                config = explicitPalette(config).copy(background = it)
+            }
             Text("Color del texto", fontSize = 18.sp)
-            Swatches(config.textColor) { config = config.copy(textColor = it) }
+            Swatches(visiblePalette.foreground.toLong() and 0xFFFFFFFFL) {
+                config = explicitPalette(config).copy(textColor = it)
+            }
             Text("Tipografía", fontSize = 18.sp)
             Choices(
-                listOf("sans", "serif", "monospace"),
+                listOf("inter", "system", "serif", "monospace"),
                 config.font,
                 {
                     when (it) {
-                        "sans" -> "Moderna"
+                        "inter" -> "Inter"
+                        "system" -> "Sistema"
                         "serif" -> "Editorial"
                         else -> "Monoespaciada"
                     }
                 },
             ) {
                 config = config.copy(font = it)
+            }
+            if (config.font == "inter") {
+                Text("Peso de Inter", fontSize = 18.sp)
+                Choices(
+                    listOf("0", "300", "400", "500", "600", "700"),
+                    config.fontWeight.toString(),
+                    {
+                        when (it) {
+                            "300" -> "Light"
+                            "400" -> "Regular"
+                            "500" -> "Medium"
+                            "600" -> "Semibold"
+                            "700" -> "Bold"
+                            else -> "Automático"
+                        }
+                    },
+                ) {
+                    config = config.copy(fontWeight = it.toInt())
+                }
             }
             Text("Tamaño del texto", fontSize = 18.sp)
             Slider(
@@ -486,4 +517,14 @@ private fun Swatches(selected: Long, onSelect: (Long) -> Unit) {
             )
         }
     }
+}
+
+private fun explicitPalette(config: WidgetConfig): WidgetConfig {
+    val palette = com.flowwidgets.app.widgets.VisualWidgetRenderer.palette(config)
+    return config.copy(
+        background = palette.background.toLong() and 0xFFFFFFFFL,
+        textColor = palette.foreground.toLong() and 0xFFFFFFFFL,
+        accent = palette.accent.toLong() and 0xFFFFFFFFL,
+        automaticColors = false,
+    )
 }

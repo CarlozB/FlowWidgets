@@ -1,5 +1,15 @@
 # Cambios
 
+## 1.2.1 · Colocación, colores e Inter
+
+- Corrección de estilos/colores perdidos al crear widgets antes del callback del launcher; diseño preferido por tipo, vinculación transaccional y preview personalizado.
+- Confirmaciones tardías/duplicadas no sobrescriben ediciones; se distinguen solicitudes concurrentes.
+- Paletas explícitas respetadas, incluidos colores coincidentes con los valores predefinidos; esfera y marcas personalizables.
+- Inter oficial incluida con licencia SIL OFL y atribución en Ajustes. Light, Regular, Medium, Semibold y Bold, números tabulares, tamaño óptico y ajuste de relojes al espacio.
+- Inter en Canvas y TextClock reales, además de Compose. Migración de la opción sans anterior y peso configurable por instancia.
+- Esfera analógica cuadrada y centrada, sin invadir la fecha en formatos compactos.
+
+
 ## 1.2.0 · Widgets adaptativos
 
 - Motor de perfiles dp compartido por los ocho proveedores, variantes RemoteViews y reconstrucción al redimensionar.

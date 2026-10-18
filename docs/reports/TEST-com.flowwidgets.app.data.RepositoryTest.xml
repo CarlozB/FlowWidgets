@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.flowwidgets.app.data.RepositoryTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-10-18T05:45:46.574Z" hostname="c068ee609df7" time="3.916">
+<testsuite name="com.flowwidgets.app.data.RepositoryTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-10-18T06:20:42.508Z" hostname="c068ee609df7" time="4.152">
   <properties/>
-  <testcase name="corruptedConfigListDoesNotCrashOrDiscardOtherValidWidgets" classname="com.flowwidgets.app.data.RepositoryTest" time="3.364"/>
-  <testcase name="calendarWithoutPermissionIsEmpty" classname="com.flowwidgets.app.data.RepositoryTest" time="0.057"/>
-  <testcase name="configurationRoundTripsEveryField" classname="com.flowwidgets.app.data.RepositoryTest" time="0.047"/>
-  <testcase name="expandedForecastFieldsSurviveCacheAndMissingOptionalValues" classname="com.flowwidgets.app.data.RepositoryTest" time="0.169"/>
-  <testcase name="weatherCodesCoverConditions" classname="com.flowwidgets.app.data.RepositoryTest" time="0.033"/>
-  <testcase name="independentWidgetsCanUpdateDeleteAndReloadWithoutLosingSettings" classname="com.flowwidgets.app.data.RepositoryTest" time="0.144"/>
-  <testcase name="unknownEnumsAndNullFieldsUseSafeDefaults" classname="com.flowwidgets.app.data.RepositoryTest" time="0.032"/>
-  <testcase name="refreshReturnsCachedSnapshotWhenOfflineWithoutChangingTimestamp" classname="com.flowwidgets.app.data.RepositoryTest" time="0.038"/>
-  <testcase name="weatherCacheKeepsTimestampCoordinatesAndOfflineData" classname="com.flowwidgets.app.data.RepositoryTest" time="0.031"/>
+  <testcase name="corruptedConfigListDoesNotCrashOrDiscardOtherValidWidgets" classname="com.flowwidgets.app.data.RepositoryTest" time="3.545"/>
+  <testcase name="calendarWithoutPermissionIsEmpty" classname="com.flowwidgets.app.data.RepositoryTest" time="0.05"/>
+  <testcase name="configurationRoundTripsEveryField" classname="com.flowwidgets.app.data.RepositoryTest" time="0.048"/>
+  <testcase name="expandedForecastFieldsSurviveCacheAndMissingOptionalValues" classname="com.flowwidgets.app.data.RepositoryTest" time="0.198"/>
+  <testcase name="weatherCodesCoverConditions" classname="com.flowwidgets.app.data.RepositoryTest" time="0.03"/>
+  <testcase name="independentWidgetsCanUpdateDeleteAndReloadWithoutLosingSettings" classname="com.flowwidgets.app.data.RepositoryTest" time="0.147"/>
+  <testcase name="unknownEnumsAndNullFieldsUseSafeDefaults" classname="com.flowwidgets.app.data.RepositoryTest" time="0.029"/>
+  <testcase name="refreshReturnsCachedSnapshotWhenOfflineWithoutChangingTimestamp" classname="com.flowwidgets.app.data.RepositoryTest" time="0.059"/>
+  <testcase name="weatherCacheKeepsTimestampCoordinatesAndOfflineData" classname="com.flowwidgets.app.data.RepositoryTest" time="0.046"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

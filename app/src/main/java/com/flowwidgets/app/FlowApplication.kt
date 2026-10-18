@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit
 class FlowApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        com.flowwidgets.app.widgets.WidgetTypography.initialize(this)
         ContextCompat.registerReceiver(
             this,
             object : BroadcastReceiver() {

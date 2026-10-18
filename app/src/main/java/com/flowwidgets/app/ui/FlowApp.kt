@@ -65,6 +65,7 @@ fun FlowApp(
         mutableStateOf(context.getSharedPreferences("onboarding", 0).getBoolean("seen", false))
     }
     MaterialTheme(
+        typography = interTypography(),
         colorScheme =
             if (dark)
                 darkColorScheme(
@@ -80,7 +81,7 @@ fun FlowApp(
                     background = Paper,
                     surface = Paper,
                     onSurface = Ink,
-                )
+                ),
     ) {
         Surface(
             Modifier.fillMaxSize().systemBarsPadding(),
@@ -581,6 +582,29 @@ private fun SettingsScreen(theme: String, onTheme: (String) -> Unit) {
             Text("Permisos de la aplicación")
         }
         HorizontalDivider()
+        var showInterLicense by remember { mutableStateOf(false) }
+        TextButton(onClick = { showInterLicense = true }) {
+            Text("Inter · licencia SIL Open Font License")
+        }
+        if (showInterLicense)
+            AlertDialog(
+                onDismissRequest = { showInterLicense = false },
+                title = { Text("Inter · The Inter Project Authors") },
+                text = {
+                    Text(
+                        remember {
+                            context.assets.open("licenses/Inter-OFL.txt").bufferedReader().use {
+                                it.readText()
+                            }
+                        },
+                        modifier =
+                            Modifier.heightIn(max = 380.dp).verticalScroll(rememberScrollState()),
+                    )
+                },
+                confirmButton = {
+                    TextButton(onClick = { showInterLicense = false }) { Text("Cerrar") }
+                },
+            )
         Text("Sobre los widgets", fontSize = 20.sp)
         Text(
             "Los tamaños son orientativos: el launcher decide la cuadrícula final. Glass usa transparencias compatibles; no desenfoca el fondo de pantalla. El segundero depende del soporte del launcher. El clima usa Open-Meteo y guarda la última consulta disponible.",
