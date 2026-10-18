@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Flow Widgets</string>
+    <string name="widget_clock">Flow · Reloj</string>
+    <string name="widget_battery">Flow · Batería</string>
+    <string name="widget_calendar">Flow · Calendario</string>
+    <string name="widget_weather">Flow · Clima</string>
+    <string name="widget_media">Flow · Música</string>
+    <string name="widget_note">Flow · Notas</string>
+    <string name="widget_photo">Flow · Fotos</string>
+    <string name="widget_shortcut">Flow · Accesos</string>
+    <string name="widget_analog_description">Reloj analógico</string>
+    <string name="widget_image_description">Imagen del widget</string>
+    <string name="widget_previous_description">Anterior</string>
+    <string name="widget_play_description">Reproducir o pausar</string>
+    <string name="widget_next_description">Siguiente</string>
+    <string name="widget_previous_symbol" translatable="false">|◀</string>
+    <string name="widget_play_symbol" translatable="false">▶</string>
+    <string name="widget_next_symbol" translatable="false">▶|</string>
+</resources>

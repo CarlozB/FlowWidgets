@@ -1,0 +1,54 @@
+# Instalar y probar en Xiaomi Pad 7
+
+## Instalación directa
+
+1. Copia **`dist/FlowWidgets-debug.apk`** a la tablet.
+2. Abre el archivo y permite temporalmente instalar aplicaciones desde la aplicación de archivos que estés utilizando, si Android lo solicita.
+3. Instala **Flow Widgets** y ábrela. No necesita root ni cambiar de launcher.
+4. Puedes retirar después el permiso de instalar aplicaciones desconocidas de la aplicación de archivos.
+
+El APK está firmado para depuración. Si existe otra instalación con el mismo paquete y distinta firma, Android rechazará actualizarla. Desinstalar esa versión eliminará sus datos; conserva antes cualquier nota o configuración que necesites.
+
+## Añadir widgets
+
+En la app, abre el catálogo, elige un tipo y personalízalo. Pulsa **Añadir a la pantalla de inicio** y confirma el diálogo del launcher.
+
+Si HyperOS no permite el fijado directo, mantén pulsado el escritorio, entra en **Widgets** y busca los proveedores **Flow · Reloj**, **Flow · Batería**, **Flow · Calendario**, **Flow · Clima**, **Flow · Música**, **Flow · Notas**, **Flow · Fotos** y **Flow · Accesos**. Arrastra uno al escritorio y configúralo. El launcher decide la cuadrícula y las dimensiones finales.
+
+Para cambiar una instancia, usa **Mis widgets → Editar**, o la opción de reconfiguración del launcher si está disponible. Para quitarla del escritorio, utiliza **Eliminar** del launcher; **Restablecer** en la app recupera sus ajustes iniciales.
+
+## Datos y permisos
+
+- **Clima:** busca una ciudad y selecciona un resultado con conexión. No requiere permiso GPS ni clave de API.
+- **Calendario:** activa próximos eventos y acepta el permiso únicamente si quieres verlos. El mes funciona sin ese permiso.
+- **Música:** abre la explicación del editor y habilita Flow Widgets en **Acceso a notificaciones**. Reproduce contenido en una app que publique sesiones multimedia; los controles dependen de lo que esa sesión admita.
+- **Fotos:** selecciona imágenes desde el selector del sistema. No se necesita acceso completo a la galería.
+- **Contactos:** elige un contacto en el selector del sistema; no se lee toda la agenda.
+
+## Diagnóstico mediante ADB
+
+Con opciones de desarrollador y depuración USB activadas, conecta la tablet y acepta su autorización:
+
+```bash
+adb devices
+adb install -r dist/FlowWidgets-debug.apk
+adb shell am start -n com.flowwidgets.app/.MainActivity
+```
+
+Para ejecutar las tres pruebas instrumentadas desde el proyecto, con Java y Android SDK configurados:
+
+```bash
+./gradlew connectedDebugAndroidTest
+```
+
+Si la app se cierra, reproduce el fallo y consulta:
+
+```bash
+adb logcat -d -s AndroidRuntime
+```
+
+Comparte el mensaje de error, la acción que lo produjo y la versión de Android/HyperOS. Evita compartir un volcado completo de notificaciones o datos personales.
+
+## Orden recomendado de prueba
+
+Primero verifica apertura y una nota sin permisos. Después prueba reloj, batería y calendario mensual. Continúa con ciudad, fotos, accesos y multimedia. Por último, prueba dos instancias con ajustes distintos, giro de pantalla y reinicio. Los resultados de la compilación están en [`VALIDATION.md`](VALIDATION.md).

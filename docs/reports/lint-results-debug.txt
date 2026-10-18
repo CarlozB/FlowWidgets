@@ -1,0 +1,128 @@
+/workspace/FlowWidgets/app/build.gradle.kts:44: Warning: A newer version of org.jetbrains.kotlinx:kotlinx-coroutines-android than 1.10.2 is available: 1.11.0 [NewerVersionAvailable]
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/build.gradle.kts:47: Warning: A newer version of org.robolectric:robolectric than 4.16 is available: 4.17 [NewerVersionAvailable]
+    testImplementation("org.robolectric:robolectric:4.16")
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/build.gradle.kts:49: Warning: A newer version of org.jetbrains.kotlinx:kotlinx-coroutines-test than 1.10.2 is available: 1.11.0 [NewerVersionAvailable]
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "NewerVersionAvailable":
+   This detector checks with a central repository to see if there are newer
+   versions available for the dependencies used by this project. This is
+   similar to the GradleDependency check, which checks for newer versions
+   available in the Android SDK tools and libraries, but this works with any
+   MavenCentral dependency, and connects to the library every time, which
+   makes it more flexible but also much slower.
+
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/WidgetPreview.kt:42: Warning: Modifier parameter should be the first optional parameter [ModifierParameter from androidx.compose.ui]
+    modifier: Modifier = Modifier,
+    ~~~~~~~~
+
+   Explanation for issues of type "ModifierParameter":
+   The first (or only) Modifier parameter in a Composable function should
+   follow the following rules:
+   - Be named modifier
+   - Have a type of Modifier
+   - Either have no default value, or have a default value of Modifier
+   - If optional, be the first optional parameter in the parameter list
+
+   Vendor: Jetpack Compose
+   Identifier: androidx.compose.ui
+   Feedback: https://issuetracker.google.com/issues/new?component=612128
+
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:193: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+                            Uri.parse(
+                            ^
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:254: Warning: Use the KTX extension function Bitmap.scale instead? [UseKtx]
+                            Bitmap.createScaledBitmap(it, 320, 320, true),
+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:292: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+                                                    Uri.parse(uri),
+                                                    ~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:364: Warning: Use the KTX function createBitmap instead? [UseKtx]
+                            val iconBitmap = Bitmap.createBitmap(192, 192, Bitmap.Config.ARGB_8888)
+                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:379: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+                                        else Intent(Intent.ACTION_VIEW, Uri.parse(it))
+                                                                        ~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:520: Warning: Use the KTX function createBitmap instead? [UseKtx]
+            val result = Bitmap.createBitmap(outputWidth, outputHeight, Bitmap.Config.ARGB_8888)
+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:560: Warning: Use the KTX function createBitmap instead? [UseKtx]
+            val result = Bitmap.createBitmap(320, 180, Bitmap.Config.ARGB_8888)
+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:584: Warning: Use the KTX function createBitmap instead? [UseKtx]
+            val bitmap = Bitmap.createBitmap(420, 285, Bitmap.Config.ARGB_8888)
+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/FlowApp.kt:124: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+                            context
+                            ^
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/FlowApp.kt:572: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+                        Uri.parse("package:${context.packageName}"),
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/data/WeatherRepository.kt:102: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+                context
+                ^
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/WidgetPreview.kt:462: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+                                                android.net.Uri.parse(it),
+                                                ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UseKtx":
+   The Android KTX libraries decorates the Android platform SDK as well as
+   various libraries with more convenient extension functions available from
+   Kotlin, allowing you to use default parameters, named parameters, and
+   more.
+
+   Available options:
+
+   **remove-defaults** (default is true):
+   Whether to skip arguments that match the defaults provided by the extension.
+
+   Extensions often provide default values for some of the parameters. For example:
+   ```kotlin
+   fun Path.readLines(charset: Charset = Charsets.UTF_8): List<String> { return Files.readAllLines(this, charset) }
+   ```
+   This lint check will by default automatically omit parameters that match the default, so if your code was calling
+
+   ```kotlin
+   Files.readAllLines(file, Charset.UTF_8)
+   ```
+   lint would replace this with
+   ```kotlin
+   file.readLines()
+   ```
+   rather than
+
+   ```kotlin
+   file.readLines(Charset.UTF_8
+   ```
+   You can turn this behavior off using this option.
+
+   To configure this option, use a `lint.xml` file with an <option> like this:
+
+   ```xml
+   <lint>
+       <issue id="UseKtx">
+           <option name="remove-defaults" value="true" />
+       </issue>
+   </lint>
+   ```
+
+   **require-present** (default is true):
+   Whether to only offer extensions already available.
+
+   This option lets you only have lint suggest extension replacements if those extensions are already available on the class path (in other words, you're already depending on the library containing the extension method.)
+
+   To configure this option, use a `lint.xml` file with an <option> like this:
+
+   ```xml
+   <lint>
+       <issue id="UseKtx">
+           <option name="require-present" value="true" />
+       </issue>
+   </lint>
+   ```
+
+0 errors, 16 warnings
