@@ -79,18 +79,18 @@ Picked up JAVA_TOOL_OPTIONS:  -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cac
 > Task :app:packageDebug
 > Task :app:createDebugApkListingFileRedirect UP-TO-DATE
 > Task :app:assembleDebug
-> Task :app:compileDebugUnitTestKotlin
 > Task :app:generateDebugAndroidTestLintModel
+> Task :app:generateDebugLintReportModel
+> Task :app:generateDebugUnitTestLintModel
+> Task :app:compileDebugUnitTestKotlin
 > Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
 > Task :app:processDebugUnitTestJavaRes UP-TO-DATE
 
 > Task :app:testDebugUnitTest
 Picked up JAVA_TOOL_OPTIONS:  -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Dhttps.proxyHost=proxy -Dhttps.proxyPort=8080 -Dhttp.proxyHost=proxy -Dhttp.proxyPort=8080 -Dhttp.nonProxyHosts=localhost|127.* -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Dhttps.proxyHost=proxy -Dhttps.proxyPort=8080 -Dhttp.proxyHost=proxy -Dhttp.proxyPort=8080 -Dhttp.nonProxyHosts=localhost|127.*
 
-> Task :app:generateDebugLintReportModel
-> Task :app:generateDebugUnitTestLintModel
+> Task :app:lintAnalyzeDebug
 > Task :app:lintAnalyzeDebugAndroidTest
-> Task :app:lintAnalyzeDebugUnitTest
 > Task :app:compileDebugAndroidTestKotlin
 > Task :app:compileDebugAndroidTestJavaWithJavac UP-TO-DATE
 > Task :app:dexBuilderDebugAndroidTest UP-TO-DATE
@@ -101,15 +101,12 @@ Picked up JAVA_TOOL_OPTIONS:  -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cac
 > Task :app:packageDebugAndroidTest UP-TO-DATE
 > Task :app:createDebugAndroidTestApkListingFileRedirect UP-TO-DATE
 > Task :app:assembleDebugAndroidTest UP-TO-DATE
-> Task :app:lintAnalyzeDebug
-
-> Task :app:lintReportDebug
-Wrote HTML report to file:///workspace/FlowWidgets/app/build/reports/lint-results-debug.html
-
+> Task :app:lintAnalyzeDebugUnitTest
+> Task :app:lintReportDebug UP-TO-DATE
 > Task :app:lintDebug
 
-BUILD SUCCESSFUL in 29s
-87 actionable tasks: 17 executed, 70 up-to-date
+BUILD SUCCESSFUL in 26s
+87 actionable tasks: 16 executed, 71 up-to-date
 Picked up JAVA_TOOL_OPTIONS:  -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Dhttps.proxyHost=proxy -Dhttps.proxyPort=8080 -Dhttp.proxyHost=proxy -Dhttp.proxyPort=8080 -Dhttp.nonProxyHosts=localhost|127.* -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Dhttps.proxyHost=proxy -Dhttps.proxyPort=8080 -Dhttp.proxyHost=proxy -Dhttp.proxyPort=8080 -Dhttp.nonProxyHosts=localhost|127.*
 Verifies
 Verified using v1 scheme (JAR signing): false

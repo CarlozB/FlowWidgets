@@ -26,8 +26,8 @@ class WidgetPlatformTest {
                 val plan =
                     com.flowwidgets.app.widgets.AdaptiveWidgetLayoutEngine.plan(
                         config.kind,
-                        184f,
-                        184f,
+                        350f,
+                        180f,
                     )
                 val root =
                     AdaptiveWidgetProvider.buildVariant(

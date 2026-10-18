@@ -23,7 +23,7 @@ class FlowUiSmokeTest {
         compose.onNodeWithText("Hazlo tuyo.").assertIsDisplayed()
         compose.onNodeWithText("Nombre del widget").performTextInput("Mi reloj")
         compose.onNodeWithText("Familia visual").performScrollTo().assertIsDisplayed()
-        compose.onNodeWithText("One Style").performScrollTo().performClick()
+        compose.onNodeWithText("Glass").performScrollTo().performClick()
         compose.onNodeWithText("← Volver").performClick()
         compose.onNodeWithText("Ajustes").performClick()
         compose.onNodeWithText("A tu manera").assertIsDisplayed()

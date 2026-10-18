@@ -9,7 +9,7 @@
 
 El APK está firmado para depuración. Si existe otra instalación con el mismo paquete y distinta firma, Android rechazará actualizarla. Desinstalar esa versión eliminará sus datos; conserva antes cualquier nota o configuración que necesites.
 
-## Actualizar a la versión 1.2.1 con Inter
+## Actualizar a la versión 1.2.2
 
 Instala el APK nuevo sobre el anterior; tiene el mismo paquete y mantiene tus configuraciones. El sistema debe aceptar la misma firma de depuración. En un reloj existente, activa **Reloj analógico** para mostrar la esfera; el ajuste digital anterior se conserva intencionadamente. Puedes personalizar los ocho tipos desde su editor.
 
@@ -70,3 +70,7 @@ Comparte el mensaje de error, la acción que lo produjo y la versión de Android
 ## Orden recomendado de prueba
 
 Primero verifica apertura y una nota sin permisos. Después prueba reloj, batería y calendario mensual. Continúa con ciudad, fotos, accesos y multimedia. Por último, prueba dos instancias con ajustes distintos, giro de pantalla y reinicio. Los resultados de la compilación están en [`VALIDATION.md`](VALIDATION.md).
+
+## Cambios del reloj compacto en 1.2.2
+
+Tras actualizar, los relojes 1×1/2×2 muestran solo la esfera grande. Fecha, reloj digital e información adicional se reservan para tamaños mayores. No hace falta reconfigurar la instancia para activar este comportamiento. Si el launcher mantiene una vista antigua, abre Mis widgets y guarda esa instancia; después prueba reducir y ampliar. One UI desaparece del selector; sus instancias conservan colores y contenido bajo Classic.

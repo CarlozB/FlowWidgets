@@ -1,5 +1,13 @@
 # Cambios
 
+## 1.2.2 · Relojes compactos y retirada de One UI
+
+- Reloj compacto: solo esfera analógica grande y centrada, sin fecha ni contenido adicional, también en instancias antes digitales.
+- Calendario pequeño: número del día centrado a partir de sus límites de glifos, sin desplazamientos fijos de línea base.
+- Eliminado One UI/One Style del modelo y selector; migración de preferencias ONE a Classic sin descartar colores ni contenido.
+- Regresiones para la ausencia de información adicional en relojes compactos y centrado visual del calendario; pruebas digitales trasladadas a perfiles amplios donde siguen disponibles.
+
+
 ## 1.2.1 · Colocación, colores e Inter
 
 - Corrección de estilos/colores perdidos al crear widgets antes del callback del launcher; diseño preferido por tipo, vinculación transaccional y preview personalizado.

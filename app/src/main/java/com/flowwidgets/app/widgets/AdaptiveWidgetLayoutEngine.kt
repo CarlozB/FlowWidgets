@@ -31,6 +31,9 @@ object AdaptiveWidgetLayoutEngine {
         val profile: Profile,
         val strategy: Strategy,
     ) {
+        val clockOnly
+            get() = width <= 300f && height <= 300f
+
         val tiny
             get() = profile == Profile.TILE
 
@@ -203,6 +206,16 @@ object AdaptiveWidgetLayoutEngine {
     fun clock(c: WidgetConfig, p: Plan): ClockGeometry {
         val w = p.width
         val h = p.height
+        if (p.clockOnly) {
+            val side = minOf(w, h) * .94f
+            return ClockGeometry(
+                RectF((w - side) / 2, (h - side) / 2, (w + side) / 2, (h + side) / 2),
+                null,
+                null,
+                emptyList(),
+                null,
+            )
+        }
         val inset = if (p.tiny) 3f else 8f
         val face: RectF
         var calendar: RectF? = null

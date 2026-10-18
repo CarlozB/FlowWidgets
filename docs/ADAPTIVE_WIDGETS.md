@@ -10,7 +10,7 @@ El motor genera distribuciones TILE, ROW, COLUMN, CARD, EXPANDED, WIDE y PANEL. 
 
 | Tipo | Estrategia de contenido | Al ampliar |
 | --- | --- | --- |
-| Reloj | Responsiva por perfiles | Fecha, calendario, una o tres zonas elegidas, agenda con permiso |
+| Reloj | Responsiva por perfiles | Solo esfera en formatos compactos; fecha, calendario, zonas y agenda en perfiles mayores |
 | Batería | Responsiva por perfiles | Barra/anillo, conexión, temperatura, voltaje, estado y tecnología publicados por Android |
 | Calendario | Responsiva por perfiles | Fecha, semana, mes y agenda opcional |
 | Clima | Responsiva por perfiles | Estado actual, hasta seis horas y cuatro días, humedad/sensación/viento si existen |
@@ -54,3 +54,13 @@ Las páginas developer.android.com devolvieron HTTP 403 en este entorno. Se veri
 ## Validación física pendiente
 
 Las pruebas Robolectric y gráficas no sustituyen al launcher. Deben probarse Xiaomi Pad 7 Global, HyperOS 3, Android 16, ambas orientaciones, reinicio, ahorro de energía, permisos revocados y sesiones musicales reales. No se afirma compatibilidad exacta 1×1 hasta comprobarla en ese dispositivo. El usuario realizará esta validación; no se volvió a intentar un emulador.
+
+## Cambio de comportamiento · 1.2.2
+
+El perfil de reloj `clockOnly` se aplica hasta 300×300 dp, incluidas las proporciones compactas de 1×1 y 2×2 habituales. Se muestra siempre la esfera analógica, con lado del 94 % de la dimensión menor y centrada en toda la tarjeta. No se reserva altura para fecha ni se crean calendario, zonas o agenda. El ajuste digital se conserva para los perfiles mayores, sin modificarlo silenciosamente en preferencias.
+
+El calendario compacto (hasta 170×190 dp) dibuja solo el día y centra sus límites visibles de glifos. Las cifras dejan de depender de una línea base proporcional fija. Los formatos grandes mantienen semana/mes/agenda.
+
+One UI/One Style ya no forma parte del catálogo. Los registros antiguos `ONE` se decodifican como Classic conservando los demás campos. Los límites dp son orientativos para las celdas del launcher; se mantiene pendiente la comprobación física con la nueva versión en HyperOS.
+
+El AnalogClock compacto ocupa el tamaño final real del padre con márgenes simétricos; centra internamente su esfera sin depender de coordenadas absolutas calculadas desde las opciones dp. Hay una prueba específica con medidas del host distintas de las reportadas.

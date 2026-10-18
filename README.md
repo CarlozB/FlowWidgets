@@ -4,6 +4,12 @@ Aplicación Android nativa para personalizar la pantalla de inicio con ocho tipo
 
 **Paquete:** `com.flowwidgets.app` · **Android:** 13–16 (API mínima 33, target/compile 36).
 
+## Relojes compactos centrados · 1.2.2
+
+Los relojes compactos (incluidos 1×1 y 2×2) muestran únicamente la esfera circular grande, centrada horizontal y verticalmente, sin fecha, zonas ni agenda. En tamaños mayores se conservan las opciones adicionales. El calendario pequeño centra visualmente el número del día. Los tamaños se deciden por los dp que comunica el launcher, no por un número de celdas supuesto.
+
+Se retira One UI/One Style. Las instancias anteriores se cargan como Classic conservando colores, textos y preferencias. Quedan Classic, Glass y Material.
+
 ## Correcciones e Inter · 1.2.1
 
 Se conserva el estilo y los colores elegidos desde la primera colocación, incluso si el launcher actualiza antes de confirmar. El reloj compacto usa una esfera cuadrada y centrada. Inter oficial es la fuente predeterminada, con cinco pesos seleccionables, números tabulares y ajuste al espacio disponible, también en TextClock del escritorio.
@@ -54,7 +60,7 @@ El entregable de depuración se copia a **`dist/FlowWidgets-debug.apk`**. Es una
 ## Uso
 
 1. Abre Flow Widgets y explora las categorías.
-2. Selecciona un widget. Elige Classic, One Style, Glass o Material; cambia colores, fuente, escala de texto y tamaño recomendado.
+2. Selecciona un widget. Elige Classic, Glass o Material; cambia colores, fuente, escala de texto y tamaño recomendado.
 3. Configura los datos que necesite y pulsa **Añadir a la pantalla de inicio**. Confirma el diálogo del launcher.
 4. Si el launcher no admite fijado directo, mantén pulsado el escritorio, abre Widgets y elige Flow Widgets. La pantalla de configuración permite guardar o cancelar.
 5. Redimensiona desde el launcher. Edita las instancias en **Mis widgets**; elimina del escritorio con las herramientas del propio launcher.

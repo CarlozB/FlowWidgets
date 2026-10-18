@@ -112,11 +112,7 @@ object SoftLightGlassRenderer {
     }
 
     fun radius(c: WidgetConfig, width: Float, height: Float) =
-        minOf(
-            if (c.style == WidgetStyle.GLASS) c.glassCorner
-            else if (c.style == WidgetStyle.ONE) 26f else 22f,
-            minOf(width, height) * .2f,
-        )
+        minOf(if (c.style == WidgetStyle.GLASS) c.glassCorner else 22f, minOf(width, height) * .2f)
 
     private fun mix(a: Int, b: Int, t: Float) =
         Color.argb(

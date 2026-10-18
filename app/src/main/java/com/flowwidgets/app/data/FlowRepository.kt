@@ -247,7 +247,13 @@ object FlowRepository {
         return WidgetConfig(
             id = j.optInt("id"),
             kind = runCatching { WidgetKind.valueOf(j.optString("kind")) }.getOrDefault(d.kind),
-            style = runCatching { WidgetStyle.valueOf(j.optString("style")) }.getOrDefault(d.style),
+            style =
+                runCatching {
+                        WidgetStyle.valueOf(
+                            j.optString("style").let { if (it == "ONE") "CLASSIC" else it }
+                        )
+                    }
+                    .getOrDefault(d.style),
             title = j.optString("title", d.title),
             accent = j.optLong("accent", d.accent),
             background = j.optLong("background", d.background),

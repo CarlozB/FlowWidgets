@@ -128,7 +128,7 @@ class WidgetHostTest {
         manager.updateAppWidgetOptions(
             id,
             Bundle().apply {
-                putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 300)
+                putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 350)
                 putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 70)
             },
         )

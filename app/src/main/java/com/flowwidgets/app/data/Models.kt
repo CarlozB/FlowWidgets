@@ -15,7 +15,6 @@ enum class WidgetKind {
 
 enum class WidgetStyle {
     CLASSIC,
-    ONE,
     GLASS,
     MATERIAL,
 }

@@ -385,9 +385,37 @@ open class AdaptiveWidgetProvider : AppWidgetProvider() {
             palette: VisualWidgetRenderer.Palette,
         ) {
             val g = AdaptiveWidgetLayoutEngine.clock(c, p)
-            if (c.analog) {
+            if (c.analog || p.clockOnly) {
                 v.setViewVisibility(R.id.widget_analog, View.VISIBLE)
-                place(v, R.id.widget_analog, g.face)
+                if (p.clockOnly) {
+                    // Some launchers report dp bounds different from the final padded host view.
+                    // Fill that actual view and let AnalogClock center its circular dial itself.
+                    v.setViewLayoutWidth(
+                        R.id.widget_analog,
+                        android.view.ViewGroup.LayoutParams.MATCH_PARENT.toFloat(),
+                        android.util.TypedValue.COMPLEX_UNIT_PX,
+                    )
+                    v.setViewLayoutHeight(
+                        R.id.widget_analog,
+                        android.view.ViewGroup.LayoutParams.MATCH_PARENT.toFloat(),
+                        android.util.TypedValue.COMPLEX_UNIT_PX,
+                    )
+                    val inset = minOf(p.width, p.height) * .03f
+                    listOf(
+                            RemoteViews.MARGIN_LEFT,
+                            RemoteViews.MARGIN_TOP,
+                            RemoteViews.MARGIN_RIGHT,
+                            RemoteViews.MARGIN_BOTTOM,
+                        )
+                        .forEach {
+                            v.setViewLayoutMargin(
+                                R.id.widget_analog,
+                                it,
+                                inset,
+                                android.util.TypedValue.COMPLEX_UNIT_DIP,
+                            )
+                        }
+                } else place(v, R.id.widget_analog, g.face)
                 v.setIcon(
                     R.id.widget_analog,
                     "setDial",

@@ -280,7 +280,7 @@ object VisualWidgetRenderer {
         val geometry = AdaptiveWidgetLayoutEngine.clock(c, plan)
         if (draw) {
             val rect = geometry.face
-            if (c.analog) {
+            if (c.analog || plan.clockOnly) {
                 val size = minOf(rect.width(), rect.height())
                 cv.save()
                 cv.translate(rect.centerX() - size / 2, rect.centerY() - size / 2)
@@ -625,17 +625,24 @@ object VisualWidgetRenderer {
     private fun calendar(cv: Canvas, w: Float, h: Float, c: WidgetConfig, p: Palette, s: State) {
         val plan = AdaptiveWidgetLayoutEngine.plan(c.kind, w, h)
         val cal = Calendar.getInstance().apply { timeInMillis = s.now }
-        if (plan.tiny) {
-            text(
-                cv,
-                cal.get(Calendar.DAY_OF_MONTH).toString(),
-                w / 2,
-                h * .74f,
-                minOf(w * .52f, h * .58f),
-                p.foreground,
-                c,
-                align = Paint.Align.CENTER,
-            )
+        if (plan.tiny || (w <= 170f && h <= 190f)) {
+            val value = cal.get(Calendar.DAY_OF_MONTH).toString()
+            val paint =
+                TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+                    color = p.foreground
+                    textSize =
+                        WidgetTypography.fit(
+                            c,
+                            value,
+                            minOf(w, h) * .62f * c.textScale,
+                            w * .8f,
+                            h * .8f,
+                        )
+                    WidgetTypography.style(this, c, textSize, false, true)
+                }
+            val bounds = Rect()
+            paint.getTextBounds(value, 0, value.length, bounds)
+            cv.drawText(value, w / 2 - bounds.exactCenterX(), h / 2 - bounds.exactCenterY(), paint)
             return
         }
         if (plan.row || plan.column) {

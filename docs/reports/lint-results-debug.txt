@@ -114,22 +114,22 @@
 /workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:453: Warning: Use the KTX function createBitmap instead? [UseKtx]
         val b = Bitmap.createBitmap(32, 320, Bitmap.Config.ARGB_8888)
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1140: Warning: Use the KTX extension function Canvas.withTranslation instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1147: Warning: Use the KTX extension function Canvas.withTranslation instead? [UseKtx]
         cv.save()
         ~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1578: Warning: Use the KTX function createBitmap instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1585: Warning: Use the KTX function createBitmap instead? [UseKtx]
         val b = Bitmap.createBitmap(96, 96, Bitmap.Config.ARGB_8888)
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1588: Warning: Use the KTX extension function Canvas.withSave instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1595: Warning: Use the KTX extension function Canvas.withSave instead? [UseKtx]
                 cv.save()
                 ~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1640: Warning: Use the KTX extension function Canvas.withClip instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1647: Warning: Use the KTX extension function Canvas.withClip instead? [UseKtx]
         cv.save()
         ~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1648: Warning: Use the KTX extension function Canvas.withSave instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1655: Warning: Use the KTX extension function Canvas.withSave instead? [UseKtx]
         cv.save()
         ~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1737: Warning: Use the KTX extension function Canvas.withTranslation instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1744: Warning: Use the KTX extension function Canvas.withTranslation instead? [UseKtx]
         cv.save()
         ~~~~~~~~~
 /workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/data/WeatherRepository.kt:131: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]

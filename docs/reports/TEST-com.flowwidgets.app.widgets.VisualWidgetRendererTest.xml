@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.flowwidgets.app.widgets.VisualWidgetRendererTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-18T06:20:54.872Z" hostname="c068ee609df7" time="0.878">
+<testsuite name="com.flowwidgets.app.widgets.VisualWidgetRendererTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-18T17:08:27.747Z" hostname="c068ee609df7" time="0.836">
   <properties/>
-  <testcase name="exportGalleryPreviewsWithoutInventedDeviceData" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.164"/>
-  <testcase name="configuredColorsAndLegacyWeatherCacheAreSupported" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.038"/>
-  <testcase name="everyKindRendersEverySupportedAspectWithinBinderBudget" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.372"/>
-  <testcase name="vectorWeatherSymbolsAreDistinctForRealWeatherCategories" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.028"/>
-  <testcase name="exportDesignBoardFromTheProductionRenderer" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.206"/>
-  <testcase name="photoFitAndCropActuallyProduceDifferentVisibleGeometry" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.025"/>
-  <testcase name="nativeClockBackgroundDoesNotFreezePaintedHandsAndDialHasRealMarks" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.044"/>
+  <testcase name="exportGalleryPreviewsWithoutInventedDeviceData" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.124"/>
+  <testcase name="configuredColorsAndLegacyWeatherCacheAreSupported" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.028"/>
+  <testcase name="everyKindRendersEverySupportedAspectWithinBinderBudget" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.4"/>
+  <testcase name="vectorWeatherSymbolsAreDistinctForRealWeatherCategories" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.027"/>
+  <testcase name="exportDesignBoardFromTheProductionRenderer" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.198"/>
+  <testcase name="photoFitAndCropActuallyProduceDifferentVisibleGeometry" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.024"/>
+  <testcase name="nativeClockBackgroundDoesNotFreezePaintedHandsAndDialHasRealMarks" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.034"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

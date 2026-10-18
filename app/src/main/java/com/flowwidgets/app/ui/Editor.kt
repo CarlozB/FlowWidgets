@@ -109,12 +109,7 @@ fun Editor(
             Choices(
                 WidgetStyle.entries.map { it.name },
                 config.style.name,
-                {
-                    when (it) {
-                        "ONE" -> "One Style"
-                        else -> it.lowercase().replaceFirstChar(Char::uppercaseChar)
-                    }
-                },
+                { it.lowercase().replaceFirstChar(Char::uppercaseChar) },
             ) { choice ->
                 val style = WidgetStyle.valueOf(choice)
                 config =
@@ -132,14 +127,6 @@ fun Editor(
                                 textColor = palette.onSurface.toArgb().toLong() and 0xFFFFFFFFL,
                             )
                         }
-                        WidgetStyle.ONE ->
-                            config.copy(
-                                style = style,
-                                automaticColors = style == WidgetStyle.CLASSIC,
-                                background = 0xFFEEEFE8,
-                                accent = 0xFF728663,
-                                textColor = 0xFF242925,
-                            )
                         WidgetStyle.GLASS ->
                             config.copy(
                                 style = style,
@@ -221,6 +208,10 @@ fun Editor(
             HorizontalDivider()
             when (config.kind) {
                 WidgetKind.CLOCK -> {
+                    Text(
+                        "En tamaños compactos 1×1 y 2×2 se muestra únicamente la esfera grande. Las opciones de información y reloj digital se aplican a tamaños mayores.",
+                        color = Muted,
+                    )
                     Toggle("Reloj analógico", config.analog) { config = config.copy(analog = it) }
                     Toggle("Formato de 24 horas", config.clock24) {
                         config = config.copy(clock24 = it)

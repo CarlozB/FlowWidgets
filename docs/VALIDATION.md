@@ -5,7 +5,7 @@
 | Comprobación | Resultado |
 | --- | --- |
 | `./gradlew assembleDebug` | Correcta; APK generado |
-| `./gradlew testDebugUnitTest` | **34 pasadas, 0 fallidas, 0 omitidas** |
+| `./gradlew testDebugUnitTest` | **37 pasadas, 0 fallidas, 0 omitidas** |
 | `./gradlew lintDebug` | **0 errores, 92 advertencias** |
 | `./gradlew assembleDebugAndroidTest` | APK de pruebas instrumentadas compilado |
 | `apksigner verify --verbose` | Firma v2 válida, un firmante |
@@ -15,13 +15,13 @@
 
 La última ejecución completa de verificación terminó con código 0. Los informes originales están en [`reports/`](reports/): cinco XML JUnit, informe Lint y registro de compilación/verificación. Las advertencias Lint son recomendaciones de versiones, orden de parámetros Compose, extensiones KTX, posiciones físicas de RemoteViews (izquierda/derecha) y recursos antiguos conservados para compatibilidad de actualización; no se deshabilitaron comprobaciones ni se creó un baseline para ocultar errores.
 
-## Qué cubren las 34 pruebas locales
+## Qué cubren las 37 pruebas locales
 
 - Nueve pruebas de repositorios: serialización de todos los ajustes, valores por defecto, persistencia DataStore, aislamiento entre widgets, actualización/borrado, tema, listas dañadas, calendario sin permiso, caché meteorológica por coordenadas, timestamp y fallback offline sin peticiones de red, códigos meteorológicos y pronóstico ampliado con campos opcionales.
-- Cinco pruebas de widgets: registro y metadatos de los ocho proveedores; aplicación de RemoteViews de cada tipo; reloj analógico y cuatro estilos; conservación al redimensionar y limpieza al borrar; notas compactas y layouts de fuentes de reloj.
+- Cinco pruebas de widgets: registro y metadatos de los ocho proveedores; aplicación de RemoteViews de cada tipo; reloj analógico y tres estilos; conservación al redimensionar y limpieza al borrar; notas compactas y layouts de fuentes de reloj.
 - Siete pruebas gráficas nativas: ocho tipos en siete proporciones (56 renders), límites de memoria/transparencia, recorte frente a ajuste real, iconos meteorológicos distintos, reloj sin agujas congeladas, colores y exportación de ejemplos desde el renderer de producción.
 - Seis pruebas adaptativas: tamaños reportados y fallback de orientación, límite de 16 variantes, presupuesto global, grids, reaplicación al encoger, transacciones entre instancias, caché Glass, once proporciones y mapa RemoteViews de los ocho tipos.
-- Siete regresiones de colocación y tipografía: primera actualización sin callback en los cuatro estilos, callbacks previos/tardíos/duplicados y concurrencia, paleta explícita, pesos reales de Inter en Canvas y TextClock, cifras tabulares, ajuste de números y esfera cuadrada/centrada tras medir vistas Android.
+- Diez regresiones de colocación y tipografía: primera actualización sin callback en los tres estilos actuales, callbacks previos/tardíos/duplicados y concurrencia, paleta explícita, pesos reales de Inter en Canvas y TextClock, cifras tabulares, ajuste de números y esfera cuadrada/centrada tras medir vistas Android.
 - Las pruebas de host se ejecutan con Robolectric API 35. No equivalen a una prueba del launcher Xiaomi.
 
 ## Pruebas instrumentadas no ejecutadas
@@ -46,9 +46,9 @@ Ver [`INSTALL.md`](INSTALL.md) y la lista manual del README. No se garantiza una
 
 - Archivo final: `dist/FlowWidgets-debug.apk`
 - Certificado de depuración: coincide con el APK 1.2 ya publicado, por lo que la actualización conserva datos si se instala sobre él.
-- Tamaño: 30,871,802 bytes
-- SHA-256: `f0578eff46f921b9249ef8d60cb14a441ca701ca310702e9077d8da2c9dadc0c`
-- Versión: `1.2.1` (4), compilación de depuración, no release de Play Store.
+- Tamaño: 30,664,986 bytes
+- SHA-256: `409e690136291ba7bcb6df7a608f2a96715e5d244d95304024d2d6acf946d16f`
+- Versión: `1.2.2` (5), compilación de depuración, no release de Play Store.
 
 ## Cambios visuales y límites de esta validación
 
@@ -71,3 +71,11 @@ Consulta [ADAPTIVE_WIDGETS.md](ADAPTIVE_WIDGETS.md) para las estrategias por tip
 Se verificó que la nueva APK contiene exactamente el TTF oficial y el texto de licencia conservado en el repositorio. El certificado coincide con 1.2.0. La lámina [FlowWidgets-Inter.png](images/FlowWidgets-Inter.png) compara los cinco pesos y la esfera compacta centrada con colores personalizados. La selección explícita de colores conserva los demás colores visibles al abandonar una paleta automática.
 
 [TYPOGRAPHY.md](TYPOGRAPHY.md) registra la procedencia, SHA del archivo oficial, uso en Canvas/TextClock, APIs públicas y correcciones del flujo de colocación. Los errores antiguos que dejaron una instancia guardada con Classic requieren editarla de nuevo; no se puede recuperar una selección que no quedó vinculada. Falta repetir en HyperOS la colocación y reducción usando la nueva APK.
+
+## Centrado y retirada de One UI · 1.2.2
+
+Se añadieron comprobaciones de los relojes compactos en 80, 132, 180, 240 y 280 dp: esfera grande centrada en ambos ejes, sin fecha, calendario, zonas ni agenda, incluso al partir de una configuración digital. El calendario pequeño se verifica sobre los píxeles dibujados del número para comprobar su centrado visible. Las pruebas de tipografía digital usan ahora un perfil amplio, donde se mantiene esa opción.
+
+Se comprobó la migración de ONE a Classic sin perder colores, contenido ni peso de fuente, y que el selector solo ofrece Classic, Glass y Material. Las láminas y el preview del reloj se regeneraron con el motor actualizado. El APK conserva la firma de la versión anterior. Falta validar esta versión en el launcher HyperOS del usuario; no se volvió a iniciar el emulador.
+
+Se comprobó además que el AnalogClock compacto se centra en el tamaño final del host aunque sus dimensiones difieran de los dp anunciados: usa el espacio real del padre con márgenes simétricos. La esfera nativa mantiene su proporción circular.
