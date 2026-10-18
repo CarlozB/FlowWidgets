@@ -4,6 +4,12 @@ Aplicación Android nativa para personalizar la pantalla de inicio con ocho tipo
 
 **Paquete:** `com.flowwidgets.app` · **Android:** 13–16 (API mínima 33, target/compile 36).
 
+## Optimización de batería · 1.0.1
+
+Actualizaciones selectivas y agrupadas, sin temporizadores periódicos duplicados. Solo se programan tareas para widgets activos que necesitan datos; notas, accesos, fotos fijas y relojes nativos compactos no mantienen trabajo periódico. El clima automático comparte consultas por coordenadas, usa caché y respeta conexión/batería baja. Los previews se detienen al salir de la app.
+
+[Fuentes oficiales, cambios y pruebas](docs/BATTERY_OPTIMIZATION.md). No se afirma un porcentaje de ahorro sin medirlo en la tablet.
+
 ## Versión 1.0 · Ajuste final
 
 Los controles del reproductor mantienen tres posiciones fijas: anterior, play/pausa centrado y siguiente. Cuando una acción no está disponible se conserva su espacio. La fila se ancla abajo, independientemente de títulos largos o diferencias entre el tamaño reportado y el tamaño final del launcher. La esfera compacta aumenta del 94 % al 98 % del espacio disponible.
@@ -110,7 +116,7 @@ Datos meteorológicos: [Open-Meteo](https://open-meteo.com/), [API de pronóstic
 
 ## Actualización y consumo
 
-El reloj nativo lo actualiza Android. El resto combina eventos de carga, batería mientras el proceso existe, cambios de fecha/hora/zona y actualizaciones de widgets con WorkManager cada 30 minutos. Android puede retrasarlas por Doze, ahorro de batería o políticas del fabricante; no hay un servicio permanente ni alarmas exactas. La rotación de fotos sigue esa misma cadencia aproximada.
+El reloj nativo lo actualiza Android. Batería, calendario y fotos rotatorias combinan eventos con un trabajo local cada 30 minutos aproximados; solo se programa si hay destinatarios activos. El clima tiene un trabajo separado de 60 minutos con red y batería no baja, caché y consultas compartidas. Notas, accesos y fotos fijas no necesitan tareas periódicas. Los cambios musicales usan callbacks selectivos y agrupados; los avisos que solo cambian posición se limitan a uno cada 15 segundos sin añadir un temporizador. Android puede retrasar los trabajos por Doze o políticas de HyperOS. No se añaden servicios de sondeo ni alarmas exactas.
 
 En HyperOS, comprobar que el launcher conserva los widgets tras reinicio. Si el sistema restringe el trabajo en segundo plano, sus ajustes de batería pueden retrasar clima/fotos. No se requiere desactivar protecciones del sistema para instalar o usar la app.
 

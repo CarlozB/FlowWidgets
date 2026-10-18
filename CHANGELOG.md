@@ -1,5 +1,16 @@
 # Cambios
 
+## 1.0.1 · Optimización de consumo
+
+- Un único planificador periódico: metadatos de proveedores en cero y tareas solo con destinatarios activos.
+- Actualizaciones por tipo/instancia, agrupación de ráfagas de 250 ms y conservación de peticiones durante el render.
+- Clima separado: 60 min con flex, red y batería no baja, caché de una hora y una consulta por coordenadas.
+- Trabajo local de 30 min solo para contenido dinámico; notas, accesos, fotos fijas y reloj compacto nativo sin trabajo periódico.
+- Posición multimedia limitada a 15 s sin bucles adicionales; reproducción, cambios de pista, acciones y saltos se mantienen reactivos. Notificaciones no duplican callbacks ya observados.
+- Previews vinculados al ciclo de vida y estáticos sin sondeo. Batería descarta broadcasts iguales y reloj no consulta eventos sin región visible.
+- Regresiones de lotes, cancelación de tareas, restricciones, caché y cadencia; fuentes oficiales documentadas.
+
+
 ## 1.0.0 · Entrega final solicitada
 
 - Controles musicales con posiciones fijas: ocultar una acción no redistribuye play/pausa ni siguiente.

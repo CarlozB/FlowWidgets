@@ -5,7 +5,7 @@
 | Comprobación | Resultado |
 | --- | --- |
 | `./gradlew assembleDebug` | Correcta; APK generado |
-| `./gradlew testDebugUnitTest` | **42 pasadas, 0 fallidas, 0 omitidas** |
+| `./gradlew testDebugUnitTest` | **50 pasadas, 0 fallidas, 0 omitidas** |
 | `./gradlew lintDebug` | **0 errores, 93 advertencias** |
 | `./gradlew assembleDebugAndroidTest` | APK de pruebas instrumentadas compilado |
 | `apksigner verify --verbose` | Firma v2 válida, un firmante |
@@ -13,9 +13,9 @@
 | Inspección de APK/manifiesto | Paquete `com.flowwidgets.app`, minSdk 33, target/compile 36; ocho proveedores registrados |
 | Open-Meteo por HTTPS desde el entorno | Comprobación anterior de geocodificación/pronóstico válida; la nueva consulta de cinco días recibió HTTP 403 en esta sesión. El esquema ampliado y su caché se verificaron con fixtures; falta consulta desde el APK |
 
-La última ejecución completa de verificación terminó con código 0. Los informes originales están en [`reports/`](reports/): seis XML JUnit, informe Lint y registro de compilación/verificación. Las advertencias Lint son recomendaciones de versiones, orden de parámetros Compose, extensiones KTX, posiciones físicas de RemoteViews (izquierda/derecha) y recursos antiguos conservados para compatibilidad de actualización; no se deshabilitaron comprobaciones ni se creó un baseline para ocultar errores.
+La última ejecución completa de verificación terminó con código 0. Los informes originales están en [`reports/`](reports/): ocho XML JUnit, informe Lint y registro de compilación/verificación. Las advertencias Lint son recomendaciones de versiones, orden de parámetros Compose, extensiones KTX, posiciones físicas de RemoteViews (izquierda/derecha) y recursos antiguos conservados para compatibilidad de actualización; no se deshabilitaron comprobaciones ni se creó un baseline para ocultar errores.
 
-## Qué cubren las 42 pruebas locales
+## Qué cubren las 50 pruebas locales
 
 - Nueve pruebas de repositorios: serialización de todos los ajustes, valores por defecto, persistencia DataStore, aislamiento entre widgets, actualización/borrado, tema, listas dañadas, calendario sin permiso, caché meteorológica por coordenadas, timestamp y fallback offline sin peticiones de red, códigos meteorológicos y pronóstico ampliado con campos opcionales.
 - Cinco pruebas de widgets: registro y metadatos de los ocho proveedores; aplicación de RemoteViews de cada tipo; reloj analógico y tres estilos; conservación al redimensionar y limpieza al borrar; notas compactas y layouts de fuentes de reloj.
@@ -46,9 +46,9 @@ Ver [`INSTALL.md`](INSTALL.md) y la lista manual del README. No se garantiza una
 
 - Archivo final: `dist/FlowWidgets-debug.apk`
 - Certificado de depuración: coincide con el APK 1.2 ya publicado, por lo que la actualización conserva datos si se instala sobre él.
-- Tamaño: 31,473,756 bytes
-- SHA-256: `e4596d50be1319ce8400423360a1f4ea5ba44f0d4fa65e0fed6f1f676bd8843d`
-- Versión: `1.0.0` (7), compilación de depuración, no release de Play Store.
+- Tamaño: 30,860,552 bytes
+- SHA-256: `bc25530e9a8ab346bd6d669ab0dee666f6da709c1a61ca4d50b1015c6d7b42bf`
+- Versión: `1.0.1` (8), compilación de depuración, no release de Play Store.
 
 ## Cambios visuales y límites de esta validación
 
@@ -95,3 +95,11 @@ Se añadió una regresión con títulos largos/cortos, escala de texto 1.5 y las
 Los nuevos identificadores de layout RemoteViews fuerzan su reinflado al actualizar, para que el launcher no conserve la gravedad superior de un contenedor antiguo. La esfera crece del 94 % al 98 % con márgenes simétricos del 1 % y se mantiene centrada. Se regeneraron láminas y el preview del reloj; el ejemplo LiquidGlass incluye ahora un título largo sin acción anterior.
 
 La versión visible es 1.0.0 a petición del usuario, con versionCode 7 para permitir actualización sobre las versiones de desarrollo anteriores. Compilación, pruebas, Lint, firma y alineación pasaron. Las advertencias incluyen layouts antiguos conservados para compatibilidad; no se ocultaron mediante un baseline. Queda comprobar este ajuste final en HyperOS; las cuatro pruebas instrumentadas se compilaron y no se ejecutaron.
+
+## Optimización de consumo · 1.0.1
+
+Ocho pruebas nuevas: tres del agrupador (100 avisos musicales en un lote; solicitudes durante el render; recuperación tras error) y cinco de política de consumo (identificadores activos y cancelación de trabajos heredados; tipos sin temporizador/fotos rotatorias; clima agrupado y caché; restricciones/ventanas de trabajo; límite de posición con respuesta a pausa, cambio de pista y búsqueda).
+
+Las pruebas de host comprueban también que los ocho metadatos tengan `updatePeriodMillis=0`. WorkManager se prueba con su inicializador oficial `work-testing` 2.10.1, únicamente como dependencia de tests. Los callbacks de progreso tienen su propia compuerta por sesión; las vistas previas se limitan con el ciclo de vida de AndroidX.
+
+Se consultaron fuentes oficiales en Internet: AOSP para la periodicidad de widgets y AndroidX para WorkManager, restricciones, UPDATE y repeatOnLifecycle. Las referencias, decisiones y límites están en [BATTERY_OPTIMIZATION.md](BATTERY_OPTIMIZATION.md). No se midió autonomía ni consumo en hardware y no se afirma un porcentaje de ahorro. Las cuatro pruebas instrumentadas se compilaron, pero no se ejecutaron; no se volvió a intentar un emulador.

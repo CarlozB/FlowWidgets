@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.flowwidgets.app.widgets.WidgetUpdateBatcherTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-10-18T18:08:31.108Z" hostname="c068ee609df7" time="0.053">
+  <properties/>
+  <testcase name="mediaBurstsAndIndependentIdsProduceOneTargetedBatch" classname="com.flowwidgets.app.widgets.WidgetUpdateBatcherTest" time="0.049"/>
+  <testcase name="requestsWhileRenderingAreNotLost" classname="com.flowwidgets.app.widgets.WidgetUpdateBatcherTest" time="0.002"/>
+  <testcase name="failedFlushCompletesWaitersAndDoesNotBlockFutureUpdates" classname="com.flowwidgets.app.widgets.WidgetUpdateBatcherTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -426,7 +426,10 @@ fun FlowApp(
                                                                             kind = config.kind,
                                                                         ),
                                                                     )
-                                                                    WidgetActions.update(context)
+                                                                    WidgetActions.update(
+                                                                        context,
+                                                                        config.id,
+                                                                    )
                                                                 }
                                                             }
                                                         ) {

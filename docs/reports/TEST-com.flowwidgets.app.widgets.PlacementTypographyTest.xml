@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.flowwidgets.app.widgets.PlacementTypographyTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-10-18T17:45:59.356Z" hostname="c068ee609df7" time="1.495">
+<testsuite name="com.flowwidgets.app.widgets.PlacementTypographyTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-10-18T18:08:27.563Z" hostname="c068ee609df7" time="1.554">
   <properties/>
-  <testcase name="callbackBeforeUpdateAndLateCallbackAfterEditAreSafe" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.081"/>
-  <testcase name="compactNativeClockCentersInsideHostEvenWhenReportedDpDiffer" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.11"/>
-  <testcase name="exactCallbacksDisambiguateConcurrentRequestsOfSameType" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.038"/>
+  <testcase name="callbackBeforeUpdateAndLateCallbackAfterEditAreSafe" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.056"/>
+  <testcase name="compactNativeClockCentersInsideHostEvenWhenReportedDpDiffer" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.199"/>
+  <testcase name="exactCallbacksDisambiguateConcurrentRequestsOfSameType" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.053"/>
   <testcase name="exportCorrectedCompactClocksAndInterWeights" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.209"/>
-  <testcase name="interWeightsApplyToCanvasAndNativeRemoteViewsWithTabularDigits" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.192"/>
-  <testcase name="compactClockAlwaysShowsOnlyLargeAnalogFaceAndLegacyStyleMigrates" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.137"/>
-  <testcase name="nativeCompactClockBoundsAreCenteredAfterHostMeasurement" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.17"/>
-  <testcase name="longMediaTitlesAndUnsupportedActionsKeepFixedNativeControlSlots" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.241"/>
-  <testcase name="compactCalendarGlyphIsVisuallyCentered" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.133"/>
-  <testcase name="firstHostUpdateKeepsChosenDesignWithoutPinCallback" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.155"/>
-  <testcase name="analogFacesAreSquareCenteredAndClearOfDates" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.028"/>
+  <testcase name="interWeightsApplyToCanvasAndNativeRemoteViewsWithTabularDigits" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.21"/>
+  <testcase name="compactClockAlwaysShowsOnlyLargeAnalogFaceAndLegacyStyleMigrates" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.148"/>
+  <testcase name="nativeCompactClockBoundsAreCenteredAfterHostMeasurement" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.097"/>
+  <testcase name="longMediaTitlesAndUnsupportedActionsKeepFixedNativeControlSlots" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.293"/>
+  <testcase name="compactCalendarGlyphIsVisuallyCentered" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.132"/>
+  <testcase name="firstHostUpdateKeepsChosenDesignWithoutPinCallback" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.124"/>
+  <testcase name="analogFacesAreSquareCenteredAndClearOfDates" classname="com.flowwidgets.app.widgets.PlacementTypographyTest" time="0.033"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

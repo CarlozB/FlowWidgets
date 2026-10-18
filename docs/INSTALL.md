@@ -86,3 +86,9 @@ El fondo utiliza una adaptación del núcleo óptico de LiquidGlass para bitmaps
 Esta APK se instala sobre las compilaciones anteriores, incluida 1.3.0: mantiene paquete, firma y un versionCode superior. No desinstales para actualizar. La versión visible es 1.0.0 a petición del usuario.
 
 Prueba títulos largos con un reproductor que permita siguiente pero no anterior. Play/pausa debe permanecer en el centro y siguiente a la derecha; las acciones no compatibles dejan un hueco. Cambia de canción y redimensiona para comprobar la fila fija. El reloj compacto ocupa un poco más de espacio y sigue centrado.
+
+## Optimización 1.0.1
+
+Instala sobre 1.0.0 para conservar ajustes. Reproduce/pausa y cambia de pista: esos cambios no esperan la limitación de posición. La barra puede avanzar a saltos de hasta 15 segundos si el reproductor solo publica posición; no hay animación continua en el widget. El clima automático pasa a una hora o más según caché, red, batería y políticas del sistema; sigue mostrando la hora real de sus datos.
+
+Al retirar todos los widgets se cancelan los trabajos. También se cancelan si solo quedan notas, accesos, fotos fijas o relojes compactos nativos. Las vistas previas dejan de consultar al salir de la app. Los detalles y las fuentes están en [BATTERY_OPTIMIZATION.md](BATTERY_OPTIMIZATION.md).

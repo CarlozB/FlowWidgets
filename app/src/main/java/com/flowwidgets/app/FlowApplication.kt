@@ -1,37 +1,39 @@
 package com.flowwidgets.app
 
 import android.app.Application
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import androidx.core.content.ContextCompat
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
-import com.flowwidgets.app.data.RefreshWorker
-import com.flowwidgets.app.widgets.AdaptiveWidgetProvider
-import java.util.concurrent.TimeUnit
+import com.flowwidgets.app.data.*
+import com.flowwidgets.app.widgets.*
+import kotlinx.coroutines.*
 
 class FlowApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        com.flowwidgets.app.widgets.WidgetTypography.initialize(this)
+        WidgetTypography.initialize(this)
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+        var previousBattery: BatteryInfo? = null
         ContextCompat.registerReceiver(
             this,
             object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) {
-                    AdaptiveWidgetProvider.updateAll(context)
+                    val battery = DeviceData.battery(context)
+                    if (battery == previousBattery) return
+                    previousBattery = battery
+                    val pending = goAsync()
+                    scope.launch {
+                        try {
+                            WidgetUpdateDispatcher.request(context, setOf(WidgetKind.BATTERY))
+                                .await()
+                        } finally {
+                            pending.finish()
+                        }
+                    }
                 }
             },
             IntentFilter(Intent.ACTION_BATTERY_CHANGED),
             ContextCompat.RECEIVER_NOT_EXPORTED,
         )
-        WorkManager.getInstance(this)
-            .enqueueUniquePeriodicWork(
-                "flow-widget-refresh",
-                ExistingPeriodicWorkPolicy.KEEP,
-                PeriodicWorkRequestBuilder<RefreshWorker>(30, TimeUnit.MINUTES).build(),
-            )
+        scope.launch { WidgetWorkScheduler.reconcile(this@FlowApplication) }
     }
 }

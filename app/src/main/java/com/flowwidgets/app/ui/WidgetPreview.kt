@@ -13,10 +13,14 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import com.flowwidgets.app.data.*
 import com.flowwidgets.app.widgets.AdaptiveWidgetLayoutEngine
 import com.flowwidgets.app.widgets.VisualWidgetRenderer
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
@@ -64,6 +68,7 @@ fun ConfigPreview(
     simulateSize: Boolean = false,
 ) {
     val context = LocalContext.current
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
     val simulated = AdaptiveWidgetLayoutEngine.previewSizes[config.size]
     Box(modifier, contentAlignment = Alignment.Center) {
         BoxWithConstraints(
@@ -83,26 +88,34 @@ fun ConfigPreview(
             val plan =
                 AdaptiveWidgetLayoutEngine.plan(config.kind, width.toFloat(), height.toFloat())
             val frame by
-                produceState<PreviewFrame?>(null, config, width, height) {
-                    while (true) {
-                        value =
-                            withContext(Dispatchers.IO) {
-                                val state =
-                                    VisualWidgetRenderer.snapshot(
-                                        context,
-                                        config,
-                                        photoLimit = plan.photoCapacity,
-                                        shortcutLimit = plan.shortcutCapacity,
+                produceState<PreviewFrame?>(null, config, width, height, lifecycle) {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        while (true) {
+                            value =
+                                withContext(Dispatchers.IO) {
+                                    val state =
+                                        VisualWidgetRenderer.snapshot(
+                                            context,
+                                            config,
+                                            photoLimit = plan.photoCapacity,
+                                            shortcutLimit = plan.shortcutCapacity,
+                                        )
+                                    PreviewFrame(
+                                        VisualWidgetRenderer.render(config, width, height, state),
+                                        state,
                                     )
-                                PreviewFrame(
-                                    VisualWidgetRenderer.render(config, width, height, state),
-                                    state,
-                                )
-                            }
-                        delay(
-                            if (config.kind == WidgetKind.CLOCK && config.showSeconds) 1_000
-                            else if (config.kind == WidgetKind.MEDIA) 3_000 else 30_000
-                        )
+                                }
+                            if (
+                                config.kind in setOf(WidgetKind.NOTE, WidgetKind.SHORTCUT) ||
+                                    (config.kind == WidgetKind.PHOTO &&
+                                        (!config.rotatePhotos || config.photoUris.size < 2))
+                            )
+                                awaitCancellation()
+                            delay(
+                                if (config.kind == WidgetKind.CLOCK && config.showSeconds) 1_000
+                                else if (config.kind == WidgetKind.MEDIA) 5_000 else 60_000
+                            )
+                        }
                     }
                 }
             frame?.let { rendered ->

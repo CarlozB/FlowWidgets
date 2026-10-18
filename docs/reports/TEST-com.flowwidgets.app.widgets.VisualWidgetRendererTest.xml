@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.flowwidgets.app.widgets.VisualWidgetRendererTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-10-18T17:46:00.859Z" hostname="c068ee609df7" time="1.092">
+<testsuite name="com.flowwidgets.app.widgets.VisualWidgetRendererTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-10-18T18:08:29.127Z" hostname="c068ee609df7" time="1.107">
   <properties/>
   <testcase name="glassTimelineKeepsItsRealProgressAndDoesNotDrawOutsideTrack" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.023"/>
-  <testcase name="exportGalleryPreviewsWithoutInventedDeviceData" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.221"/>
-  <testcase name="configuredColorsAndLegacyWeatherCacheAreSupported" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.033"/>
-  <testcase name="everyKindRendersEverySupportedAspectWithinBinderBudget" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.436"/>
-  <testcase name="vectorWeatherSymbolsAreDistinctForRealWeatherCategories" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.029"/>
-  <testcase name="exportDesignBoardFromTheProductionRenderer" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.228"/>
-  <testcase name="photoFitAndCropActuallyProduceDifferentVisibleGeometry" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.029"/>
-  <testcase name="glassHandsAndTransportGlyphsHaveReflectionsAndKeepTransparentBounds" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.045"/>
-  <testcase name="nativeClockBackgroundDoesNotFreezePaintedHandsAndDialHasRealMarks" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.048"/>
+  <testcase name="exportGalleryPreviewsWithoutInventedDeviceData" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.185"/>
+  <testcase name="configuredColorsAndLegacyWeatherCacheAreSupported" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.038"/>
+  <testcase name="everyKindRendersEverySupportedAspectWithinBinderBudget" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.502"/>
+  <testcase name="vectorWeatherSymbolsAreDistinctForRealWeatherCategories" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.027"/>
+  <testcase name="exportDesignBoardFromTheProductionRenderer" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.222"/>
+  <testcase name="photoFitAndCropActuallyProduceDifferentVisibleGeometry" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.028"/>
+  <testcase name="glassHandsAndTransportGlyphsHaveReflectionsAndKeepTransparentBounds" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.032"/>
+  <testcase name="nativeClockBackgroundDoesNotFreezePaintedHandsAndDialHasRealMarks" classname="com.flowwidgets.app.widgets.VisualWidgetRendererTest" time="0.047"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

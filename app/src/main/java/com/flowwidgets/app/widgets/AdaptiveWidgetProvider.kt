@@ -37,6 +37,7 @@ open class AdaptiveWidgetProvider : AppWidgetProvider() {
                 javaClass.simpleName.removeSuffix("Widget").lowercase(Locale.ROOT),
             )
         }
+        runBlocking(Dispatchers.IO) { WidgetWorkScheduler.reconcile(context) }
     }
 
     override fun onAppWidgetOptionsChanged(
@@ -52,10 +53,14 @@ open class AdaptiveWidgetProvider : AppWidgetProvider() {
             javaClass.simpleName.removeSuffix("Widget").lowercase(Locale.ROOT),
             options,
         )
+        runBlocking(Dispatchers.IO) { WidgetWorkScheduler.reconcile(context) }
     }
 
     override fun onDeleted(context: Context, ids: IntArray) {
-        ids.forEach { runBlocking(Dispatchers.IO) { FlowRepository.delete(context, it) } }
+        runBlocking(Dispatchers.IO) {
+            ids.forEach { FlowRepository.delete(context, it) }
+            WidgetWorkScheduler.reconcile(context)
+        }
     }
 
     companion object {
@@ -71,23 +76,8 @@ open class AdaptiveWidgetProvider : AppWidgetProvider() {
                 ShortcutWidget::class.java,
             )
 
-        fun updateAll(context: Context) {
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                CoroutineScope(Dispatchers.IO).launch { updateAll(context.applicationContext) }
-                return
-            }
-            val manager = AppWidgetManager.getInstance(context)
-            providers.forEach { type ->
-                manager.getAppWidgetIds(ComponentName(context, type)).forEach {
-                    render(
-                        context,
-                        manager,
-                        it,
-                        type.simpleName.removeSuffix("Widget").lowercase(Locale.ROOT),
-                    )
-                }
-            }
-        }
+        fun updateAll(context: Context) =
+            WidgetUpdateDispatcher.request(context, WidgetKind.entries.toSet())
 
         fun render(
             context: Context,
@@ -120,7 +110,14 @@ open class AdaptiveWidgetProvider : AppWidgetProvider() {
             val state =
                 VisualWidgetRenderer.snapshot(
                     context,
-                    config,
+                    if (
+                        config.kind == WidgetKind.CLOCK &&
+                            plans.none {
+                                AdaptiveWidgetLayoutEngine.clock(config, it).events != null
+                            }
+                    )
+                        config.copy(showEvents = false)
+                    else config,
                     photoLimit = plans.maxOf { it.photoCapacity },
                     shortcutLimit = plans.maxOf { it.shortcutCapacity },
                 )
@@ -665,7 +662,20 @@ class WidgetEventReceiver : BroadcastReceiver() {
         val pending = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                AdaptiveWidgetProvider.updateAll(context)
+                val kinds =
+                    when (intent.action) {
+                        Intent.ACTION_POWER_CONNECTED,
+                        Intent.ACTION_POWER_DISCONNECTED,
+                        Intent.ACTION_BATTERY_LOW,
+                        Intent.ACTION_BATTERY_OKAY -> setOf(WidgetKind.BATTERY)
+                        Intent.ACTION_TIME_CHANGED,
+                        Intent.ACTION_TIMEZONE_CHANGED,
+                        Intent.ACTION_DATE_CHANGED ->
+                            setOf(WidgetKind.CLOCK, WidgetKind.CALENDAR, WidgetKind.WEATHER)
+                        else -> WidgetKind.entries.toSet()
+                    }
+                WidgetUpdateDispatcher.request(context, kinds).await()
+                WidgetWorkScheduler.reconcile(context)
             } finally {
                 pending.finish()
             }

@@ -45,7 +45,12 @@ object WidgetActions {
         return manager.requestPinAppWidget(ComponentName(context, type), extras, callback)
     }
 
-    fun update(context: Context) = AdaptiveWidgetProvider.updateAll(context)
+    fun update(context: Context, id: Int? = null) =
+        CoroutineScope(Dispatchers.IO).launch {
+            if (id != null) WidgetUpdateDispatcher.requestIds(context, setOf(id)).await()
+            else AdaptiveWidgetProvider.updateAll(context).await()
+            WidgetWorkScheduler.reconcile(context)
+        }
 }
 
 class WidgetPinnedReceiver : BroadcastReceiver() {
@@ -67,6 +72,7 @@ class WidgetPinnedReceiver : BroadcastReceiver() {
                         id,
                         config.kind.name.lowercase(),
                     )
+                    WidgetWorkScheduler.reconcile(context)
                 }
             } finally {
                 pending.finish()
@@ -81,7 +87,7 @@ class WidgetMediaReceiver : BroadcastReceiver() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 MediaRepository.action(context, intent.getStringExtra("media_action") ?: "toggle")
-                AdaptiveWidgetProvider.updateAll(context)
+                WidgetUpdateDispatcher.request(context, setOf(WidgetKind.MEDIA)).await()
             } finally {
                 pending.finish()
             }
@@ -105,7 +111,7 @@ class WidgetNoteReceiver : BroadcastReceiver() {
                             }
                     )
                 }
-                AdaptiveWidgetProvider.updateAll(context)
+                WidgetUpdateDispatcher.requestIds(context, setOf(id)).await()
             } finally {
                 pending.finish()
             }

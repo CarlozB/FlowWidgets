@@ -399,7 +399,10 @@ fun Editor(
                                         if (result == null)
                                             "Ubicación guardada. No hay datos disponibles: revisa la conexión y vuelve a consultar."
                                         else "Pronóstico guardado. Última consulta disponible."
-                                    com.flowwidgets.app.widgets.WidgetActions.update(context)
+                                    com.flowwidgets.app.widgets.WidgetUpdateDispatcher.request(
+                                        context,
+                                        setOf(WidgetKind.WEATHER),
+                                    )
                                 }
                             }
                         ) {

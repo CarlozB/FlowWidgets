@@ -16,7 +16,7 @@
    MavenCentral dependency, and connects to the library every time, which
    makes it more flexible but also much slower.
 
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/WidgetPreview.kt:37: Warning: Modifier parameter should be the first optional parameter [ModifierParameter from androidx.compose.ui]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/WidgetPreview.kt:41: Warning: Modifier parameter should be the first optional parameter [ModifierParameter from androidx.compose.ui]
     modifier: Modifier = Modifier,
     ~~~~~~~~
 
@@ -75,16 +75,16 @@
    </lint>
    ```
 
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:348: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:345: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
                                 Uri.parse("flowwidgets://notes/${c.id}/${Uri.encode(entry.id)}")
                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:372: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:369: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
                             Uri.parse("content://com.android.calendar/time/${state.now}"),
                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/FlowApp.kt:125: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
                             context
                             ^
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/FlowApp.kt:577: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/FlowApp.kt:580: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
                         Uri.parse("package:${context.packageName}"),
                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/LiquidGlassWidgetBackground.kt:69: Warning: Use the KTX extension function Bitmap.scale instead? [UseKtx]

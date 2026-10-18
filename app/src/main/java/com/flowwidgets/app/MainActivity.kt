@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
                     onSave = { config ->
                         lifecycleScope.launch {
                             FlowRepository.save(this@MainActivity, config)
-                            WidgetActions.update(this@MainActivity)
+                            WidgetActions.update(this@MainActivity, config.id).join()
                             if (configuring) {
                                 setResult(
                                     Activity.RESULT_OK,

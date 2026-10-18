@@ -44,7 +44,7 @@ class WidgetConfigureActivity : Activity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 104) {
             if (resultCode == RESULT_OK) {
-                AdaptiveWidgetProvider.updateAll(this)
+                WidgetActions.update(this, widgetId)
                 setResult(
                     RESULT_OK,
                     Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId),

@@ -10,57 +10,116 @@ import android.os.Handler
 import android.os.Looper
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
-import com.flowwidgets.app.widgets.AdaptiveWidgetProvider
 
 class MediaAccessService : NotificationListenerService() {
     private val observed = mutableListOf<MediaController>()
-    private val callback =
-        object : MediaController.Callback() {
+    private val callbacks =
+        mutableMapOf<android.media.session.MediaSession.Token, MediaController.Callback>()
+
+    private fun newCallback(): MediaController.Callback {
+        val playbackGate = PlaybackUpdateGate()
+        return object : MediaController.Callback() {
             override fun onMetadataChanged(metadata: MediaMetadata?) {
-                AdaptiveWidgetProvider.updateAll(this@MediaAccessService)
+                com.flowwidgets.app.widgets.WidgetUpdateDispatcher.request(
+                    this@MediaAccessService,
+                    setOf(WidgetKind.MEDIA),
+                )
             }
 
             override fun onPlaybackStateChanged(state: PlaybackState?) {
-                AdaptiveWidgetProvider.updateAll(this@MediaAccessService)
+                if (
+                    playbackGate.shouldUpdate(
+                        PlaybackUpdateGate.Signature(
+                            state?.state,
+                            state?.actions,
+                            state?.activeQueueItemId,
+                            state?.playbackSpeed,
+                        ),
+                        state?.position ?: -1,
+                        android.os.SystemClock.elapsedRealtime(),
+                    )
+                ) {
+                    com.flowwidgets.app.widgets.WidgetUpdateDispatcher.request(
+                        this@MediaAccessService,
+                        setOf(WidgetKind.MEDIA),
+                    )
+                }
             }
 
             override fun onQueueChanged(
                 queue: MutableList<android.media.session.MediaSession.QueueItem>?
             ) {
-                AdaptiveWidgetProvider.updateAll(this@MediaAccessService)
+                com.flowwidgets.app.widgets.WidgetUpdateDispatcher.request(
+                    this@MediaAccessService,
+                    setOf(WidgetKind.MEDIA),
+                )
             }
 
             override fun onSessionDestroyed() {
-                AdaptiveWidgetProvider.updateAll(this@MediaAccessService)
+                com.flowwidgets.app.widgets.WidgetUpdateDispatcher.request(
+                    this@MediaAccessService,
+                    setOf(WidgetKind.MEDIA),
+                )
             }
         }
+    }
+
+    private fun forget(controller: MediaController) {
+        callbacks.remove(controller.sessionToken)?.let { controller.unregisterCallback(it) }
+    }
+
     private val sessionsListener =
         MediaSessionManager.OnActiveSessionsChangedListener { sessions ->
             observe(sessions.orEmpty())
         }
 
     private fun observe(sessions: List<MediaController>) {
-        observed.forEach { it.unregisterCallback(callback) }
-        observed.clear()
-        observed.addAll(sessions)
-        observed.forEach { it.registerCallback(callback, Handler(Looper.getMainLooper())) }
-        AdaptiveWidgetProvider.updateAll(this)
+        val tokens = sessions.map { it.sessionToken }.toSet()
+        observed.filter { it.sessionToken !in tokens }.forEach { forget(it) }
+        observed.removeAll { it.sessionToken !in tokens }
+        val existing = observed.map { it.sessionToken }.toSet()
+        sessions
+            .filter { it.sessionToken !in existing }
+            .forEach {
+                val callback = newCallback()
+                callbacks[it.sessionToken] = callback
+                it.registerCallback(callback, Handler(Looper.getMainLooper()))
+                observed.add(it)
+            }
+        com.flowwidgets.app.widgets.WidgetUpdateDispatcher.request(this, setOf(WidgetKind.MEDIA))
+    }
+
+    private fun notificationChanged(sbn: StatusBarNotification?) {
+        if (
+            observed.isEmpty() &&
+                sbn?.notification
+                    ?.extras
+                    ?.containsKey(android.app.Notification.EXTRA_MEDIA_SESSION) == true
+        ) {
+            try {
+                observe(
+                    getSystemService(MediaSessionManager::class.java)
+                        .getActiveSessions(ComponentName(this, MediaAccessService::class.java))
+                )
+            } catch (_: SecurityException) {
+                observed.clear()
+            }
+        }
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
-        if (
-            sbn?.notification?.extras?.containsKey(android.app.Notification.EXTRA_MEDIA_SESSION) ==
-                true
-        )
-            AdaptiveWidgetProvider.updateAll(this)
+        notificationChanged(sbn)
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {
-        if (
-            sbn?.notification?.extras?.containsKey(android.app.Notification.EXTRA_MEDIA_SESSION) ==
-                true
-        )
-            AdaptiveWidgetProvider.updateAll(this)
+        notificationChanged(sbn)
+    }
+
+    override fun onListenerDisconnected() {
+        observed.forEach { forget(it) }
+        observed.clear()
+        com.flowwidgets.app.widgets.WidgetUpdateDispatcher.request(this, setOf(WidgetKind.MEDIA))
+        super.onListenerDisconnected()
     }
 
     override fun onListenerConnected() {
@@ -81,7 +140,7 @@ class MediaAccessService : NotificationListenerService() {
     override fun onDestroy() {
         getSystemService(MediaSessionManager::class.java)
             .removeOnActiveSessionsChangedListener(sessionsListener)
-        observed.forEach { it.unregisterCallback(callback) }
+        observed.forEach { forget(it) }
         observed.clear()
         super.onDestroy()
     }

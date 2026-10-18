@@ -20,6 +20,15 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [35], application = Application::class)
 class WidgetHostTest {
+    @org.junit.Before
+    fun initializeWorkManager() {
+        androidx.work.testing.WorkManagerTestInitHelper.initializeTestWorkManager(
+            androidx.test.core.app.ApplicationProvider.getApplicationContext<
+                android.content.Context
+            >()
+        )
+    }
+
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val manager
         get() = AppWidgetManager.getInstance(context)
@@ -43,6 +52,7 @@ class WidgetHostTest {
                 val ns = "http://schemas.android.com/apk/res/android"
                 assertEquals("appwidget-provider", it.name)
                 assertEquals(3, it.getAttributeIntValue(ns, "resizeMode", 0))
+                assertEquals(0, it.getAttributeIntValue(ns, "updatePeriodMillis", -1))
                 assertEquals(
                     "com.flowwidgets.app.widgets.WidgetConfigureActivity",
                     it.getAttributeValue(ns, "configure"),
