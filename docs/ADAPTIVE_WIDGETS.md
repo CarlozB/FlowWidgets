@@ -57,10 +57,16 @@ Las pruebas Robolectric y gráficas no sustituyen al launcher. Deben probarse Xi
 
 ## Cambio de comportamiento · 1.2.2
 
-El perfil de reloj `clockOnly` se aplica hasta 300×300 dp, incluidas las proporciones compactas de 1×1 y 2×2 habituales. Se muestra siempre la esfera analógica, con lado del 94 % de la dimensión menor y centrada en toda la tarjeta. No se reserva altura para fecha ni se crean calendario, zonas o agenda. El ajuste digital se conserva para los perfiles mayores, sin modificarlo silenciosamente en preferencias.
+El perfil de reloj `clockOnly` se aplica hasta 300×300 dp, incluidas las proporciones compactas de 1×1 y 2×2 habituales. Se muestra siempre la esfera analógica, con lado del 98 % de la dimensión menor y centrada en toda la tarjeta. No se reserva altura para fecha ni se crean calendario, zonas o agenda. El ajuste digital se conserva para los perfiles mayores, sin modificarlo silenciosamente en preferencias.
 
 El calendario compacto (hasta 170×190 dp) dibuja solo el día y centra sus límites visibles de glifos. Las cifras dejan de depender de una línea base proporcional fija. Los formatos grandes mantienen semana/mes/agenda.
 
 One UI/One Style ya no forma parte del catálogo. Los registros antiguos `ONE` se decodifican como Classic conservando los demás campos. Los límites dp son orientativos para las celdas del launcher; se mantiene pendiente la comprobación física con la nueva versión en HyperOS.
 
 El AnalogClock compacto ocupa el tamaño final real del padre con márgenes simétricos; centra internamente su esfera sin depender de coordenadas absolutas calculadas desde las opciones dp. Hay una prueba específica con medidas del host distintas de las reportadas.
+
+## Controles musicales de la entrega 1.0
+
+El LinearLayout de controles usa el ancho real del padre y gravedad inferior, con márgenes simétricos. Las tres posiciones conservan el mismo peso; una acción no soportada usa INVISIBLE en lugar de GONE. Así el título no modifica la fila y la ausencia de anterior no desplaza play/pausa hacia la portada. El preview conserva un espacio vacío equivalente. La esfera compacta usa márgenes simétricos del 1 %.
+
+Los alias de layout `widget_release_*` asignan una identidad nueva a las RemoteViews para obligar al host a reinflar el contenedor al actualizar; se evita reutilizar la antigua gravedad superior.

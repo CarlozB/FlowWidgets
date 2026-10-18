@@ -317,6 +317,67 @@ class PlacementTypographyTest {
     }
 
     @Test
+    fun longMediaTitlesAndUnsupportedActionsKeepFixedNativeControlSlots() {
+        val config = WidgetConfig(kind = WidgetKind.MEDIA, textScale = 1.5f)
+        val plan = AdaptiveWidgetLayoutEngine.plan(config.kind, 350f, 180f)
+        for (longTitle in listOf(false, true)) for (previous in listOf(false, true)) for (next in
+            listOf(false, true)) {
+            val media =
+                MediaInfo(
+                    if (longTitle) "Strawberry Fields Forever - Remastered ".repeat(20)
+                    else "Título",
+                    "The Beatles",
+                    null,
+                    true,
+                    previous,
+                    next,
+                )
+            val root =
+                AdaptiveWidgetProvider.buildVariant(
+                        context,
+                        config,
+                        plan,
+                        VisualWidgetRenderer.State(media = media),
+                    )
+                    .apply(context, FrameLayout(context))
+            val width = 470
+            val height = 230
+            root.measure(
+                android.view.View.MeasureSpec.makeMeasureSpec(
+                    width,
+                    android.view.View.MeasureSpec.EXACTLY,
+                ),
+                android.view.View.MeasureSpec.makeMeasureSpec(
+                    height,
+                    android.view.View.MeasureSpec.EXACTLY,
+                ),
+            )
+            root.layout(0, 0, width, height)
+            val controls = root.findViewById<android.view.ViewGroup>(R.id.widget_media_controls)
+            assertEquals(
+                android.view.Gravity.BOTTOM,
+                (controls.layoutParams as android.widget.FrameLayout.LayoutParams).gravity and
+                    android.view.Gravity.VERTICAL_GRAVITY_MASK,
+            )
+            val play = root.findViewById<android.view.View>(R.id.widget_play)
+            val back = root.findViewById<android.view.View>(R.id.widget_previous)
+            val skip = root.findViewById<android.view.View>(R.id.widget_next)
+            assertEquals(width / 2f, controls.left + play.left + play.width / 2f, 1f)
+            assertEquals(play.top + play.height / 2f, skip.top + skip.height / 2f, .1f)
+            assertTrue(controls.bottom <= height && controls.bottom >= height - 6)
+            assertEquals(
+                if (previous) android.view.View.VISIBLE else android.view.View.INVISIBLE,
+                back.visibility,
+            )
+            assertEquals(
+                if (next) android.view.View.VISIBLE else android.view.View.INVISIBLE,
+                skip.visibility,
+            )
+            assertTrue(kotlin.math.abs(back.width - skip.width) <= 1)
+        }
+    }
+
+    @Test
     fun compactCalendarGlyphIsVisuallyCentered() {
         for (size in listOf(80, 132, 160)) {
             val bitmap =

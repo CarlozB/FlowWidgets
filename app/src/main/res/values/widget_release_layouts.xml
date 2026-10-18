@@ -1,0 +1,12 @@
+<resources>
+<!-- New RemoteViews layout identities force reinflation after the bottom-gravity change. -->
+    <item name="widget_release_card" type="layout">@layout/widget_adaptive_card</item>
+    <item name="widget_release_card_serif" type="layout">@layout/widget_adaptive_card_serif</item>
+    <item name="widget_release_card_mono" type="layout">@layout/widget_adaptive_card_mono</item>
+    <item name="widget_release_inter_auto" type="layout">@layout/widget_adaptive_inter_auto</item>
+    <item name="widget_release_inter_light" type="layout">@layout/widget_adaptive_inter_light</item>
+    <item name="widget_release_inter_regular" type="layout">@layout/widget_adaptive_inter_regular</item>
+    <item name="widget_release_inter_medium" type="layout">@layout/widget_adaptive_inter_medium</item>
+    <item name="widget_release_inter_semibold" type="layout">@layout/widget_adaptive_inter_semibold</item>
+    <item name="widget_release_inter_bold" type="layout">@layout/widget_adaptive_inter_bold</item>
+</resources>

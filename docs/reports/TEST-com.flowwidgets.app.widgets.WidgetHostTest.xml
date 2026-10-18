@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.flowwidgets.app.widgets.WidgetHostTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-18T17:21:03.640Z" hostname="c068ee609df7" time="1.304">
+<testsuite name="com.flowwidgets.app.widgets.WidgetHostTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-18T17:46:01.957Z" hostname="c068ee609df7" time="1.397">
   <properties/>
-  <testcase name="resizingRefreshesWithoutDeletingConfiguration" classname="com.flowwidgets.app.widgets.WidgetHostTest" time="0.63"/>
-  <testcase name="analogClockAndEachVisualFamilyUseAllowedRemoteViewsOperations" classname="com.flowwidgets.app.widgets.WidgetHostTest" time="0.18"/>
-  <testcase name="allKindsInflateAndApplyTheirRemoteViewsWithoutPrivateApis" classname="com.flowwidgets.app.widgets.WidgetHostTest" time="0.321"/>
-  <testcase name="compactNotesKeepBodyAndClockFontLayoutsApply" classname="com.flowwidgets.app.widgets.WidgetHostTest" time="0.145"/>
-  <testcase name="everyProviderIsRegisteredWithResizableMetadata" classname="com.flowwidgets.app.widgets.WidgetHostTest" time="0.027"/>
+  <testcase name="resizingRefreshesWithoutDeletingConfiguration" classname="com.flowwidgets.app.widgets.WidgetHostTest" time="0.684"/>
+  <testcase name="analogClockAndEachVisualFamilyUseAllowedRemoteViewsOperations" classname="com.flowwidgets.app.widgets.WidgetHostTest" time="0.187"/>
+  <testcase name="allKindsInflateAndApplyTheirRemoteViewsWithoutPrivateApis" classname="com.flowwidgets.app.widgets.WidgetHostTest" time="0.258"/>
+  <testcase name="compactNotesKeepBodyAndClockFontLayoutsApply" classname="com.flowwidgets.app.widgets.WidgetHostTest" time="0.224"/>
+  <testcase name="everyProviderIsRegisteredWithResizableMetadata" classname="com.flowwidgets.app.widgets.WidgetHostTest" time="0.042"/>
   <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[Exception in thread "DefaultDispatcher-worker-3 @coroutine#14" java.lang.NullPointerException: Cannot invoke "android.content.BroadcastReceiver$PendingResult.finish()" because "this.$pending" is null
+  <system-err><![CDATA[Exception in thread "DefaultDispatcher-worker-2 @coroutine#13" java.lang.NullPointerException: Cannot invoke "android.content.BroadcastReceiver$PendingResult.finish()" because "this.$pending" is null
 	at com.flowwidgets.app.widgets.AdaptiveWidgetProvider$onReceive$1.invokeSuspend(AdaptiveWidgetProvider.kt:26)
 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
@@ -17,8 +17,8 @@
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:820)
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
-	Suppressed: kotlinx.coroutines.internal.DiagnosticCoroutineContextException: [CoroutineId(14), "coroutine#14":StandaloneCoroutine{Cancelling}@5afe7a11, Dispatchers.IO]
-Exception in thread "DefaultDispatcher-worker-1 @coroutine#15" java.lang.NullPointerException: Cannot invoke "android.content.BroadcastReceiver$PendingResult.finish()" because "this.$pending" is null
+	Suppressed: kotlinx.coroutines.internal.DiagnosticCoroutineContextException: [CoroutineId(13), "coroutine#13":StandaloneCoroutine{Cancelling}@5afe7a11, Dispatchers.IO]
+Exception in thread "DefaultDispatcher-worker-3 @coroutine#14" java.lang.NullPointerException: Cannot invoke "android.content.BroadcastReceiver$PendingResult.finish()" because "this.$pending" is null
 	at com.flowwidgets.app.widgets.AdaptiveWidgetProvider$onReceive$1.invokeSuspend(AdaptiveWidgetProvider.kt:26)
 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
@@ -28,8 +28,8 @@ Exception in thread "DefaultDispatcher-worker-1 @coroutine#15" java.lang.NullPoi
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:820)
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
-	Suppressed: kotlinx.coroutines.internal.DiagnosticCoroutineContextException: [CoroutineId(15), "coroutine#15":StandaloneCoroutine{Cancelling}@34877df6, Dispatchers.IO]
-Exception in thread "DefaultDispatcher-worker-2 @coroutine#68" java.lang.NullPointerException: Cannot invoke "android.content.BroadcastReceiver$PendingResult.finish()" because "this.$pending" is null
+	Suppressed: kotlinx.coroutines.internal.DiagnosticCoroutineContextException: [CoroutineId(14), "coroutine#14":StandaloneCoroutine{Cancelling}@6e4089dc, Dispatchers.IO]
+Exception in thread "DefaultDispatcher-worker-2 @coroutine#66" java.lang.NullPointerException: Cannot invoke "android.content.BroadcastReceiver$PendingResult.finish()" because "this.$pending" is null
 	at com.flowwidgets.app.widgets.AdaptiveWidgetProvider$onReceive$1.invokeSuspend(AdaptiveWidgetProvider.kt:26)
 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
@@ -39,8 +39,8 @@ Exception in thread "DefaultDispatcher-worker-2 @coroutine#68" java.lang.NullPoi
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:820)
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
-	Suppressed: kotlinx.coroutines.internal.DiagnosticCoroutineContextException: [CoroutineId(68), "coroutine#68":StandaloneCoroutine{Cancelling}@44d6a6eb, Dispatchers.IO]
-Exception in thread "DefaultDispatcher-worker-1 @coroutine#69" java.lang.NullPointerException: Cannot invoke "android.content.BroadcastReceiver$PendingResult.finish()" because "this.$pending" is null
+	Suppressed: kotlinx.coroutines.internal.DiagnosticCoroutineContextException: [CoroutineId(66), "coroutine#66":StandaloneCoroutine{Cancelling}@200fb009, Dispatchers.IO]
+Exception in thread "DefaultDispatcher-worker-1 @coroutine#67" java.lang.NullPointerException: Cannot invoke "android.content.BroadcastReceiver$PendingResult.finish()" because "this.$pending" is null
 	at com.flowwidgets.app.widgets.AdaptiveWidgetProvider$onReceive$1.invokeSuspend(AdaptiveWidgetProvider.kt:26)
 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
@@ -50,6 +50,6 @@ Exception in thread "DefaultDispatcher-worker-1 @coroutine#69" java.lang.NullPoi
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:820)
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
-	Suppressed: kotlinx.coroutines.internal.DiagnosticCoroutineContextException: [CoroutineId(69), "coroutine#69":StandaloneCoroutine{Cancelling}@50168ae2, Dispatchers.IO]
+	Suppressed: kotlinx.coroutines.internal.DiagnosticCoroutineContextException: [CoroutineId(67), "coroutine#67":StandaloneCoroutine{Cancelling}@59c6d4f2, Dispatchers.IO]
 ]]></system-err>
 </testsuite>

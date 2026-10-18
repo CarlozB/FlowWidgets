@@ -207,7 +207,7 @@ object AdaptiveWidgetLayoutEngine {
         val w = p.width
         val h = p.height
         if (p.clockOnly) {
-            val side = minOf(w, h) * .94f
+            val side = minOf(w, h) * .98f
             return ClockGeometry(
                 RectF((w - side) / 2, (h - side) / 2, (w + side) / 2, (h + side) / 2),
                 null,

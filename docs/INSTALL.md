@@ -80,3 +80,9 @@ Tras actualizar, los relojes 1×1/2×2 muestran solo la esfera grande. Fecha, re
 Instala sobre 1.2.2 para conservar los ajustes. El editor permite ajustar transparencia, iluminación y esquinas del fondo en las tres familias. Compara las manecillas, play/pausa y la línea de tiempo en tamaños pequeños y grandes; las acciones musicales deben seguir funcionando con una sesión real.
 
 El fondo utiliza una adaptación del núcleo óptico de LiquidGlass para bitmaps de widgets. Es un material difuso generado con reflejos; no captura ni desenfoca el fondo de pantalla. Consulta la licencia en Ajustes y los límites en [LIQUID_GLASS.md](LIQUID_GLASS.md).
+
+## Entrega final 1.0.0
+
+Esta APK se instala sobre las compilaciones anteriores, incluida 1.3.0: mantiene paquete, firma y un versionCode superior. No desinstales para actualizar. La versión visible es 1.0.0 a petición del usuario.
+
+Prueba títulos largos con un reproductor que permita siguiente pero no anterior. Play/pausa debe permanecer en el centro y siguiente a la derecha; las acciones no compatibles dejan un hueco. Cambia de canción y redimensiona para comprobar la fila fija. El reloj compacto ocupa un poco más de espacio y sigue centrado.

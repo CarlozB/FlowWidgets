@@ -4,6 +4,12 @@ Aplicación Android nativa para personalizar la pantalla de inicio con ocho tipo
 
 **Paquete:** `com.flowwidgets.app` · **Android:** 13–16 (API mínima 33, target/compile 36).
 
+## Versión 1.0 · Ajuste final
+
+Los controles del reproductor mantienen tres posiciones fijas: anterior, play/pausa centrado y siguiente. Cuando una acción no está disponible se conserva su espacio. La fila se ancla abajo, independientemente de títulos largos o diferencias entre el tamaño reportado y el tamaño final del launcher. La esfera compacta aumenta del 94 % al 98 % del espacio disponible.
+
+La versión visible se fija en 1.0.0 para esta entrega; el código de actualización Android sigue creciendo para poder instalarla sobre las compilaciones de desarrollo anteriores sin borrar datos.
+
 ## LiquidGlass y reflejos · 1.3
 
 Fondo de cristal esmerilado con bordes refractados usando el núcleo oficial de LiquidGlass, adaptado a bitmaps de RemoteViews. Manecillas, controles de música y barra de progreso incorporan reflejos; la esfera y sus números se mantienen.

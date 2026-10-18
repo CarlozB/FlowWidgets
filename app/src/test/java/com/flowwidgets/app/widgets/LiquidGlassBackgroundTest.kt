@@ -89,11 +89,11 @@ class LiquidGlassBackgroundTest {
                 now = 1760522940000,
                 media =
                     MediaInfo(
-                        "Tu banda sonora",
-                        "Sesión ilustrativa de prueba",
+                        "Strawberry Fields Forever - Remastered 2009",
+                        "The Beatles · datos ilustrativos de prueba",
                         cover,
                         true,
-                        true,
+                        false,
                         true,
                         positionMs = 65000,
                         durationMs = 210000,
@@ -109,6 +109,7 @@ class LiquidGlassBackgroundTest {
                     )
                 g.controls?.let { r ->
                     listOf("previous", "pause", "next").forEachIndexed { i, action ->
+                        if (i == 0 && state.media?.canPrevious != true) return@forEachIndexed
                         val cx = x + r.left + r.width() * (i + .5f) / 3
                         canvas.drawBitmap(
                             VisualWidgetRenderer.transportIcon(action, Color.WHITE),

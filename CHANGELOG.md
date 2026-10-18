@@ -1,5 +1,14 @@
 # Cambios
 
+## 1.0.0 · Entrega final solicitada
+
+- Controles musicales con posiciones fijas: ocultar una acción no redistribuye play/pausa ni siguiente.
+- Fila de controles anclada al borde inferior del host real, independiente de títulos extensos y mediciones dp aproximadas.
+- Preview conserva también los huecos de acciones no disponibles.
+- Esfera compacta ampliada del 94 % al 98 %, centrada y sin información adicional.
+- Nombre de versión final 1.0.0 y versionCode 7 para mantener actualizaciones sobre las entregas de desarrollo.
+
+
 ## 1.3.0 · Núcleo LiquidGlass y superficies reflectantes
 
 - Núcleo oficial LiquidGlass fijado por commit, sin modificar, con licencia Apache 2.0 y procedencia verificable.

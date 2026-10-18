@@ -133,6 +133,10 @@ fun ConfigPreview(
                                 "toggle" to media.canToggle,
                                 "next" to media.canNext,
                             )) {
+                            if (!enabled) {
+                                Spacer(Modifier.size(48.dp))
+                                continue
+                            }
                             IconButton(
                                 enabled = enabled,
                                 onClick = { MediaRepository.action(context, action) },

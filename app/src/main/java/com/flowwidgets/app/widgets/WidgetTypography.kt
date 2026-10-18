@@ -81,17 +81,17 @@ object WidgetTypography {
 
     fun layout(c: WidgetConfig): Int =
         when (c.font) {
-            "serif" -> R.layout.widget_adaptive_card_serif
-            "monospace" -> R.layout.widget_adaptive_card_mono
-            "system" -> R.layout.widget_adaptive_card
+            "serif" -> R.layout.widget_release_card_serif
+            "monospace" -> R.layout.widget_release_card_mono
+            "system" -> R.layout.widget_release_card
             else ->
                 when (c.fontWeight) {
-                    300 -> R.layout.widget_adaptive_inter_light
-                    400 -> R.layout.widget_adaptive_inter_regular
-                    500 -> R.layout.widget_adaptive_inter_medium
-                    600 -> R.layout.widget_adaptive_inter_semibold
-                    700 -> R.layout.widget_adaptive_inter_bold
-                    else -> R.layout.widget_adaptive_inter_auto
+                    300 -> R.layout.widget_release_inter_light
+                    400 -> R.layout.widget_release_inter_regular
+                    500 -> R.layout.widget_release_inter_medium
+                    600 -> R.layout.widget_release_inter_semibold
+                    700 -> R.layout.widget_release_inter_bold
+                    else -> R.layout.widget_release_inter_auto
                 }
         }
 }

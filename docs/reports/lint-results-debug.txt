@@ -75,10 +75,10 @@
    </lint>
    ```
 
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:325: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:348: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
                                 Uri.parse("flowwidgets://notes/${c.id}/${Uri.encode(entry.id)}")
                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:349: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:372: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
                             Uri.parse("content://com.android.calendar/time/${state.now}"),
                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/FlowApp.kt:125: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
@@ -217,8 +217,8 @@
 <TextClock android:id="@+id/widget_zone_3" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="sans" />
                                                                                                                                                     ~~~~~~~~
 /workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card.xml:9: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
-<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="top|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
-                                                                                                                                     ~~~~~~~~
+<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="bottom|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
+                                                                                                                                     ~~~~~~~~~~~
 /workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card_mono.xml:3: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
 <AnalogClock android:id="@+id/widget_analog" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:contentDescription="@string/widget_analog_description" />
                                                                                                                                                       ~~~~~~~~
@@ -238,8 +238,8 @@
 <TextClock android:id="@+id/widget_zone_3" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="monospace" />
                                                                                                                                                     ~~~~~~~~
 /workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card_mono.xml:9: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
-<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="top|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
-                                                                                                                                     ~~~~~~~~
+<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="bottom|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
+                                                                                                                                     ~~~~~~~~~~~
 /workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card_serif.xml:3: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
 <AnalogClock android:id="@+id/widget_analog" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:contentDescription="@string/widget_analog_description" />
                                                                                                                                                       ~~~~~~~~
@@ -259,8 +259,8 @@
 <TextClock android:id="@+id/widget_zone_3" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="serif" />
                                                                                                                                                     ~~~~~~~~
 /workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card_serif.xml:9: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
-<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="top|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
-                                                                                                                                     ~~~~~~~~
+<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="bottom|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
+                                                                                                                                     ~~~~~~~~~~~
 /workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_inter_auto.xml:3: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
 <AnalogClock android:id="@+id/widget_analog" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:contentDescription="@string/widget_analog_description" />
                                                                                                                                                       ~~~~~~~~
@@ -280,8 +280,8 @@
 <TextClock android:id="@+id/widget_zone_3" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="@font/inter_medium" android:fontFeatureSettings="tnum, lnum" android:textFontWeight="500" android:fontVariationSettings="'wght' 500, 'opsz' 24" android:includeFontPadding="false" android:letterSpacing="-0.015" />
                                                                                                                                                     ~~~~~~~~
 /workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_inter_auto.xml:9: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
-<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="top|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
-                                                                                                                                     ~~~~~~~~
+<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="bottom|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
+                                                                                                                                     ~~~~~~~~~~~
 /workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_inter_bold.xml:3: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
 <AnalogClock android:id="@+id/widget_analog" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:contentDescription="@string/widget_analog_description" />
                                                                                                                                                       ~~~~~~~~
@@ -301,8 +301,8 @@
 <TextClock android:id="@+id/widget_zone_3" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="@font/inter_bold" android:fontFeatureSettings="tnum, lnum" android:textFontWeight="700" android:fontVariationSettings="'wght' 700, 'opsz' 24" android:includeFontPadding="false" android:letterSpacing="-0.015" />
                                                                                                                                                     ~~~~~~~~
 /workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_inter_bold.xml:9: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
-<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="top|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
-                                                                                                                                     ~~~~~~~~
+<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="bottom|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
+                                                                                                                                     ~~~~~~~~~~~
 /workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_inter_light.xml:3: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
 <AnalogClock android:id="@+id/widget_analog" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:contentDescription="@string/widget_analog_description" />
                                                                                                                                                       ~~~~~~~~
@@ -322,8 +322,8 @@
 <TextClock android:id="@+id/widget_zone_3" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="@font/inter_light" android:fontFeatureSettings="tnum, lnum" android:textFontWeight="300" android:fontVariationSettings="'wght' 300, 'opsz' 24" android:includeFontPadding="false" android:letterSpacing="-0.015" />
                                                                                                                                                     ~~~~~~~~
 /workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_inter_light.xml:9: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
-<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="top|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
-                                                                                                                                     ~~~~~~~~
+<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="bottom|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
+                                                                                                                                     ~~~~~~~~~~~
 /workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_inter_medium.xml:3: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
 <AnalogClock android:id="@+id/widget_analog" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:contentDescription="@string/widget_analog_description" />
                                                                                                                                                       ~~~~~~~~
@@ -343,8 +343,8 @@
 <TextClock android:id="@+id/widget_zone_3" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="@font/inter_medium" android:fontFeatureSettings="tnum, lnum" android:textFontWeight="500" android:fontVariationSettings="'wght' 500, 'opsz' 24" android:includeFontPadding="false" android:letterSpacing="-0.015" />
                                                                                                                                                     ~~~~~~~~
 /workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_inter_medium.xml:9: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
-<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="top|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
-                                                                                                                                     ~~~~~~~~
+<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="bottom|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
+                                                                                                                                     ~~~~~~~~~~~
 /workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_inter_regular.xml:3: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
 <AnalogClock android:id="@+id/widget_analog" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:contentDescription="@string/widget_analog_description" />
                                                                                                                                                       ~~~~~~~~
@@ -364,8 +364,8 @@
 <TextClock android:id="@+id/widget_zone_3" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="@font/inter_regular" android:fontFeatureSettings="tnum, lnum" android:textFontWeight="400" android:fontVariationSettings="'wght' 400, 'opsz' 24" android:includeFontPadding="false" android:letterSpacing="-0.015" />
                                                                                                                                                     ~~~~~~~~
 /workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_inter_regular.xml:9: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
-<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="top|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
-                                                                                                                                     ~~~~~~~~
+<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="bottom|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
+                                                                                                                                     ~~~~~~~~~~~
 /workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_inter_semibold.xml:3: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
 <AnalogClock android:id="@+id/widget_analog" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:contentDescription="@string/widget_analog_description" />
                                                                                                                                                       ~~~~~~~~
@@ -385,8 +385,8 @@
 <TextClock android:id="@+id/widget_zone_3" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="@font/inter_semibold" android:fontFeatureSettings="tnum, lnum" android:textFontWeight="600" android:fontVariationSettings="'wght' 600, 'opsz' 24" android:includeFontPadding="false" android:letterSpacing="-0.015" />
                                                                                                                                                     ~~~~~~~~
 /workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_inter_semibold.xml:9: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
-<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="top|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
-                                                                                                                                     ~~~~~~~~
+<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="bottom|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
+                                                                                                                                     ~~~~~~~~~~~
 /workspace/FlowWidgets/app/src/main/res/layout/widget_hit_target.xml:1: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/widget_hit" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="top|left" android:background="@android:color/transparent" />
                                                                                                                                                                                     ~~~~~~~~

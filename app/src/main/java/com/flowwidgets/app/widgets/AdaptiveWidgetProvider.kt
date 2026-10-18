@@ -221,7 +221,30 @@ open class AdaptiveWidgetProvider : AppWidgetProvider() {
                 val g = AdaptiveWidgetLayoutEngine.media(p)
                 g.controls?.let { rect ->
                     v.setViewVisibility(R.id.widget_media_controls, View.VISIBLE)
-                    place(v, R.id.widget_media_controls, rect)
+                    v.setViewLayoutWidth(
+                        R.id.widget_media_controls,
+                        android.view.ViewGroup.LayoutParams.MATCH_PARENT.toFloat(),
+                        android.util.TypedValue.COMPLEX_UNIT_PX,
+                    )
+                    v.setViewLayoutHeight(
+                        R.id.widget_media_controls,
+                        rect.height(),
+                        android.util.TypedValue.COMPLEX_UNIT_DIP,
+                    )
+                    listOf(
+                            RemoteViews.MARGIN_LEFT to rect.left,
+                            RemoteViews.MARGIN_RIGHT to (p.width - rect.right),
+                            RemoteViews.MARGIN_TOP to 0f,
+                            RemoteViews.MARGIN_BOTTOM to (p.height - rect.bottom),
+                        )
+                        .forEach { (edge, margin) ->
+                            v.setViewLayoutMargin(
+                                R.id.widget_media_controls,
+                                edge,
+                                margin,
+                                android.util.TypedValue.COMPLEX_UNIT_DIP,
+                            )
+                        }
                     listOf(
                             Triple(R.id.widget_previous, "previous", media.canPrevious),
                             Triple(
@@ -232,7 +255,7 @@ open class AdaptiveWidgetProvider : AppWidgetProvider() {
                             Triple(R.id.widget_next, "next", media.canNext),
                         )
                         .forEach { (view, action, allowed) ->
-                            v.setViewVisibility(view, if (allowed) View.VISIBLE else View.GONE)
+                            v.setViewVisibility(view, if (allowed) View.VISIBLE else View.INVISIBLE)
                             v.setImageViewBitmap(
                                 view,
                                 VisualWidgetRenderer.transportIcon(action, palette.foreground),
@@ -400,7 +423,7 @@ open class AdaptiveWidgetProvider : AppWidgetProvider() {
                         android.view.ViewGroup.LayoutParams.MATCH_PARENT.toFloat(),
                         android.util.TypedValue.COMPLEX_UNIT_PX,
                     )
-                    val inset = minOf(p.width, p.height) * .03f
+                    val inset = minOf(p.width, p.height) * .01f
                     listOf(
                             RemoteViews.MARGIN_LEFT,
                             RemoteViews.MARGIN_TOP,

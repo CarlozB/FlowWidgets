@@ -5,7 +5,7 @@
 | Comprobación | Resultado |
 | --- | --- |
 | `./gradlew assembleDebug` | Correcta; APK generado |
-| `./gradlew testDebugUnitTest` | **41 pasadas, 0 fallidas, 0 omitidas** |
+| `./gradlew testDebugUnitTest` | **42 pasadas, 0 fallidas, 0 omitidas** |
 | `./gradlew lintDebug` | **0 errores, 93 advertencias** |
 | `./gradlew assembleDebugAndroidTest` | APK de pruebas instrumentadas compilado |
 | `apksigner verify --verbose` | Firma v2 válida, un firmante |
@@ -15,13 +15,13 @@
 
 La última ejecución completa de verificación terminó con código 0. Los informes originales están en [`reports/`](reports/): seis XML JUnit, informe Lint y registro de compilación/verificación. Las advertencias Lint son recomendaciones de versiones, orden de parámetros Compose, extensiones KTX, posiciones físicas de RemoteViews (izquierda/derecha) y recursos antiguos conservados para compatibilidad de actualización; no se deshabilitaron comprobaciones ni se creó un baseline para ocultar errores.
 
-## Qué cubren las 41 pruebas locales
+## Qué cubren las 42 pruebas locales
 
 - Nueve pruebas de repositorios: serialización de todos los ajustes, valores por defecto, persistencia DataStore, aislamiento entre widgets, actualización/borrado, tema, listas dañadas, calendario sin permiso, caché meteorológica por coordenadas, timestamp y fallback offline sin peticiones de red, códigos meteorológicos y pronóstico ampliado con campos opcionales.
 - Cinco pruebas de widgets: registro y metadatos de los ocho proveedores; aplicación de RemoteViews de cada tipo; reloj analógico y tres estilos; conservación al redimensionar y limpieza al borrar; notas compactas y layouts de fuentes de reloj.
 - Nueve pruebas gráficas nativas: ocho tipos en siete proporciones (56 renders), límites de memoria/transparencia, recorte frente a ajuste real, iconos meteorológicos distintos, reloj sin agujas congeladas, colores y exportación de ejemplos desde el renderer de producción.
 - Seis pruebas adaptativas: tamaños reportados y fallback de orientación, límite de 16 variantes, presupuesto global, grids, reaplicación al encoger, transacciones entre instancias, caché Glass, once proporciones y mapa RemoteViews de los ocho tipos.
-- Diez regresiones de colocación y tipografía: primera actualización sin callback en los tres estilos actuales, callbacks previos/tardíos/duplicados y concurrencia, paleta explícita, pesos reales de Inter en Canvas y TextClock, cifras tabulares, ajuste de números y esfera cuadrada/centrada tras medir vistas Android.
+- Once regresiones de colocación y tipografía: primera actualización sin callback en los tres estilos actuales, callbacks previos/tardíos/duplicados y concurrencia, paleta explícita, pesos reales de Inter en Canvas y TextClock, cifras tabulares, ajuste de números y esfera cuadrada/centrada tras medir vistas Android.
 - Las pruebas de host se ejecutan con Robolectric API 35. No equivalen a una prueba del launcher Xiaomi.
 
 ## Pruebas instrumentadas no ejecutadas
@@ -46,9 +46,9 @@ Ver [`INSTALL.md`](INSTALL.md) y la lista manual del README. No se garantiza una
 
 - Archivo final: `dist/FlowWidgets-debug.apk`
 - Certificado de depuración: coincide con el APK 1.2 ya publicado, por lo que la actualización conserva datos si se instala sobre él.
-- Tamaño: 30,664,455 bytes
-- SHA-256: `ffb1f9fbc872f6dfc49b78550c4e69a81f018555b9cabff4d2afcac372345a4b`
-- Versión: `1.3.0` (6), compilación de depuración, no release de Play Store.
+- Tamaño: 31,473,756 bytes
+- SHA-256: `e4596d50be1319ce8400423360a1f4ea5ba44f0d4fa65e0fed6f1f676bd8843d`
+- Versión: `1.0.0` (7), compilación de depuración, no release de Play Store.
 
 ## Cambios visuales y límites de esta validación
 
@@ -87,3 +87,11 @@ La suite incluye dos pruebas adicionales de reflejos en manecillas/controles y f
 Se verificó que los cinco archivos del núcleo coinciden byte por byte con el commit oficial fijado. La función que dibuja la esfera y los números es idéntica a la de 1.2.2. La lámina [FlowWidgets-LiquidGlass.png](images/FlowWidgets-LiquidGlass.png) usa el motor real con fixtures de test y no es una captura del launcher.
 
 La integración es un adaptador CPU de las funciones SDF/lente del núcleo, con fondo de luz difusa generado. No ejecuta el renderer AGSL ni desenfoca el fondo del launcher. El APK conserva acciones multimedia y relojes nativos. Más detalles y licencia en [LIQUID_GLASS.md](LIQUID_GLASS.md). No se probó la nueva APK ni el consumo en hardware físico; se mantienen cuatro pruebas instrumentadas compiladas y no ejecutadas.
+
+## Entrega final 1.0.0 · Música y esfera
+
+Se añadió una regresión con títulos largos/cortos, escala de texto 1.5 y las cuatro combinaciones de anterior/siguiente disponibles. Las vistas Android se miden con un tamaño de host diferente al dp anunciado: play/pausa mantiene el centro, los botones comparten eje vertical y la fila permanece anclada al borde inferior. Las acciones ausentes usan INVISIBLE y conservan su posición. El preview conserva también esos huecos.
+
+Los nuevos identificadores de layout RemoteViews fuerzan su reinflado al actualizar, para que el launcher no conserve la gravedad superior de un contenedor antiguo. La esfera crece del 94 % al 98 % con márgenes simétricos del 1 % y se mantiene centrada. Se regeneraron láminas y el preview del reloj; el ejemplo LiquidGlass incluye ahora un título largo sin acción anterior.
+
+La versión visible es 1.0.0 a petición del usuario, con versionCode 7 para permitir actualización sobre las versiones de desarrollo anteriores. Compilación, pruebas, Lint, firma y alineación pasaron. Las advertencias incluyen layouts antiguos conservados para compatibilidad; no se ocultaron mediante un baseline. Queda comprobar este ajuste final en HyperOS; las cuatro pruebas instrumentadas se compilaron y no se ejecutaron.
