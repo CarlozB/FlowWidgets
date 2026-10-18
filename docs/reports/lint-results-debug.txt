@@ -16,7 +16,7 @@
    MavenCentral dependency, and connects to the library every time, which
    makes it more flexible but also much slower.
 
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/WidgetPreview.kt:36: Warning: Modifier parameter should be the first optional parameter [ModifierParameter from androidx.compose.ui]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/WidgetPreview.kt:37: Warning: Modifier parameter should be the first optional parameter [ModifierParameter from androidx.compose.ui]
     modifier: Modifier = Modifier,
     ~~~~~~~~
 
@@ -75,55 +75,64 @@
    </lint>
    ```
 
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:301: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:324: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+                                Uri.parse("flowwidgets://notes/${c.id}/${Uri.encode(entry.id)}")
+                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:348: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
                             Uri.parse("content://com.android.calendar/time/${state.now}"),
                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/AdaptiveWidgetProvider.kt:306: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
-                            else Intent(Intent.ACTION_VIEW, Uri.parse(it))
-                                                            ~~~~~~~~~~~~~
 /workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/FlowApp.kt:124: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
                             context
                             ^
 /workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/ui/FlowApp.kt:576: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
                         Uri.parse("package:${context.packageName}"),
                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:97: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
-                                            Uri.parse(uri),
-                                            ~~~~~~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:125: Warning: Use the KTX function createBitmap instead? [UseKtx]
-                    Bitmap.createBitmap(160, 160, Bitmap.Config.ARGB_8888).also {
-                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:155: Warning: Use the KTX function createBitmap instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/SoftLightGlassRenderer.kt:46: Warning: Use the KTX function createBitmap instead? [UseKtx]
             Bitmap.createBitmap(
             ^
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:240: Warning: Use the KTX extension function Canvas.withRotation instead? [UseKtx]
-                cv.save()
-                ~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:251: Warning: Use the KTX extension function Canvas.withRotation instead? [UseKtx]
-                cv.save()
-                ~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:302: Warning: Use the KTX function createBitmap instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:113: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+                                Uri.parse(it),
+                                ~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:143: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+                                            Uri.parse(uri),
+                                            ~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:182: Warning: Use the KTX function createBitmap instead? [UseKtx]
+                                Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888).also {
+                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:226: Warning: Use the KTX function createBitmap instead? [UseKtx]
+            Bitmap.createBitmap(
+            ^
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:291: Warning: Use the KTX extension function Canvas.withRotation instead? [UseKtx]
+                    cv.save()
+                    ~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:302: Warning: Use the KTX extension function Canvas.withRotation instead? [UseKtx]
+                    cv.save()
+                    ~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:378: Warning: Use the KTX function createBitmap instead? [UseKtx]
         val b = Bitmap.createBitmap(320, 320, Bitmap.Config.ARGB_8888)
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:346: Warning: Use the KTX function createBitmap instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:422: Warning: Use the KTX function createBitmap instead? [UseKtx]
         val b = Bitmap.createBitmap(32, 320, Bitmap.Config.ARGB_8888)
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:659: Warning: Use the KTX extension function Canvas.withTranslation instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1109: Warning: Use the KTX extension function Canvas.withTranslation instead? [UseKtx]
         cv.save()
         ~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:996: Warning: Use the KTX function createBitmap instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1547: Warning: Use the KTX function createBitmap instead? [UseKtx]
         val b = Bitmap.createBitmap(96, 96, Bitmap.Config.ARGB_8888)
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1006: Warning: Use the KTX extension function Canvas.withSave instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1557: Warning: Use the KTX extension function Canvas.withSave instead? [UseKtx]
                 cv.save()
                 ~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1057: Warning: Use the KTX extension function Canvas.withSave instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1609: Warning: Use the KTX extension function Canvas.withClip instead? [UseKtx]
         cv.save()
         ~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1146: Warning: Use the KTX extension function Canvas.withTranslation instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1617: Warning: Use the KTX extension function Canvas.withSave instead? [UseKtx]
         cv.save()
         ~~~~~~~~~
-/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/data/WeatherRepository.kt:103: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/widgets/VisualWidgetRenderer.kt:1706: Warning: Use the KTX extension function Canvas.withTranslation instead? [UseKtx]
+        cv.save()
+        ~~~~~~~~~
+/workspace/FlowWidgets/app/src/main/java/com/flowwidgets/app/data/WeatherRepository.kt:131: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
                 context
                 ^
 
@@ -183,4 +192,90 @@
    </lint>
    ```
 
-0 errors, 24 warnings
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card.xml:3: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<AnalogClock android:id="@+id/widget_analog" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:contentDescription="@string/widget_analog_description" />
+                                                                                                                                                      ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card.xml:4: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<TextClock android:id="@+id/widget_clock" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="sans" />
+                                                                                                                                                   ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card.xml:5: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<TextClock android:id="@+id/widget_date" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="sans" />
+                                                                                                                                                  ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card.xml:6: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<TextClock android:id="@+id/widget_zone_1" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="sans" />
+                                                                                                                                                    ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card.xml:7: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<TextClock android:id="@+id/widget_zone_2" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="sans" />
+                                                                                                                                                    ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card.xml:8: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<TextClock android:id="@+id/widget_zone_3" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="sans" />
+                                                                                                                                                    ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card.xml:9: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="top|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
+                                                                                                                                     ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card_mono.xml:3: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<AnalogClock android:id="@+id/widget_analog" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:contentDescription="@string/widget_analog_description" />
+                                                                                                                                                      ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card_mono.xml:4: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<TextClock android:id="@+id/widget_clock" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="monospace" />
+                                                                                                                                                   ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card_mono.xml:5: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<TextClock android:id="@+id/widget_date" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="monospace" />
+                                                                                                                                                  ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card_mono.xml:6: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<TextClock android:id="@+id/widget_zone_1" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="monospace" />
+                                                                                                                                                    ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card_mono.xml:7: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<TextClock android:id="@+id/widget_zone_2" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="monospace" />
+                                                                                                                                                    ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card_mono.xml:8: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<TextClock android:id="@+id/widget_zone_3" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="monospace" />
+                                                                                                                                                    ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card_mono.xml:9: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="top|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
+                                                                                                                                     ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card_serif.xml:3: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<AnalogClock android:id="@+id/widget_analog" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:contentDescription="@string/widget_analog_description" />
+                                                                                                                                                      ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card_serif.xml:4: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<TextClock android:id="@+id/widget_clock" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="serif" />
+                                                                                                                                                   ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card_serif.xml:5: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<TextClock android:id="@+id/widget_date" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="serif" />
+                                                                                                                                                  ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card_serif.xml:6: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<TextClock android:id="@+id/widget_zone_1" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="serif" />
+                                                                                                                                                    ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card_serif.xml:7: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<TextClock android:id="@+id/widget_zone_2" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="serif" />
+                                                                                                                                                    ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card_serif.xml:8: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<TextClock android:id="@+id/widget_zone_3" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" android:layout_gravity="top|left" android:singleLine="true" android:gravity="center" android:fontFamily="serif" />
+                                                                                                                                                    ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_adaptive_card_serif.xml:9: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<LinearLayout android:id="@+id/widget_media_controls" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="top|left" android:orientation="horizontal" android:gravity="center" android:visibility="gone">
+                                                                                                                                     ~~~~~~~~
+/workspace/FlowWidgets/app/src/main/res/layout/widget_hit_target.xml:1: Warning: Use "start" instead of "left" to ensure correct behavior in right-to-left locales [RtlHardcoded]
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/widget_hit" android:layout_width="1dp" android:layout_height="1dp" android:layout_gravity="top|left" android:background="@android:color/transparent" />
+                                                                                                                                                                                    ~~~~~~~~
+
+   Explanation for issues of type "RtlHardcoded":
+   Using Gravity#LEFT and Gravity#RIGHT can lead to problems when a layout is
+   rendered in locales where text flows from right to left. Use Gravity#START
+   and Gravity#END instead. Similarly, in XML gravity and layout_gravity
+   attributes, use start rather than left.
+
+   For XML attributes such as paddingLeft and layout_marginLeft, use
+   paddingStart and layout_marginStart. NOTE: If your minSdkVersion is less
+   than 17, you should add both the older left/right attributes as well as the
+   new start/end attributes. On older platforms, where RTL is not supported
+   and the start/end attributes are unknown and therefore ignored, you need
+   the older left/right attributes. There is a separate lint check which
+   catches that type of error.
+
+   (Note: For Gravity#LEFT and Gravity#START, you can use these constants even
+   when targeting older platforms, because the start bitmask is a superset of
+   the left bitmask. Therefore, you can use gravity="start" rather than
+   gravity="left|start".)
+
+0 errors, 49 warnings

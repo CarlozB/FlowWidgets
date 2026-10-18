@@ -69,7 +69,7 @@ object WeatherRepository {
             try {
                 val j =
                     fetch(
-                        "https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&current=temperature_2m,weather_code&hourly=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=2"
+                        "https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&current=temperature_2m,weather_code,relative_humidity_2m,apparent_temperature,wind_speed_10m&hourly=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max&timezone=auto&forecast_days=5"
                     )
                 val current = j.getJSONObject("current")
                 val daily = j.getJSONObject("daily")
@@ -99,6 +99,34 @@ object WeatherRepository {
                         hours,
                         System.currentTimeMillis(),
                         current.getInt("weather_code"),
+                        daily.optJSONArray("time")?.let { a ->
+                            (0 until a.length()).map { i ->
+                                WeatherDay(
+                                    a.getString(i),
+                                    daily.getJSONArray("temperature_2m_max").getDouble(i),
+                                    daily.getJSONArray("temperature_2m_min").getDouble(i),
+                                    daily.optJSONArray("weather_code")?.optInt(i, -1) ?: -1,
+                                    daily.optJSONArray("precipitation_probability_max")?.let { v ->
+                                        if (v.isNull(i)) null
+                                        else v.optInt(i).takeIf { it in 0..100 }
+                                    },
+                                )
+                            }
+                        } ?: emptyList(),
+                        if (
+                            current.isNull("relative_humidity_2m") ||
+                                !current.has("relative_humidity_2m")
+                        )
+                            null
+                        else current.optInt("relative_humidity_2m").takeIf { it in 0..100 },
+                        if (
+                            current.isNull("apparent_temperature") ||
+                                !current.has("apparent_temperature")
+                        )
+                            null
+                        else current.optDouble("apparent_temperature").takeIf { it.isFinite() },
+                        if (current.isNull("wind_speed_10m") || !current.has("wind_speed_10m")) null
+                        else current.optDouble("wind_speed_10m").takeIf { it.isFinite() && it >= 0 },
                     )
                 context
                     .getSharedPreferences("weather_cache", Context.MODE_PRIVATE)
@@ -155,6 +183,24 @@ object WeatherRepository {
             .put("updatedAt", s.updatedAt)
             .put("code", s.code)
             .put(
+                "days",
+                JSONArray().apply {
+                    s.days.forEach { d ->
+                        put(
+                            JSONObject()
+                                .put("date", d.date)
+                                .put("high", d.high)
+                                .put("low", d.low)
+                                .put("code", d.code)
+                                .put("rain", d.rainProbability)
+                        )
+                    }
+                },
+            )
+            .put("humidity", s.humidity)
+            .put("feelsLike", s.feelsLike)
+            .put("windKmh", s.windKmh)
+            .put(
                 "hours",
                 JSONArray().apply {
                     s.hours.forEach {
@@ -181,6 +227,21 @@ object WeatherRepository {
             },
             j.getLong("updatedAt"),
             j.optInt("code", -1),
+            j.optJSONArray("days")?.let { a ->
+                (0 until a.length()).map { i ->
+                    val d = a.getJSONObject(i)
+                    WeatherDay(
+                        d.getString("date"),
+                        d.getDouble("high"),
+                        d.getDouble("low"),
+                        d.optInt("code", -1),
+                        if (d.isNull("rain")) null else d.optInt("rain"),
+                    )
+                }
+            } ?: emptyList(),
+            if (j.isNull("humidity")) null else j.optInt("humidity"),
+            if (j.isNull("feelsLike")) null else j.optDouble("feelsLike"),
+            if (j.isNull("windKmh")) null else j.optDouble("windKmh"),
         )
     }
 }

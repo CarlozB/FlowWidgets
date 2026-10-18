@@ -157,6 +157,33 @@ class RepositoryTest {
     }
 
     @Test
+    fun expandedForecastFieldsSurviveCacheAndMissingOptionalValues() = runTest {
+        val config = WidgetConfig(latitude = 7.0, longitude = 8.0)
+        val response =
+            JSONObject(
+                """{
+          "current":{"time":"2026-10-18T10:00","temperature_2m":23,"weather_code":2,"relative_humidity_2m":65,"apparent_temperature":24,"wind_speed_10m":8},
+          "hourly":{"time":["2026-10-18T10:00"],"temperature_2m":[23],"weather_code":[2]},
+          "daily":{"time":["2026-10-18","2026-10-19"],"temperature_2m_max":[26,25],"temperature_2m_min":[18,17],"weather_code":[2,3],"precipitation_probability_max":[10,null]}
+        }"""
+            )
+        val result =
+            WeatherRepository.refreshWith(context, config) { url ->
+                assertTrue(url.contains("forecast_days=5"))
+                assertTrue(url.contains("relative_humidity_2m"))
+                response
+            }!!
+        assertEquals(65, result.humidity)
+        assertEquals(24.0, result.feelsLike!!, .001)
+        assertEquals(8.0, result.windKmh!!, .001)
+        assertEquals(2, result.days.size)
+        assertNull(result.days.last().rainProbability)
+        assertEquals(result, WeatherRepository.cached(context, config))
+        response.getJSONObject("current").remove("relative_humidity_2m")
+        assertNull(WeatherRepository.refreshWith(context, config) { response }!!.humidity)
+    }
+
+    @Test
     fun weatherCodesCoverConditions() {
         assertEquals("Despejado", WeatherRepository.description(0))
         assertEquals("Tormenta", WeatherRepository.description(95))

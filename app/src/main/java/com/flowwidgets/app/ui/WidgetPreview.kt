@@ -14,6 +14,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.flowwidgets.app.data.*
+import com.flowwidgets.app.widgets.AdaptiveWidgetLayoutEngine
 import com.flowwidgets.app.widgets.VisualWidgetRenderer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -57,73 +58,105 @@ private data class PreviewFrame(val bitmap: Bitmap, val state: VisualWidgetRende
 
 /** These are the actual launcher drawings, not an unrelated mock of the widget. */
 @Composable
-fun ConfigPreview(config: WidgetConfig, modifier: Modifier = Modifier) {
+fun ConfigPreview(
+    config: WidgetConfig,
+    modifier: Modifier = Modifier,
+    simulateSize: Boolean = false,
+) {
     val context = LocalContext.current
-    BoxWithConstraints(modifier) {
-        val width = maxWidth.value.toInt().coerceIn(40, 600)
-        val height = maxHeight.value.toInt().coerceIn(40, 600)
-        val frame by
-            produceState<PreviewFrame?>(null, config, width, height) {
-                while (true) {
-                    value =
-                        withContext(Dispatchers.IO) {
-                            val state = VisualWidgetRenderer.snapshot(context, config)
-                            PreviewFrame(
-                                VisualWidgetRenderer.render(config, width, height, state),
-                                state,
-                            )
-                        }
-                    delay(
-                        if (config.kind == WidgetKind.CLOCK && config.showSeconds) 1_000
-                        else if (config.kind == WidgetKind.MEDIA) 3_000 else 30_000
-                    )
-                }
-            }
-        frame?.let { rendered ->
-            Image(
-                rendered.bitmap.asImageBitmap(),
-                contentDescription = "Vista previa de ${config.kind.name.lowercase()}",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.FillBounds,
-            )
-            if (config.kind == WidgetKind.MEDIA && rendered.state.media != null) {
-                val media = rendered.state.media
-                val color = VisualWidgetRenderer.palette(config).foreground
-                Row(
-                    Modifier.align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                ) {
-                    for ((action, enabled) in
-                        listOf(
-                            "previous" to media.canPrevious,
-                            "toggle" to true,
-                            "next" to media.canNext,
-                        )) {
-                        IconButton(
-                            enabled = enabled,
-                            onClick = { MediaRepository.action(context, action) },
-                        ) {
-                            val icon =
-                                remember(action, media.playing, color) {
-                                    VisualWidgetRenderer.transportIcon(
-                                        if (action == "toggle")
-                                            (if (media.playing) "pause" else "play")
-                                        else action,
-                                        color,
+    val simulated = AdaptiveWidgetLayoutEngine.previewSizes[config.size]
+    Box(modifier, contentAlignment = Alignment.Center) {
+        BoxWithConstraints(
+            if (simulateSize && simulated != null)
+                Modifier.aspectRatio(
+                    simulated.width / simulated.height,
+                    matchHeightConstraintsFirst = simulated.height > simulated.width,
+                )
+            else Modifier.fillMaxSize()
+        ) {
+            val width =
+                (if (simulateSize) simulated?.width?.toInt() else null)
+                    ?: maxWidth.value.toInt().coerceIn(40, 600)
+            val height =
+                (if (simulateSize) simulated?.height?.toInt() else null)
+                    ?: maxHeight.value.toInt().coerceIn(40, 600)
+            val plan =
+                AdaptiveWidgetLayoutEngine.plan(config.kind, width.toFloat(), height.toFloat())
+            val frame by
+                produceState<PreviewFrame?>(null, config, width, height) {
+                    while (true) {
+                        value =
+                            withContext(Dispatchers.IO) {
+                                val state =
+                                    VisualWidgetRenderer.snapshot(
+                                        context,
+                                        config,
+                                        photoLimit = plan.photoCapacity,
+                                        shortcutLimit = plan.shortcutCapacity,
                                     )
-                                }
-                            Image(
-                                icon.asImageBitmap(),
-                                contentDescription =
-                                    when (action) {
-                                        "previous" -> "Anterior"
-                                        "next" -> "Siguiente"
-                                        else -> "Reproducir o pausar"
-                                    },
-                                modifier = Modifier.size(40.dp),
+                                PreviewFrame(
+                                    VisualWidgetRenderer.render(config, width, height, state),
+                                    state,
+                                )
+                            }
+                        delay(
+                            if (config.kind == WidgetKind.CLOCK && config.showSeconds) 1_000
+                            else if (config.kind == WidgetKind.MEDIA) 3_000 else 30_000
+                        )
+                    }
+                }
+            frame?.let { rendered ->
+                Image(
+                    rendered.bitmap.asImageBitmap(),
+                    contentDescription = "Vista previa de ${config.kind.name.lowercase()}",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.FillBounds,
+                )
+                if (config.kind == WidgetKind.MEDIA && rendered.state.media != null && !plan.tiny) {
+                    val media = rendered.state.media
+                    val color = VisualWidgetRenderer.palette(config).foreground
+                    val controls = AdaptiveWidgetLayoutEngine.media(plan).controls
+                    Row(
+                        Modifier.offset(
+                                x = (maxWidth.value * (controls?.left ?: 0f) / width).dp,
+                                y = (maxHeight.value * (controls?.top ?: 0f) / height).dp,
                             )
+                            .width(
+                                (maxWidth.value * (controls?.width() ?: width.toFloat()) / width).dp
+                            )
+                            .height((maxHeight.value * (controls?.height() ?: 40f) / height).dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                    ) {
+                        for ((action, enabled) in
+                            listOf(
+                                "previous" to media.canPrevious,
+                                "toggle" to media.canToggle,
+                                "next" to media.canNext,
+                            )) {
+                            IconButton(
+                                enabled = enabled,
+                                onClick = { MediaRepository.action(context, action) },
+                            ) {
+                                val icon =
+                                    remember(action, media.playing, color) {
+                                        VisualWidgetRenderer.transportIcon(
+                                            if (action == "toggle")
+                                                (if (media.playing) "pause" else "play")
+                                            else action,
+                                            color,
+                                        )
+                                    }
+                                Image(
+                                    icon.asImageBitmap(),
+                                    contentDescription =
+                                        when (action) {
+                                            "previous" -> "Anterior"
+                                            "next" -> "Siguiente"
+                                            else -> "Reproducir o pausar"
+                                        },
+                                    modifier = Modifier.size(40.dp),
+                                )
+                            }
                         }
                     }
                 }

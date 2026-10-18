@@ -4,6 +4,14 @@ Aplicación Android nativa para personalizar la pantalla de inicio con ocho tipo
 
 **Paquete:** `com.flowwidgets.app` · **Android:** 13–16 (API mínima 33, target/compile 36).
 
+## Widgets adaptativos · 1.2
+
+El mismo widget cambia su composición al redimensionarlo desde el escritorio: aparecen más detalles, controles, collages y accesos. El editor permite simular once proporciones, configurar zonas horarias, listas de tareas, varios accesos y Soft Light Glass. Los ajustes se conservan por instancia.
+
+![Diseños adaptativos del motor real](docs/images/FlowWidgets-adaptive.png)
+
+Ejemplo generado con datos exclusivos de pruebas; no es una captura de HyperOS. Consulta [arquitectura, estrategias, APIs y límites](docs/ADAPTIVE_WIDGETS.md).
+
 ## Nuevo diseño visual · 1.1
 
 Los widgets del escritorio ahora usan un motor gráfico original (`VisualWidgetRenderer`) compartido con las vistas previas de Compose. Las esferas, agujas, iconos del clima, anillos de batería, papel de notas y controles se dibujan desde código. Las fotos y portadas provienen únicamente de tu selección o sesión multimedia. No hacen falta assets de Apple ni fuentes propietarias.
@@ -43,7 +51,7 @@ El entregable de depuración se copia a **`dist/FlowWidgets-debug.apk`**. Es una
 4. Si el launcher no admite fijado directo, mantén pulsado el escritorio, abre Widgets y elige Flow Widgets. La pantalla de configuración permite guardar o cancelar.
 5. Redimensiona desde el launcher. Edita las instancias en **Mis widgets**; elimina del escritorio con las herramientas del propio launcher.
 
-La configuración se conserva por `appWidgetId`, incluidas dos instancias del mismo tipo. Restablecer recupera los ajustes de esa instancia. El selector de tamaño es orientativo: el launcher controla las celdas y el espacio real. Se admiten redimensionamientos horizontales y verticales para composiciones 1×1, 2×1, 1×2, 2×2, 4×1, 4×2 y 4×4; no se garantiza una cuadrícula exacta en HyperOS sin comprobarla en la tablet.
+La configuración se conserva por `appWidgetId`, incluidas dos instancias del mismo tipo. Restablecer recupera los ajustes de esa instancia. El selector de tamaño es orientativo: el launcher controla las celdas y el espacio real. Se admiten redimensionamientos horizontales y verticales para composiciones 1×1, 1×2, 2×1, 2×2, 3×1, 3×2, 2×3, 4×1, 4×2, 2×4 y 4×4; no se garantiza una cuadrícula exacta en HyperOS sin comprobarla en la tablet.
 
 ## Funciones
 

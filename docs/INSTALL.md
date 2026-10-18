@@ -9,7 +9,7 @@
 
 El APK está firmado para depuración. Si existe otra instalación con el mismo paquete y distinta firma, Android rechazará actualizarla. Desinstalar esa versión eliminará sus datos; conserva antes cualquier nota o configuración que necesites.
 
-## Actualizar a la versión visual 1.1
+## Actualizar a la versión adaptativa 1.2
 
 Instala el APK nuevo sobre el anterior; tiene el mismo paquete y mantiene tus configuraciones. El sistema debe aceptar la misma firma de depuración. En un reloj existente, activa **Reloj analógico** para mostrar la esfera; el ajuste digital anterior se conserva intencionadamente. Puedes personalizar los ocho tipos desde su editor.
 
@@ -22,6 +22,14 @@ En la app, abre el catálogo, elige un tipo y personalízalo. Pulsa **Añadir a 
 Si HyperOS no permite el fijado directo, mantén pulsado el escritorio, entra en **Widgets** y busca los proveedores **Flow · Reloj**, **Flow · Batería**, **Flow · Calendario**, **Flow · Clima**, **Flow · Música**, **Flow · Notas**, **Flow · Fotos** y **Flow · Accesos**. Arrastra uno al escritorio y configúralo. El launcher decide la cuadrícula y las dimensiones finales.
 
 Para cambiar una instancia, usa **Mis widgets → Editar**, o la opción de reconfiguración del launcher si está disponible. Para quitarla del escritorio, utiliza **Eliminar** del launcher; **Restablecer** en la app recupera sus ajustes iniciales.
+
+## Comprobar el redimensionamiento
+
+Mantén pulsado el widget en el escritorio y arrastra sus bordes. Prueba una tarjeta pequeña, una fila, una columna y un panel grande en ambas orientaciones. El editor simula once proporciones; el launcher decide cuáles admite realmente.
+
+Al ampliar un reloj, configura zonas horarias y eventos; en Notas añade tareas, que podrás marcar desde el panel. En Accesos añade varios destinos; Fotos muestra collages si elegiste varias imágenes. Música solo muestra progreso/cola si el reproductor los publica. Los controles deben seguir funcionando después de ampliar y reducir.
+
+Comprueba dos instancias con ajustes distintos, cierra la app y reinicia. Las dimensiones exactas 1×1 y las animaciones de HyperOS todavía requieren prueba física. Detalles en [ADAPTIVE_WIDGETS.md](ADAPTIVE_WIDGETS.md).
 
 ## Datos y permisos
 

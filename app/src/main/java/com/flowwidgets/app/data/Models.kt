@@ -49,9 +49,34 @@ data class WidgetConfig(
     val alignment: String = "start",
     val photoScale: String = "crop",
     val shortcutIcon: String = "app",
+    val timeZones: List<String> = listOf("UTC"),
+    val shortcuts: List<ShortcutEntry> = emptyList(),
+    val noteItems: List<NoteEntry> = emptyList(),
+    val opacity: Float = 1f,
+    val glassOpacity: Float = .82f,
+    val glassLighting: Float = .6f,
+    val glassCorner: Float = 24f,
 )
 
-data class BatteryInfo(val level: Int, val charging: Boolean)
+data class ShortcutEntry(
+    val id: String,
+    val label: String = "",
+    val packageName: String? = null,
+    val uri: String? = null,
+    val icon: String = "app",
+)
+
+data class NoteEntry(val id: String, val text: String, val checked: Boolean = false)
+
+data class BatteryInfo(
+    val level: Int,
+    val charging: Boolean,
+    val source: String? = null,
+    val temperatureC: Double? = null,
+    val voltageMv: Int? = null,
+    val health: String? = null,
+    val technology: String? = null,
+)
 
 data class CalendarEvent(val title: String, val time: Long)
 
@@ -61,6 +86,14 @@ data class WeatherLocation(val name: String, val latitude: Double, val longitude
 
 data class WeatherHour(val time: String, val temp: Double, val code: Int)
 
+data class WeatherDay(
+    val date: String,
+    val high: Double,
+    val low: Double,
+    val code: Int,
+    val rainProbability: Int? = null,
+)
+
 data class WeatherSnapshot(
     val temp: Double,
     val description: String,
@@ -69,6 +102,10 @@ data class WeatherSnapshot(
     val hours: List<WeatherHour>,
     val updatedAt: Long,
     val code: Int = -1,
+    val days: List<WeatherDay> = emptyList(),
+    val humidity: Int? = null,
+    val feelsLike: Double? = null,
+    val windKmh: Double? = null,
 )
 
 data class MediaInfo(
@@ -78,4 +115,12 @@ data class MediaInfo(
     val playing: Boolean,
     val canPrevious: Boolean,
     val canNext: Boolean,
+    val canToggle: Boolean = true,
+    val positionMs: Long? = null,
+    val durationMs: Long? = null,
+    val album: String? = null,
+    val queue: List<MediaQueueEntry> = emptyList(),
+    val canSelectQueue: Boolean = false,
 )
+
+data class MediaQueueEntry(val id: Long, val title: String)

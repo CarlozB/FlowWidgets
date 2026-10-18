@@ -69,3 +69,27 @@ class WidgetMediaReceiver : BroadcastReceiver() {
         }
     }
 }
+
+class WidgetNoteReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        val id = intent.getIntExtra("widget_id", AppWidgetManager.INVALID_APPWIDGET_ID)
+        val noteId = intent.getStringExtra("note_id") ?: return
+        if (id == AppWidgetManager.INVALID_APPWIDGET_ID) return
+        val pending = goAsync()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                FlowRepository.update(context, id) { config ->
+                    config.copy(
+                        noteItems =
+                            config.noteItems.map {
+                                if (it.id == noteId) it.copy(checked = !it.checked) else it
+                            }
+                    )
+                }
+                AdaptiveWidgetProvider.updateAll(context)
+            } finally {
+                pending.finish()
+            }
+        }
+    }
+}

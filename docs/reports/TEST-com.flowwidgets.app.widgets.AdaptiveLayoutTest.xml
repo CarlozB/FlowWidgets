@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.flowwidgets.app.widgets.AdaptiveLayoutTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-18T05:45:50.566Z" hostname="c068ee609df7" time="4.716">
+  <properties/>
+  <testcase name="expansionAddsContentAndGridsStayInsideBounds" classname="com.flowwidgets.app.widgets.AdaptiveLayoutTest" time="2.211"/>
+  <testcase name="shrinkingRemovesZonesAndTaskTargets" classname="com.flowwidgets.app.widgets.AdaptiveLayoutTest" time="0.904"/>
+  <testcase name="glassCacheAndAllAdaptiveProfilesRender" classname="com.flowwidgets.app.widgets.AdaptiveLayoutTest" time="1.126"/>
+  <testcase name="sizeMapBuildsAndAppliesForEveryProvider" classname="com.flowwidgets.app.widgets.AdaptiveLayoutTest" time="0.385"/>
+  <testcase name="hostSizesAreDeduplicatedAndRespectFrameworkLimit" classname="com.flowwidgets.app.widgets.AdaptiveLayoutTest" time="0.049"/>
+  <testcase name="listUpdatesPreserveOtherInstancesAndOldSettings" classname="com.flowwidgets.app.widgets.AdaptiveLayoutTest" time="0.039"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,5 +1,14 @@
 # Cambios
 
+## 1.2.0 · Widgets adaptativos
+
+- Motor de perfiles dp compartido por los ocho proveedores, variantes RemoteViews y reconstrucción al redimensionar.
+- Contenido progresivo: zonas horarias, calendario/agenda, detalles reales de batería, pronóstico diario, progreso y cola compatible, collages, listas marcables y hasta dieciséis accesos.
+- Editor con once proporciones simuladas y personalización Soft Light Glass con caché acotada.
+- Persistencia compatible con versiones anteriores y actualización transaccional de tareas por instancia.
+- Pruebas de perfiles, presupuesto, reaplicación al reducir y aislamiento de datos; documentación de APIs y límites físicos.
+
+
 ## 1.1.0
 
 - Composiciones de escritorio propias por tipo, inspiradas en la claridad visual de iOS.

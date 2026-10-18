@@ -1,1 +1,1 @@
-<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@layout/widget_card,@layout/widget_card_serif,@layout/widget_card_mono" />
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@layout/widget_card,@layout/widget_card_serif,@layout/widget_card_mono,@layout/widget_visual_card,@layout/widget_visual_card_serif,@layout/widget_visual_card_mono" />

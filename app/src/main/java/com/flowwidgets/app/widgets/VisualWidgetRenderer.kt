@@ -24,6 +24,16 @@ object VisualWidgetRenderer {
         val appIcon: Bitmap? = null,
         val shortcutLabel: String = "Elige un acceso",
         val events: List<CalendarEvent> = emptyList(),
+        val photos: List<Bitmap> = emptyList(),
+        val shortcuts: List<ShortcutVisual> = emptyList(),
+        val calendarAllowed: Boolean = false,
+    )
+
+    data class ShortcutVisual(
+        val entry: ShortcutEntry,
+        val label: String,
+        val icon: Bitmap?,
+        val available: Boolean,
     )
 
     data class Palette(val background: Int, val foreground: Int, val accent: Int)
@@ -76,19 +86,55 @@ object VisualWidgetRenderer {
      * Read only legitimate sources. Missing photos, weather and sessions remain explicit empty
      * states.
      */
-    fun snapshot(context: Context, c: WidgetConfig, now: Long = System.currentTimeMillis()): State {
-        var photo: Bitmap? = null
-        var icon: Bitmap? = null
-        var label =
-            if (c.shortcutUri?.startsWith("android.settings.") == true) "Ajustes del sistema"
-            else if (c.shortcutUri != null) "Contacto seleccionado" else "Elige un acceso"
-        if (c.kind == WidgetKind.PHOTO) {
-            val uri =
-                if (c.rotatePhotos && c.photoUris.isNotEmpty())
-                    c.photoUris[((now / 1_800_000) % c.photoUris.size).toInt()]
-                else c.photoUri
-            if (uri != null)
-                photo =
+    fun shortcutEntries(c: WidgetConfig): List<ShortcutEntry> {
+        val main =
+            if (c.shortcutPackage != null || c.shortcutUri != null)
+                listOf(
+                    ShortcutEntry(
+                        "primary",
+                        c.title,
+                        c.shortcutPackage,
+                        c.shortcutUri,
+                        c.shortcutIcon,
+                    )
+                )
+            else emptyList()
+        return (main + c.shortcuts).distinctBy { it.id }.take(16)
+    }
+
+    fun shortcutIntent(context: Context, entry: ShortcutEntry): android.content.Intent? =
+        runCatching {
+                val intent =
+                    entry.uri?.let {
+                        if (it.startsWith("android.settings.")) android.content.Intent(it)
+                        else
+                            android.content.Intent(
+                                android.content.Intent.ACTION_VIEW,
+                                Uri.parse(it),
+                            )
+                    }
+                        ?: entry.packageName?.let {
+                            context.packageManager.getLaunchIntentForPackage(it)
+                        }
+                intent?.takeIf { it.resolveActivity(context.packageManager) != null }
+            }
+            .getOrNull()
+
+    fun snapshot(
+        context: Context,
+        c: WidgetConfig,
+        now: Long = System.currentTimeMillis(),
+        photoLimit: Int = 1,
+        shortcutLimit: Int = 16,
+    ): State {
+        val photos =
+            if (c.kind == WidgetKind.PHOTO) {
+                val uris = (c.photoUris.ifEmpty { listOfNotNull(c.photoUri) }).distinct()
+                val start =
+                    if (c.rotatePhotos && uris.isNotEmpty()) ((now / 1_800_000) % uris.size).toInt()
+                    else 0
+                (uris.drop(start) + uris.take(start)).take(photoLimit.coerceIn(1, 9)).mapNotNull {
+                    uri ->
                     runCatching {
                             imageCache.get(uri)
                                 ?: ImageDecoder.decodeBitmap(
@@ -111,33 +157,57 @@ object VisualWidgetRenderer {
                                     .also { imageCache.put(uri, it) }
                         }
                         .getOrNull()
-        }
-        if (c.kind == WidgetKind.SHORTCUT && c.shortcutPackage != null)
-            runCatching {
-                label =
-                    context.packageManager
-                        .getApplicationLabel(
-                            context.packageManager.getApplicationInfo(c.shortcutPackage, 0)
-                        )
-                        .toString()
-                val drawable = context.packageManager.getApplicationIcon(c.shortcutPackage)
-                icon =
-                    Bitmap.createBitmap(160, 160, Bitmap.Config.ARGB_8888).also {
-                        drawable.setBounds(0, 0, 160, 160)
-                        drawable.draw(Canvas(it))
+                }
+            } else emptyList()
+        val shortcuts =
+            if (c.kind == WidgetKind.SHORTCUT)
+                shortcutEntries(c).take(shortcutLimit).map { entry ->
+                    var icon: Bitmap? = null
+                    var label =
+                        entry.label.ifBlank {
+                            if (entry.uri?.startsWith("android.settings.") == true) "Ajustes"
+                            else if (entry.uri != null) "Contacto" else "Aplicación"
+                        }
+                    entry.packageName?.let { pkg ->
+                        runCatching {
+                            if (entry.label.isBlank())
+                                label =
+                                    context.packageManager
+                                        .getApplicationLabel(
+                                            context.packageManager.getApplicationInfo(pkg, 0)
+                                        )
+                                        .toString()
+                            val d = context.packageManager.getApplicationIcon(pkg)
+                            icon =
+                                Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888).also {
+                                    d.setBounds(0, 0, 128, 128)
+                                    d.draw(Canvas(it))
+                                }
+                        }
                     }
-            }
+                    ShortcutVisual(entry, label, icon, shortcutIntent(context, entry) != null)
+                }
+            else emptyList()
         return State(
-            now,
-            if (c.kind == WidgetKind.BATTERY) DeviceData.battery(context)
-            else BatteryInfo(-1, false),
-            if (c.kind == WidgetKind.WEATHER) WeatherRepository.cached(context, c) else null,
-            if (c.kind == WidgetKind.MEDIA) MediaRepository.current(context) else null,
-            photo,
-            icon,
-            label,
-            if (c.kind == WidgetKind.CALENDAR && c.showEvents) DeviceData.events(context)
-            else emptyList(),
+            now = now,
+            battery =
+                if (c.kind == WidgetKind.BATTERY) DeviceData.battery(context)
+                else BatteryInfo(-1, false),
+            weather =
+                if (c.kind == WidgetKind.WEATHER) WeatherRepository.cached(context, c) else null,
+            media = if (c.kind == WidgetKind.MEDIA) MediaRepository.current(context) else null,
+            photo = photos.firstOrNull(),
+            appIcon = shortcuts.firstOrNull()?.icon,
+            shortcutLabel = shortcuts.firstOrNull()?.label ?: "Elige un acceso",
+            events =
+                if (c.kind in listOf(WidgetKind.CALENDAR, WidgetKind.CLOCK) && c.showEvents)
+                    DeviceData.events(context)
+                else emptyList(),
+            photos = photos,
+            shortcuts = shortcuts,
+            calendarAllowed =
+                context.checkSelfPermission(android.Manifest.permission.READ_CALENDAR) ==
+                    android.content.pm.PackageManager.PERMISSION_GRANTED,
         )
     }
 
@@ -147,10 +217,11 @@ object VisualWidgetRenderer {
         height: Int,
         state: State,
         drawClock: Boolean = true,
+        maxScale: Float = 2f,
     ): Bitmap {
-        val w = width.coerceIn(40, 600).toFloat()
-        val h = height.coerceIn(40, 600).toFloat()
-        val factor = minOf(2f, 720f / maxOf(w, h))
+        val w = width.coerceIn(40, 1000).toFloat()
+        val h = height.coerceIn(40, 1000).toFloat()
+        val factor = minOf(maxScale, 720f / maxOf(w, h))
         val bitmap =
             Bitmap.createBitmap(
                 (w * factor).roundToInt(),
@@ -159,39 +230,17 @@ object VisualWidgetRenderer {
             )
         val canvas = Canvas(bitmap)
         canvas.scale(factor, factor)
-        val radius = minOf(if (c.style == WidgetStyle.ONE) 26f else 22f, minOf(w, h) * .2f)
+        val radius = SoftLightGlassRenderer.radius(c, w, h)
         canvas.clipPath(
             Path().apply { addRoundRect(RectF(0f, 0f, w, h), radius, radius, Path.Direction.CW) }
         )
         val p = palette(c)
-        val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-        val base = if (c.style == WidgetStyle.GLASS) alpha(p.background, 195) else p.background
-        bgPaint.shader =
-            LinearGradient(
-                0f,
-                0f,
-                w,
-                h,
-                intArrayOf(blend(base, Color.WHITE, .12f), base, blend(base, Color.BLACK, .12f)),
-                null,
-                Shader.TileMode.CLAMP,
-            )
-        canvas.drawRect(0f, 0f, w, h, bgPaint)
-        if (c.kind != WidgetKind.NOTE && c.kind != WidgetKind.CALENDAR) {
-            val glow =
-                Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    shader =
-                        RadialGradient(
-                            w * .8f,
-                            h * .05f,
-                            maxOf(w, h) * .8f,
-                            alpha(Color.WHITE, 32),
-                            Color.TRANSPARENT,
-                            Shader.TileMode.CLAMP,
-                        )
-                }
-            canvas.drawCircle(w * .8f, h * .05f, maxOf(w, h) * .8f, glow)
-        }
+        canvas.drawBitmap(
+            SoftLightGlassRenderer.background(c, bitmap.width, bitmap.height),
+            null,
+            RectF(0f, 0f, w, h),
+            Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG),
+        )
         when (c.kind) {
             WidgetKind.CLOCK -> clock(canvas, w, h, c, p, state, drawClock)
             WidgetKind.BATTERY -> battery(canvas, w, h, c, p, state)
@@ -225,76 +274,103 @@ object VisualWidgetRenderer {
         s: State,
         draw: Boolean,
     ) {
-        if (!draw) return
-        if (c.analog) {
-            val size = minOf(w - 12, h - (if (c.showDate && h >= 140) 30f else 12f))
-            val top = if (c.showDate && h >= 140) 6f else (h - size) / 2
-            cv.save()
-            cv.translate((w - size) / 2, top)
-            cv.scale(size / 320, size / 320)
-            cv.drawBitmap(dial(c), 0f, 0f, null)
-            val cal = Calendar.getInstance().apply { timeInMillis = s.now }
-            val minute = cal.get(Calendar.MINUTE) + cal.get(Calendar.SECOND) / 60f
-            val hour = cal.get(Calendar.HOUR) + minute / 60f
-            for ((angle, long) in listOf(hour * 30 to false, minute * 6 to true)) {
+        val plan = AdaptiveWidgetLayoutEngine.plan(c.kind, w, h)
+        val geometry = AdaptiveWidgetLayoutEngine.clock(c, plan)
+        if (draw) {
+            val rect = geometry.face
+            if (c.analog) {
+                val size = minOf(rect.width(), rect.height())
                 cv.save()
-                cv.rotate(angle, 160f, 160f)
-                cv.drawBitmap(
-                    hand(long, false, p.accent, c.style == WidgetStyle.GLASS),
-                    144f,
-                    0f,
-                    null,
-                )
+                cv.translate(rect.centerX() - size / 2, rect.centerY() - size / 2)
+                cv.scale(size / 320, size / 320)
+                cv.drawBitmap(dial(c), 0f, 0f, null)
+                val cal = Calendar.getInstance().apply { timeInMillis = s.now }
+                val minute = cal.get(Calendar.MINUTE) + cal.get(Calendar.SECOND) / 60f
+                val hour = cal.get(Calendar.HOUR) + minute / 60f
+                for ((angle, long) in listOf(hour * 30 to false, minute * 6 to true)) {
+                    cv.save()
+                    cv.rotate(angle, 160f, 160f)
+                    cv.drawBitmap(
+                        hand(long, false, p.accent, c.style == WidgetStyle.GLASS),
+                        144f,
+                        0f,
+                        null,
+                    )
+                    cv.restore()
+                }
+                if (c.showSeconds) {
+                    cv.save()
+                    cv.rotate(cal.get(Calendar.SECOND) * 6f, 160f, 160f)
+                    cv.drawBitmap(hand(true, true, p.accent), 144f, 0f, null)
+                    cv.restore()
+                }
                 cv.restore()
-            }
-            if (c.showSeconds) {
-                cv.save()
-                cv.rotate(cal.get(Calendar.SECOND) * 6f, 160f, 160f)
-                cv.drawBitmap(hand(true, true, p.accent), 144f, 0f, null)
-                cv.restore()
-            }
-            cv.restore()
-            if (c.showDate && h >= 140)
+            } else {
+                val format =
+                    (if (c.clock24) "HH:mm" else "h:mm") +
+                        (if (c.showSeconds && !plan.tiny) ":ss" else "") +
+                        (if (c.clock24 || plan.tiny) "" else " a")
+                val font =
+                    minOf(
+                        rect.width() / (if (c.showSeconds && !plan.tiny) 5.8f else 3.4f),
+                        rect.height() * .64f,
+                    )
                 text(
                     cv,
-                    date(s.now, "EEE, d MMM"),
-                    w / 2,
-                    h - 12,
-                    11f,
+                    date(s.now, format),
+                    rect.centerX(),
+                    rect.centerY() + font * .34f,
+                    font,
                     p.foreground,
                     c,
                     align = Paint.Align.CENTER,
                 )
-        } else {
-            val font = minOf(w / (if (c.showSeconds) 5.8f else 3.4f), h * .4f)
+            }
+            geometry.date?.let { r ->
+                text(
+                    cv,
+                    date(s.now, "EEE, d MMM"),
+                    r.centerX(),
+                    r.centerY() + 4,
+                    minOf(12f, r.width() / 7),
+                    p.foreground,
+                    c,
+                    align = Paint.Align.CENTER,
+                    maxWidth = r.width(),
+                )
+            }
+        }
+        geometry.calendar?.let { r -> region(cv, r) { rw, rh -> month(cv, rw, rh, c, p, s) } }
+        geometry.zones.forEachIndexed { i, r ->
+            val id = c.timeZones[i]
             text(
                 cv,
-                SimpleDateFormat(
-                        (if (c.clock24) "HH:mm" else "h:mm") +
-                            (if (c.showSeconds) ":ss" else "") +
-                            (if (c.clock24) "" else " a"),
-                        Locale.getDefault(),
-                    )
-                    .format(Date(s.now)),
-                w / 2,
-                h / 2 + font * .34f,
-                font,
-                p.foreground,
+                id.substringAfterLast('/').replace('_', ' '),
+                r.left,
+                r.top + 10,
+                9f,
+                alpha(p.foreground, 170),
                 c,
-                align = Paint.Align.CENTER,
+                maxWidth = r.width(),
             )
-            if (c.showDate && h >= 100)
+            if (draw) {
+                val format =
+                    SimpleDateFormat(if (c.clock24) "HH:mm" else "h:mm a", Locale.getDefault())
+                        .apply { timeZone = TimeZone.getTimeZone(id) }
                 text(
                     cv,
-                    date(s.now, "EEE, d MMM"),
-                    w / 2,
-                    h - 12,
-                    11f,
+                    format.format(Date(s.now)),
+                    r.left,
+                    r.bottom - 4,
+                    17f,
                     p.foreground,
                     c,
-                    align = Paint.Align.CENTER,
+                    maxWidth = r.width(),
                 )
+            }
         }
+        if (c.showEvents)
+            geometry.events?.let { agenda(cv, it, c, p, s, plan.eventCapacity.coerceAtLeast(1)) }
     }
 
     /** Native AnalogClock uses these original bitmap Icons and keeps the hands on time itself. */
@@ -357,10 +433,64 @@ object VisualWidgetRenderer {
     }
 
     private fun battery(cv: Canvas, w: Float, h: Float, c: WidgetConfig, p: Palette, s: State) {
-        val compact = h < 100 || w < 115
-        val cx = if (w > h * 1.6f) w * .73f else w / 2
-        val cy = if (compact) h / 2 else h * .49f
-        val r = minOf(h * (if (compact) .35f else .29f), w * .34f)
+        val plan = AdaptiveWidgetLayoutEngine.plan(c.kind, w, h)
+        val b = s.battery
+        val level = if (b.level >= 0) "${b.level}%" else "—"
+        val status = if (b.level < 0) "Sin lectura" else if (b.charging) "Cargando" else "En uso"
+        val details =
+            listOfNotNull(
+                "Estado" to status,
+                b.source?.let { "Conexión" to it },
+                b.temperatureC?.let {
+                    "Temperatura" to String.format(Locale.getDefault(), "%.1f °C", it)
+                },
+                b.voltageMv?.let {
+                    "Voltaje" to String.format(Locale.getDefault(), "%.2f V", it / 1000.0)
+                },
+                b.health?.let { "Estado informado" to it },
+                b.technology?.let { "Tecnología" to it },
+            )
+        if (plan.row) {
+            text(
+                cv,
+                level,
+                12f,
+                h * .55f,
+                minOf(32f, h * .43f),
+                p.foreground,
+                c,
+                bold = true,
+                maxWidth = w * .4f,
+            )
+            text(cv, status, w * .43f, 22f, 11f, p.foreground, c, maxWidth = w * .55f - 12)
+            val left = w * .43f
+            val right = w - 14
+            val y = h * .57f
+            val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = alpha(p.foreground, 35) }
+            cv.drawRoundRect(RectF(left, y, right, y + 7), 4f, 4f, paint)
+            if (b.level >= 0) {
+                paint.color = p.accent
+                cv.drawRoundRect(
+                    RectF(left, y, left + (right - left) * b.level.coerceIn(0, 100) / 100, y + 7),
+                    4f,
+                    4f,
+                    paint,
+                )
+            }
+            b.source?.let {
+                text(cv, it, left, h - 8, 9f, alpha(p.foreground, 180), c, maxWidth = right - left)
+            }
+            return
+        }
+        val cx = if (plan.expanded && !plan.panel) w * .24f else w / 2
+        val cy =
+            if (plan.panel) h * .27f
+            else if (plan.expanded) h * .47f else h * (if (plan.tiny) .5f else .43f)
+        val r =
+            minOf(
+                if (plan.panel) h * .2f else h * .29f,
+                if (plan.expanded && !plan.panel) w * .17f else w * .34f,
+            )
         val paint =
             Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 style = Paint.Style.STROKE
@@ -369,7 +499,7 @@ object VisualWidgetRenderer {
                 color = alpha(p.foreground, 30)
             }
         cv.drawCircle(cx, cy, r, paint)
-        if (s.battery.level >= 0) {
+        if (b.level >= 0) {
             paint.color = p.accent
             cv.drawArc(
                 cx - r,
@@ -377,14 +507,14 @@ object VisualWidgetRenderer {
                 cx + r,
                 cy + r,
                 -90f,
-                s.battery.level.coerceIn(0, 100) * 3.6f,
+                b.level.coerceIn(0, 100) * 3.6f,
                 false,
                 paint,
             )
         }
         text(
             cv,
-            if (s.battery.level >= 0) "${s.battery.level}%" else "—",
+            level,
             cx,
             cy + r * .19f,
             r * .54f,
@@ -393,20 +523,39 @@ object VisualWidgetRenderer {
             align = Paint.Align.CENTER,
             bold = true,
         )
-        val gx = if (w > h * 1.6f) w * .19f else w / 2
-        val gy = if (w > h * 1.6f) h * .47f else h * .83f
-        batteryIcon(cv, gx - 12, gy - 10, 24f, p.accent, s.battery.charging)
-        if (!compact && w <= h * 1.6f)
-            text(
-                cv,
-                if (s.battery.charging) "Cargando" else "Batería",
-                w / 2,
-                h * .94f,
-                10f,
-                alpha(p.foreground, 180),
-                c,
-                align = Paint.Align.CENTER,
-            )
+        if (plan.tiny) return
+        if (plan.panel || plan.expanded) {
+            val rect =
+                if (plan.panel) RectF(18f, h * .55f, w - 18, h - 12)
+                else RectF(w * .5f, 18f, w - 14, h - 12)
+            val rows = details.take(if (plan.panel) minOf(6, (rect.height() / 30).toInt()) else 3)
+            val line = minOf(32f, rect.height() / maxOf(1, rows.size))
+            rows.forEachIndexed { i, (label, value) ->
+                text(
+                    cv,
+                    label,
+                    rect.left,
+                    rect.top + i * line + 11,
+                    9f,
+                    alpha(p.foreground, 165),
+                    c,
+                    maxWidth = rect.width(),
+                )
+                text(
+                    cv,
+                    value,
+                    rect.left,
+                    rect.top + i * line + 26,
+                    12f,
+                    p.foreground,
+                    c,
+                    maxWidth = rect.width(),
+                )
+            }
+        } else {
+            batteryIcon(cv, w / 2 - 12, h * .78f, 24f, p.accent, b.charging)
+            text(cv, status, w / 2, h * .94f, 10f, p.foreground, c, align = Paint.Align.CENTER)
+        }
     }
 
     private fun batteryIcon(
@@ -443,6 +592,203 @@ object VisualWidgetRenderer {
     }
 
     private fun calendar(cv: Canvas, w: Float, h: Float, c: WidgetConfig, p: Palette, s: State) {
+        val plan = AdaptiveWidgetLayoutEngine.plan(c.kind, w, h)
+        val cal = Calendar.getInstance().apply { timeInMillis = s.now }
+        if (plan.tiny) {
+            text(
+                cv,
+                cal.get(Calendar.DAY_OF_MONTH).toString(),
+                w / 2,
+                h * .74f,
+                minOf(w * .52f, h * .58f),
+                p.foreground,
+                c,
+                align = Paint.Align.CENTER,
+            )
+            return
+        }
+        if (plan.row || plan.column) {
+            text(
+                cv,
+                date(s.now, "EEE, d MMM"),
+                12f,
+                if (plan.column) 25f else 27f,
+                if (plan.column) 12f else 17f,
+                p.accent,
+                c,
+                maxWidth = w - 24,
+                bold = true,
+            )
+            if (plan.column)
+                text(
+                    cv,
+                    cal.get(Calendar.DAY_OF_MONTH).toString(),
+                    w / 2,
+                    h * .57f,
+                    minOf(48f, w * .5f),
+                    p.foreground,
+                    c,
+                    align = Paint.Align.CENTER,
+                )
+            if (c.showEvents)
+                agenda(
+                    cv,
+                    RectF(12f, if (plan.column) h * .68f else 36f, w - 12, h - 8),
+                    c,
+                    p,
+                    s,
+                    1,
+                )
+            return
+        }
+        if (plan.panel) {
+            region(cv, RectF(0f, 0f, w, h * .62f)) { rw, rh ->
+                month(cv, rw, rh, c.copy(showEvents = false), p, s)
+            }
+            agenda(cv, RectF(14f, h * .65f, w - 14, h - 12), c, p, s, 4)
+        } else if (plan.wide) {
+            region(cv, RectF(0f, 0f, w * .48f, h)) { rw, rh ->
+                month(cv, rw, rh, c.copy(showEvents = false), p, s)
+            }
+            agenda(cv, RectF(w * .51f, 14f, w - 12, h - 12), c, p, s, 3)
+        } else {
+            text(
+                cv,
+                date(s.now, "MMMM yyyy"),
+                14f,
+                24f,
+                14f,
+                p.accent,
+                c,
+                maxWidth = w - 28,
+                bold = true,
+            )
+            val week =
+                (cal.clone() as Calendar).apply {
+                    add(
+                        Calendar.DAY_OF_MONTH,
+                        -((get(Calendar.DAY_OF_WEEK) -
+                            (if (c.weekStartsMonday) Calendar.MONDAY else Calendar.SUNDAY) + 7) % 7),
+                    )
+                }
+            val top = if (plan.expanded) 37f else h * .35f
+            val cell = (w - 24) / 7
+            for (i in 0..6) {
+                val x = 12 + cell * (i + .5f)
+                text(
+                    cv,
+                    date(week.timeInMillis, "EEE").take(1),
+                    x,
+                    top + 10,
+                    10f,
+                    alpha(p.foreground, 160),
+                    c,
+                    align = Paint.Align.CENTER,
+                )
+                val today =
+                    week.get(Calendar.DAY_OF_YEAR) == cal.get(Calendar.DAY_OF_YEAR) &&
+                        week.get(Calendar.YEAR) == cal.get(Calendar.YEAR)
+                if (today)
+                    cv.drawCircle(
+                        x,
+                        top + 32,
+                        minOf(15f, cell * .43f),
+                        Paint(Paint.ANTI_ALIAS_FLAG).apply { color = p.accent },
+                    )
+                text(
+                    cv,
+                    week.get(Calendar.DAY_OF_MONTH).toString(),
+                    x,
+                    top + 37,
+                    14f,
+                    if (today) (if (luminance(p.accent) > .55) ink else Color.WHITE)
+                    else p.foreground,
+                    c,
+                    align = Paint.Align.CENTER,
+                )
+                week.add(Calendar.DAY_OF_MONTH, 1)
+            }
+            if (plan.expanded) agenda(cv, RectF(14f, top + 58, w - 14, h - 12), c, p, s, 2)
+            else
+                text(
+                    cv,
+                    date(s.now, "EEEE"),
+                    w / 2,
+                    h * .86f,
+                    12f,
+                    alpha(p.foreground, 175),
+                    c,
+                    align = Paint.Align.CENTER,
+                    maxWidth = w - 20,
+                )
+        }
+    }
+
+    private fun agenda(cv: Canvas, rect: RectF, c: WidgetConfig, p: Palette, s: State, count: Int) {
+        if (rect.height() < 16) return
+        if (!c.showEvents || !s.calendarAllowed) {
+            paragraph(
+                cv,
+                if (c.showEvents) "Permiso de calendario pendiente"
+                else "Activa eventos en el editor",
+                rect.left,
+                rect.top,
+                rect.width(),
+                rect.height(),
+                10f,
+                alpha(p.foreground, 160),
+                c,
+            )
+            return
+        }
+        val events = s.events.take(count.coerceAtLeast(1))
+        if (events.isEmpty()) {
+            paragraph(
+                cv,
+                "Sin próximos eventos",
+                rect.left,
+                rect.top,
+                rect.width(),
+                rect.height(),
+                11f,
+                alpha(p.foreground, 175),
+                c,
+            )
+            return
+        }
+        val line = minOf(34f, rect.height() / events.size)
+        events.forEachIndexed { i, e ->
+            val y = rect.top + i * line
+            cv.drawRoundRect(
+                RectF(rect.left, y + 3, rect.left + 3, y + line - 3),
+                1.5f,
+                1.5f,
+                Paint(Paint.ANTI_ALIAS_FLAG).apply { color = p.accent },
+            )
+            text(
+                cv,
+                date(e.time, "EEE HH:mm"),
+                rect.left + 9,
+                y + 10,
+                8f,
+                alpha(p.foreground, 160),
+                c,
+                maxWidth = rect.width() - 12,
+            )
+            text(
+                cv,
+                e.title,
+                rect.left + 9,
+                y + minOf(25f, line - 2),
+                11f,
+                p.foreground,
+                c,
+                maxWidth = rect.width() - 12,
+            )
+        }
+    }
+
+    private fun month(cv: Canvas, w: Float, h: Float, c: WidgetConfig, p: Palette, s: State) {
         val cal = Calendar.getInstance().apply { timeInMillis = s.now }
         val compact = w < 140 || h < 125
         if (compact) {
@@ -549,109 +895,213 @@ object VisualWidgetRenderer {
     }
 
     private fun weather(cv: Canvas, w: Float, h: Float, c: WidgetConfig, p: Palette, s: State) {
+        val plan = AdaptiveWidgetLayoutEngine.plan(c.kind, w, h)
         val weather = s.weather
-        val compact = h < 105 || w < 120
-        val pad = if (compact) 10f else 16f
-        val iconSize = minOf(h * (if (compact) .6f else .33f), w * .35f)
-        weatherIcon(
-            cv,
-            w - pad - iconSize,
-            pad,
-            iconSize,
-            weather?.let { if (it.code >= 0) it.code else it.hours.firstOrNull()?.code ?: -1 } ?: -1,
-        )
-        text(
-            cv,
-            c.city.ifBlank { "El tiempo" },
-            pad,
-            pad + 10,
-            if (compact) 9f else 12f,
-            p.foreground,
-            c,
-            maxWidth = w - iconSize - 2 * pad,
-        )
-        text(
-            cv,
-            weather?.let { "${it.temp.roundToInt()}°" } ?: "—°",
-            pad,
-            if (compact) h * .78f else h * .42f,
-            minOf(if (compact) 32f else 60f, h * .37f),
-            p.foreground,
-            c,
-        )
-        if (compact) {
-            if (weather != null && w >= 115)
+        if (plan.tiny) {
+            weatherIcon(cv, w * .31f, 3f, minOf(w * .4f, h * .48f), weather?.code ?: -1)
+            text(
+                cv,
+                weather?.let { "${it.temp.roundToInt()}°" } ?: "—°",
+                w / 2,
+                h * .84f,
+                minOf(31f, h * .4f),
+                p.foreground,
+                c,
+                align = Paint.Align.CENTER,
+            )
+            if (weather != null)
                 text(
                     cv,
-                    date(weather.updatedAt, "d MMM HH:mm"),
-                    pad,
-                    h - 4,
-                    6.5f,
-                    alpha(p.foreground, 170),
+                    date(weather.updatedAt, "HH:mm"),
+                    w / 2,
+                    h - 2,
+                    7f,
+                    alpha(p.foreground, 180),
                     c,
+                    align = Paint.Align.CENTER,
                 )
             return
         }
-        text(
-            cv,
-            weather?.description ?: "Elige una ciudad",
-            pad,
-            h * .54f,
-            11f,
-            alpha(p.foreground, 220),
-            c,
-            maxWidth = w - 2 * pad,
-        )
-        text(
-            cv,
-            weather?.let { "Máx. ${it.high.roundToInt()}°   Mín. ${it.low.roundToInt()}°" }
-                ?: "Actualiza con conexión",
-            pad,
-            h * .65f,
-            10f,
-            alpha(p.foreground, 185),
-            c,
-            maxWidth = w - 2 * pad,
-        )
-        if (weather != null && h >= 150) {
-            val hours = weather.hours.take(if (w > 270) 6 else 4)
-            val cell = (w - 2 * pad) / maxOf(1, hours.size)
-            hours.forEachIndexed { i, hour ->
-                val x = pad + cell * (i + .5f)
+        if (plan.row) {
+            weatherIcon(cv, w - 54, 8f, 43f, weather?.code ?: -1)
+            text(
+                cv,
+                c.city.ifBlank { "El tiempo" },
+                10f,
+                17f,
+                10f,
+                p.foreground,
+                c,
+                maxWidth = w - 68,
+            )
+            text(
+                cv,
+                weather?.let { "${it.temp.roundToInt()}°" } ?: "—°",
+                10f,
+                h - 16,
+                34f,
+                p.foreground,
+                c,
+            )
+            if (w >= 165)
                 text(
                     cv,
-                    hour.time.take(5),
-                    x,
-                    h * .76f,
+                    weather?.description ?: "Elige una ciudad",
+                    72f,
+                    h * .63f,
                     10f,
-                    alpha(p.foreground, 190),
-                    c,
-                    align = Paint.Align.CENTER,
-                )
-                weatherIcon(cv, x - 10, h * .79f, 20f, hour.code)
-                text(
-                    cv,
-                    "${hour.temp.roundToInt()}°",
-                    x,
-                    h * .93f,
-                    13f,
                     p.foreground,
                     c,
-                    align = Paint.Align.CENTER,
+                    maxWidth = w - 130,
                 )
+        } else {
+            val current =
+                when {
+                    plan.panel -> RectF(0f, 0f, w, h * .33f)
+                    plan.wide -> RectF(0f, 0f, w * .37f, h - 12)
+                    else -> RectF(0f, 0f, w, h * (if (plan.column) .72f else .57f))
+                }
+            weatherCurrent(cv, current, c, p, s)
+            if (weather != null) {
+                val hourly =
+                    when {
+                        plan.panel -> RectF(12f, h * .36f, w - 12, h * .56f)
+                        plan.wide -> RectF(w * .4f, 14f, w - 12, h * .52f)
+                        else -> RectF(12f, h * .65f, w - 12, h - 16)
+                    }
+                if (plan.hourCapacity > 0)
+                    forecastHours(cv, hourly, c, p, weather.hours.take(plan.hourCapacity))
+                val daily =
+                    if (plan.panel) RectF(14f, h * .61f, w - 14, h - 22)
+                    else if (plan.wide) RectF(w * .4f, h * .6f, w - 12, h - 18) else null
+                daily?.let { r ->
+                    val days = weather.days.take(plan.dayCapacity)
+                    val line = minOf(30f, r.height() / maxOf(1, days.size))
+                    days.forEachIndexed { i, d ->
+                        val y = r.top + i * line
+                        text(cv, d.date.takeLast(5), r.left, y + 15, 10f, p.foreground, c)
+                        weatherIcon(cv, r.left + 45, y, 22f, d.code)
+                        text(
+                            cv,
+                            "${d.low.roundToInt()}° / ${d.high.roundToInt()}°" +
+                                (d.rainProbability?.let { "   $it%" } ?: ""),
+                            r.left + 75,
+                            y + 15,
+                            10f,
+                            p.foreground,
+                            c,
+                            maxWidth = r.width() - 78,
+                        )
+                    }
+                }
             }
         }
         if (weather != null)
             text(
                 cv,
                 "${date(weather.updatedAt,"d MMM HH:mm")} · Open-Meteo",
-                pad,
+                10f,
                 h - 4,
-                6.5f,
-                alpha(p.foreground, 175),
+                7f,
+                alpha(p.foreground, 180),
                 c,
-                maxWidth = w - 2 * pad,
+                maxWidth = w - 20,
             )
+    }
+
+    private fun weatherCurrent(cv: Canvas, r: RectF, c: WidgetConfig, p: Palette, s: State) {
+        region(cv, r) { w, h ->
+            val weather = s.weather
+            val code =
+                weather?.let { if (it.code >= 0) it.code else it.hours.firstOrNull()?.code ?: -1 }
+                    ?: -1
+            weatherIcon(cv, w - minOf(54f, w * .36f) - 10, 16f, minOf(48f, w * .36f, h * .5f), code)
+            text(
+                cv,
+                c.city.ifBlank { "El tiempo" },
+                12f,
+                15f,
+                11f,
+                p.foreground,
+                c,
+                maxWidth = w - 24,
+            )
+            text(
+                cv,
+                weather?.let { "${it.temp.roundToInt()}°" } ?: "—°",
+                12f,
+                h * .58f,
+                minOf(52f, h * .43f),
+                p.foreground,
+                c,
+            )
+            text(
+                cv,
+                weather?.description ?: "Elige una ciudad",
+                12f,
+                h * .8f,
+                10f,
+                p.foreground,
+                c,
+                maxWidth = w - 24,
+            )
+            text(
+                cv,
+                weather?.let { "Máx. ${it.high.roundToInt()}°  Mín. ${it.low.roundToInt()}°" }
+                    ?: "Actualiza con conexión",
+                12f,
+                h * .96f,
+                9f,
+                alpha(p.foreground, 185),
+                c,
+                maxWidth = w - 24,
+            )
+            if (w >= 300 && weather != null) {
+                val extra =
+                    listOfNotNull(
+                            weather.feelsLike?.let { "Sensación ${it.roundToInt()}°" },
+                            weather.humidity?.let { "Humedad $it%" },
+                            weather.windKmh?.let { "Viento ${it.roundToInt()} km/h" },
+                        )
+                        .joinToString(" · ")
+                text(cv, extra, w * .4f, h * .66f, 10f, p.foreground, c, maxWidth = w * .56f)
+            }
+        }
+    }
+
+    private fun forecastHours(
+        cv: Canvas,
+        r: RectF,
+        c: WidgetConfig,
+        p: Palette,
+        hours: List<WeatherHour>,
+    ) {
+        if (r.width() < 25 || r.height() < 35) return
+        val cell = r.width() / maxOf(1, hours.size)
+        hours.forEachIndexed { i, h ->
+            val x = r.left + cell * (i + .5f)
+            text(
+                cv,
+                h.time.take(5),
+                x,
+                r.top + 9,
+                8f,
+                alpha(p.foreground, 180),
+                c,
+                align = Paint.Align.CENTER,
+            )
+            weatherIcon(cv, x - 11, r.top + 13, 22f, h.code)
+            text(
+                cv,
+                "${h.temp.roundToInt()}°",
+                x,
+                r.bottom - 1,
+                11f,
+                p.foreground,
+                c,
+                align = Paint.Align.CENTER,
+            )
+        }
     }
 
     /** Clouds, sun, mist, snow, lightning and rain are vector paths, never font emoji. */
@@ -743,142 +1193,232 @@ object VisualWidgetRenderer {
     }
 
     private fun note(cv: Canvas, w: Float, h: Float, c: WidgetConfig, p: Palette, s: State) {
-        val compact = h < 100
-        val header = if (compact) 19f else minOf(38f, h * .21f)
-        cv.drawRect(0f, 0f, w, header, Paint().apply { color = p.accent })
-        val headerInk = if (luminance(p.accent) > .5f) ink else Color.WHITE
-        val paint =
-            Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                color = headerInk
-                strokeWidth = 1.2f
-                style = Paint.Style.STROKE
+        val plan = AdaptiveWidgetLayoutEngine.plan(c.kind, w, h)
+        val header = if (plan.tiny) 0f else if (plan.row) 6f else 34f
+        if (header > 0)
+            cv.drawRect(
+                0f,
+                0f,
+                w,
+                header,
+                Paint().apply { color = alpha(p.accent, (255 * c.opacity).roundToInt()) },
+            )
+        if (header > 10)
+            text(
+                cv,
+                c.title.ifBlank { "Notas" },
+                14f,
+                22f,
+                12f,
+                if (luminance(p.accent) > .5) ink else Color.WHITE,
+                c,
+                bold = true,
+                maxWidth = w - 28,
+            )
+        if (plan.panel && c.noteItems.isNotEmpty()) {
+            AdaptiveWidgetLayoutEngine.noteRows(plan, c.noteItems.size).forEachIndexed { i, r ->
+                val item = c.noteItems[i]
+                val paint =
+                    Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                        color = if (item.checked) p.accent else alpha(p.foreground, 110)
+                        style = if (item.checked) Paint.Style.FILL else Paint.Style.STROKE
+                        strokeWidth = 1.5f
+                    }
+                cv.drawCircle(r.left + 10, r.centerY(), 8f, paint)
+                if (item.checked) {
+                    paint.color = if (luminance(p.accent) > .5) ink else Color.WHITE
+                    paint.style = Paint.Style.STROKE
+                    paint.strokeWidth = 1.8f
+                    cv.drawPath(
+                        Path().apply {
+                            moveTo(r.left + 6, r.centerY())
+                            lineTo(r.left + 9, r.centerY() + 3)
+                            lineTo(r.left + 14, r.centerY() - 4)
+                        },
+                        paint,
+                    )
+                }
+                text(
+                    cv,
+                    item.text,
+                    r.left + 27,
+                    r.centerY() + 5,
+                    14f,
+                    if (item.checked) alpha(p.foreground, 135) else p.foreground,
+                    c,
+                    maxWidth = r.width() - 30,
+                )
             }
-        cv.drawRoundRect(RectF(13f, header / 2 - 5, 25f, header / 2 + 5), 1.5f, 1.5f, paint)
-        cv.drawLine(13f, header / 2 - 2, 25f, header / 2 - 2, paint)
-        text(
-            cv,
-            c.title.ifBlank { "Notas" },
-            32f,
-            header / 2 + 4,
-            10f,
-            headerInk,
-            c,
-            bold = true,
-            maxWidth = w - 46,
-        )
-        val padding = if (compact) 10f else 15f
-        val body = c.note.ifBlank { "Escribe tu próxima idea." }
+            return
+        }
+        val size = (if (plan.tiny) 12f else if (plan.row) 14f else 17f) * c.textScale
+        val pad = if (plan.tiny) 7f else 13f
+        val available = h - header - pad * 2
         paragraph(
             cv,
-            body,
-            padding,
-            header + padding,
-            w - 2 * padding,
-            h - header - 2 * padding,
-            (if (compact) 12f else 17f) * c.textScale,
+            c.note.ifBlank { "Escribe tu próxima idea." },
+            pad,
+            header + pad,
+            w - 2 * pad,
+            if (plan.tiny || plan.row) minOf(available, 2 * (size + 3)) else available,
+            size,
             p.foreground,
             c,
         )
-        if (!compact && h > 170) {
-            text(cv, date(s.now, "EEE, d MMM"), padding, h - 12, 9f, alpha(p.foreground, 105), c)
-        }
     }
 
     private fun media(cv: Canvas, w: Float, h: Float, c: WidgetConfig, p: Palette, s: State) {
-        val compact = h < 105
-        val portrait = !compact && w <= h * 1.2f
-        val cover =
-            if (compact) minOf(h - 48, 48f).coerceAtLeast(16f)
-            else if (portrait) minOf(w - 30, h * .5f) else minOf(w * .37f, h * .57f)
-        val x = if (portrait) (w - cover) / 2 else if (compact) 10f else 15f
-        val y = if (compact) 8f else 16f
-        if (s.media?.art != null)
-            image(cv, s.media.art, RectF(x, y, x + cover, y + cover), 10f, true)
+        val plan = AdaptiveWidgetLayoutEngine.plan(c.kind, w, h)
+        val g = AdaptiveWidgetLayoutEngine.media(plan)
+        val media = s.media
+        if (media?.art != null) image(cv, media.art, g.art, if (plan.tiny) 0f else 10f, true)
         else {
             cv.drawRoundRect(
-                RectF(x, y, x + cover, y + cover),
+                g.art,
                 10f,
                 10f,
                 Paint(Paint.ANTI_ALIAS_FLAG).apply { color = alpha(Color.BLACK, 22) },
             )
-            vinyl(cv, x + cover / 2, y + cover / 2, cover * .36f, p.accent)
+            vinyl(
+                cv,
+                g.art.centerX(),
+                g.art.centerY(),
+                minOf(g.art.width(), g.art.height()) * .36f,
+                p.accent,
+            )
         }
-        if (h < 76) return
-        if (portrait) {
-            val title = s.media?.title ?: "Dale al play"
-            text(
-                cv,
-                title,
-                w / 2,
-                y + cover + 22,
-                15f,
-                p.foreground,
-                c,
-                align = Paint.Align.CENTER,
-                bold = true,
-                maxWidth = w - 26,
-            )
-            text(
-                cv,
-                s.media?.artist ?: "Conecta tu reproductor",
-                w / 2,
-                y + cover + 38,
-                10f,
-                alpha(p.foreground, 190),
-                c,
-                align = Paint.Align.CENTER,
-                maxWidth = w - 28,
-            )
-        } else {
-            val tx = x + cover + 11
-            text(
-                cv,
-                if (s.media?.playing == true) "SONANDO" else "TU MÚSICA",
-                tx,
-                y + 10,
-                8f,
-                alpha(p.foreground, 190),
-                c,
-                maxWidth = w - tx - 12,
-            )
+        if (plan.tiny) {
+            if (media != null) {
+                val x = w - 14
+                val y = h - 14
+                cv.drawCircle(
+                    x,
+                    y,
+                    10f,
+                    Paint(Paint.ANTI_ALIAS_FLAG).apply { color = alpha(Color.BLACK, 120) },
+                )
+                image(
+                    cv,
+                    transportIcon(if (media.playing) "pause" else "play", Color.WHITE),
+                    RectF(x - 10, y - 10, x + 10, y + 10),
+                    0f,
+                    true,
+                )
+            }
+            return
+        }
+        g.title?.let { r ->
             paragraph(
                 cv,
-                s.media?.title ?: "Dale al play",
-                tx,
-                y + 18,
-                w - tx - 12,
-                if (compact) 18f else cover * .6f,
-                if (compact) 10f else 16f,
+                media?.title ?: "Sin sesión activa",
+                r.left,
+                r.top,
+                r.width(),
+                r.height(),
+                if (plan.row) 11f else 15f,
                 p.foreground,
                 c,
                 bold = true,
             )
-            if (!compact)
-                text(
+        }
+        g.artist?.let { r ->
+            if (r.height() >= 10)
+                paragraph(
                     cv,
-                    s.media?.artist ?: "Conecta tu reproductor",
-                    tx,
-                    y + cover - 2,
+                    media?.artist ?: "Abre tu reproductor",
+                    r.left,
+                    r.top,
+                    r.width(),
+                    r.height(),
                     10f,
                     alpha(p.foreground, 190),
                     c,
-                    maxWidth = w - tx - 12,
                 )
         }
-        if (!compact) musicNote(cv, w - 28, 12f, 14f, alpha(p.foreground, 220))
-        if (s.media == null && h > 240)
-            text(
-                cv,
-                "Activa el acceso multimedia en Ajustes",
-                w / 2,
-                h * .82f,
-                9f,
-                alpha(p.foreground, 190),
-                c,
-                align = Paint.Align.CENTER,
-                maxWidth = w - 24,
-            )
-        // Transport buttons are separate native click targets, not part of this bitmap.
+        g.album?.let { r ->
+            if (r.height() > 10)
+                paragraph(
+                    cv,
+                    media?.album ?: "",
+                    r.left,
+                    r.top,
+                    r.width(),
+                    r.height(),
+                    10f,
+                    alpha(p.foreground, 175),
+                    c,
+                )
+        }
+        g.progress?.let { r ->
+            if (
+                media?.positionMs != null &&
+                    media.durationMs != null &&
+                    media.durationMs > 0 &&
+                    r.width() > 10
+            ) {
+                val y = r.top + 4
+                val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = alpha(p.foreground, 35) }
+                cv.drawRoundRect(RectF(r.left, y, r.right, y + 3), 2f, 2f, paint)
+                paint.color = p.foreground
+                cv.drawRoundRect(
+                    RectF(
+                        r.left,
+                        y,
+                        r.left +
+                            r.width() *
+                                (media.positionMs.toFloat() / media.durationMs).coerceIn(0f, 1f),
+                        y + 3,
+                    ),
+                    2f,
+                    2f,
+                    paint,
+                )
+                text(cv, elapsed(media.positionMs), r.left, r.bottom - 2, 8f, p.foreground, c)
+                text(
+                    cv,
+                    elapsed(media.durationMs),
+                    r.right,
+                    r.bottom - 2,
+                    8f,
+                    p.foreground,
+                    c,
+                    align = Paint.Align.RIGHT,
+                )
+            }
+        }
+        g.queue?.let { r ->
+            val rows = media?.queue.orEmpty().take(3)
+            if (rows.isEmpty())
+                text(
+                    cv,
+                    if (media == null) "Activa acceso multimedia en Ajustes"
+                    else "La sesión no comparte una cola",
+                    r.left,
+                    r.top + 12,
+                    9f,
+                    alpha(p.foreground, 160),
+                    c,
+                    maxWidth = r.width(),
+                )
+            val line = minOf(28f, r.height() / maxOf(1, rows.size))
+            rows.forEachIndexed { i, e ->
+                text(
+                    cv,
+                    "${i+1}. ${e.title}",
+                    r.left,
+                    r.top + i * line + 16,
+                    11f,
+                    p.foreground,
+                    c,
+                    maxWidth = r.width(),
+                )
+            }
+        }
+    }
+
+    private fun elapsed(ms: Long): String {
+        val seconds = (ms / 1000).coerceAtLeast(0)
+        return "${seconds/60}:${(seconds%60).toString().padStart(2,'0')}"
     }
 
     private fun vinyl(cv: Canvas, x: Float, y: Float, r: Float, accent: Int) {
@@ -908,8 +1448,15 @@ object VisualWidgetRenderer {
     }
 
     private fun photo(cv: Canvas, w: Float, h: Float, c: WidgetConfig, p: Palette, s: State) {
-        if (s.photo != null) {
-            image(cv, s.photo, RectF(0f, 0f, w, h), 0f, c.photoScale != "fit")
+        val plan = AdaptiveWidgetLayoutEngine.plan(c.kind, w, h)
+        val photos = s.photos.ifEmpty { listOfNotNull(s.photo) }.take(plan.photoCapacity)
+        if (photos.isNotEmpty()) {
+            if (photos.size == 1)
+                image(cv, photos[0], RectF(0f, 0f, w, h), 0f, c.photoScale != "fit")
+            else
+                AdaptiveWidgetLayoutEngine.grid(plan, photos.size).forEachIndexed { i, r ->
+                    image(cv, photos[i], r, 10f, c.photoScale != "fit")
+                }
             return
         }
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = alpha(p.foreground, 45) }
@@ -931,65 +1478,69 @@ object VisualWidgetRenderer {
         if (h >= 100)
             text(
                 cv,
-                "Elige una foto",
+                "Elige tus fotografías",
                 x,
                 h * .79f,
-                12f,
+                11f,
                 p.foreground,
                 c,
                 align = Paint.Align.CENTER,
+                maxWidth = w - 20,
             )
     }
 
     private fun shortcut(cv: Canvas, w: Float, h: Float, c: WidgetConfig, p: Palette, s: State) {
-        val compact = h < 95
-        val size = minOf(minOf(w, h) * .49f, 72f)
-        val x = if (w > h * 1.6f) 15f else (w - size) / 2
-        val y = if (compact) (h - size) / 2 else h * .19f
-        if (c.shortcutIcon == "app" && s.appIcon != null)
-            image(cv, s.appIcon, RectF(x, y, x + size, y + size), size * .23f, true)
-        else {
-            cv.drawRoundRect(
-                RectF(x, y, x + size, y + size),
-                size * .23f,
-                size * .23f,
-                Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    shader =
-                        LinearGradient(
-                            x,
-                            y,
-                            x + size,
-                            y + size,
-                            p.accent,
-                            blend(p.accent, Color.WHITE, .4f),
-                            Shader.TileMode.CLAMP,
-                        )
-                },
+        val plan = AdaptiveWidgetLayoutEngine.plan(c.kind, w, h)
+        val entries = s.shortcuts.take(plan.shortcutCapacity)
+        val add = entries.size < plan.shortcutCapacity
+        val rects =
+            AdaptiveWidgetLayoutEngine.grid(
+                plan,
+                (entries.size + if (add) 1 else 0).coerceAtLeast(1),
             )
-            text(
-                cv,
-                if (c.shortcutIcon == "app") "↗" else c.shortcutIcon,
-                x + size / 2,
-                y + size * .7f,
-                size * .57f,
-                Color.WHITE,
-                c,
-                align = Paint.Align.CENTER,
-            )
+        rects.forEachIndexed { i, r ->
+            val entry = entries.getOrNull(i)
+            val size = minOf(r.width() * .57f, r.height() * (if (plan.tiny) .72f else .55f), 76f)
+            val x = r.centerX() - size / 2
+            val y =
+                if (plan.tiny) r.centerY() - size / 2
+                else r.top + maxOf(4f, (r.height() - size - 20) / 2)
+            if (entry?.entry?.icon == "app" && entry.icon != null)
+                image(cv, entry.icon, RectF(x, y, x + size, y + size), size * .22f, true)
+            else {
+                val paint =
+                    Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                        color =
+                            if (entry?.available == false) alpha(p.foreground, 50)
+                            else if (entry == null) alpha(p.foreground, 20) else p.accent
+                    }
+                cv.drawRoundRect(RectF(x, y, x + size, y + size), size * .22f, size * .22f, paint)
+                text(
+                    cv,
+                    if (entry == null) "+"
+                    else if (entry.entry.icon == "app") "↗" else entry.entry.icon,
+                    x + size / 2,
+                    y + size * .72f,
+                    size * .58f,
+                    if (entry == null) p.foreground else Color.WHITE,
+                    c,
+                    align = Paint.Align.CENTER,
+                )
+            }
+            if (!plan.tiny && r.height() >= 60)
+                text(
+                    cv,
+                    if (entry == null) "Añadir"
+                    else if (!entry.available) "No disponible" else entry.label,
+                    r.centerX(),
+                    minOf(r.bottom - 3, y + size + 16),
+                    10f,
+                    p.foreground,
+                    c,
+                    align = Paint.Align.CENTER,
+                    maxWidth = r.width() - 5,
+                )
         }
-        if (!compact || w > h * 1.6f)
-            text(
-                cv,
-                c.title.ifBlank { s.shortcutLabel },
-                if (compact) x + size + 13 else w / 2,
-                if (compact) h * .55f else h * .8f,
-                if (compact) 12f else 13f,
-                p.foreground,
-                c,
-                align = if (compact) Paint.Align.LEFT else Paint.Align.CENTER,
-                maxWidth = if (compact) w - size - 42 else w - 22,
-                bold = true,
-            )
     }
 
     fun transportIcon(action: String, color: Int): Bitmap {
@@ -1051,6 +1602,15 @@ object VisualWidgetRenderer {
         p.style = Paint.Style.FILL
         cv.drawOval(RectF(x - size * .23f, y + size * .78f, x + size * .04f, y + size * 1.04f), p)
         cv.drawOval(RectF(x + size * .38f, y + size * .58f, x + size * .65f, y + size * .84f), p)
+    }
+
+    private inline fun region(cv: Canvas, r: RectF, draw: (Float, Float) -> Unit) {
+        if (r.width() <= 0 || r.height() <= 0) return
+        cv.save()
+        cv.clipRect(r)
+        cv.translate(r.left, r.top)
+        draw(r.width(), r.height())
+        cv.restore()
     }
 
     private fun image(cv: Canvas, b: Bitmap, rect: RectF, radius: Float, crop: Boolean) {

@@ -66,6 +66,7 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".widgets.WidgetPinnedReceiver" android:exported="false" />
+        <receiver android:name=".widgets.WidgetNoteReceiver" android:exported="false" />
         <receiver android:name=".widgets.WidgetMediaReceiver" android:exported="false" />
         <service android:name=".data.MediaAccessService" android:label="Flow Widgets · controles multimedia"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" android:exported="true">

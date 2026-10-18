@@ -91,7 +91,7 @@ fun Editor(
         ) {
             Text("Hazlo tuyo.", fontSize = 36.sp, letterSpacing = (-1).sp)
             Text("La información real, con tu estilo personal.", color = Muted)
-            ConfigPreview(config, Modifier.fillMaxWidth().height(205.dp))
+            ConfigPreview(config, Modifier.fillMaxWidth().height(260.dp), simulateSize = true)
             Text(
                 "Vista previa · El launcher adapta el espacio disponible",
                 fontSize = 11.sp,
@@ -180,9 +180,13 @@ fun Editor(
                 valueRange = .7f..1.5f,
             )
             Text("Tamaño recomendado", fontSize = 18.sp)
-            Choices(listOf("1×1", "2×1", "1×2", "2×2", "4×1", "4×2", "4×4"), config.size) {
+            Choices(
+                com.flowwidgets.app.widgets.AdaptiveWidgetLayoutEngine.previewSizes.keys.toList(),
+                config.size,
+            ) {
                 config = config.copy(size = it)
             }
+            AdaptiveEditorOptions(config) { config = it }
             HorizontalDivider()
             when (config.kind) {
                 WidgetKind.CLOCK -> {

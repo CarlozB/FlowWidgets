@@ -47,6 +47,20 @@ object FlowRepository {
         }
     }
 
+    suspend fun update(context: Context, id: Int, transform: (WidgetConfig) -> WidgetConfig) {
+        context.applicationContext.flowStore.edit { prefs ->
+            val source = decodeConfigs(prefs[widgets] ?: "[]")
+            prefs[widgets] =
+                JSONArray()
+                    .apply {
+                        source.forEach {
+                            put(encode(if (it.id == id) transform(it).copy(id = id) else it))
+                        }
+                    }
+                    .toString()
+        }
+    }
+
     suspend fun delete(context: Context, id: Int) {
         context.applicationContext.flowStore.edit { prefs ->
             val source = runCatching { JSONArray(prefs[widgets] ?: "[]") }.getOrDefault(JSONArray())
@@ -98,12 +112,50 @@ object FlowRepository {
             put("alignment", c.alignment)
             put("photoScale", c.photoScale)
             put("shortcutIcon", c.shortcutIcon)
+            put("timeZones", JSONArray(c.timeZones))
+            put(
+                "shortcuts",
+                JSONArray().apply {
+                    c.shortcuts.forEach { e ->
+                        put(
+                            JSONObject()
+                                .put("id", e.id)
+                                .put("label", e.label)
+                                .put("packageName", e.packageName)
+                                .put("uri", e.uri)
+                                .put("icon", e.icon)
+                        )
+                    }
+                },
+            )
+            put(
+                "noteItems",
+                JSONArray().apply {
+                    c.noteItems.forEach { e ->
+                        put(
+                            JSONObject()
+                                .put("id", e.id)
+                                .put("text", e.text)
+                                .put("checked", e.checked)
+                        )
+                    }
+                },
+            )
+            put("opacity", c.opacity)
+            put("glassOpacity", c.glassOpacity)
+            put("glassLighting", c.glassLighting)
+            put("glassCorner", c.glassCorner)
         }
 
     fun decode(j: JSONObject): WidgetConfig {
         val d = WidgetConfig()
         fun optional(k: String) = if (j.isNull(k) || !j.has(k)) null else j.getString(k)
         val photos = j.optJSONArray("photoUris") ?: JSONArray()
+        fun bounded(key: String, default: Float, min: Float, max: Float): Float =
+            j.optDouble(key, default.toDouble())
+                .toFloat()
+                .takeIf { it.isFinite() }
+                ?.coerceIn(min, max) ?: default
         return WidgetConfig(
             id = j.optInt("id"),
             kind = runCatching { WidgetKind.valueOf(j.optString("kind")) }.getOrDefault(d.kind),
@@ -112,7 +164,7 @@ object FlowRepository {
             accent = j.optLong("accent", d.accent),
             background = j.optLong("background", d.background),
             textColor = j.optLong("textColor", d.textColor),
-            textScale = j.optDouble("textScale", 1.0).toFloat(),
+            textScale = bounded("textScale", 1f, .7f, 1.5f),
             size = j.optString("size", d.size),
             note = j.optString("note"),
             photoUri = optional("photoUri"),
@@ -136,6 +188,51 @@ object FlowRepository {
             alignment = j.optString("alignment", d.alignment),
             photoScale = j.optString("photoScale", d.photoScale),
             shortcutIcon = j.optString("shortcutIcon", d.shortcutIcon),
+            timeZones =
+                j.optJSONArray("timeZones")?.let { a ->
+                    (0 until a.length())
+                        .mapNotNull {
+                            a.optString(it).takeIf { id ->
+                                id in java.util.TimeZone.getAvailableIDs()
+                            }
+                        }
+                        .distinct()
+                        .take(3)
+                } ?: d.timeZones,
+            shortcuts =
+                j.optJSONArray("shortcuts")?.let { a ->
+                    (0 until a.length())
+                        .mapNotNull { i ->
+                            a.optJSONObject(i)?.let { e ->
+                                ShortcutEntry(
+                                    e.optString("id", "item-$i"),
+                                    e.optString("label"),
+                                    e.optString("packageName").takeIf { it.isNotBlank() },
+                                    e.optString("uri").takeIf { it.isNotBlank() },
+                                    e.optString("icon", "app"),
+                                )
+                            }
+                        }
+                        .take(15)
+                } ?: emptyList(),
+            noteItems =
+                j.optJSONArray("noteItems")?.let { a ->
+                    (0 until a.length())
+                        .mapNotNull { i ->
+                            a.optJSONObject(i)?.let { e ->
+                                NoteEntry(
+                                    e.optString("id", "note-$i"),
+                                    e.optString("text"),
+                                    e.optBoolean("checked"),
+                                )
+                            }
+                        }
+                        .take(20)
+                } ?: emptyList(),
+            opacity = bounded("opacity", 1f, .25f, 1f),
+            glassOpacity = bounded("glassOpacity", .82f, .25f, 1f),
+            glassLighting = bounded("glassLighting", .6f, 0f, 1f),
+            glassCorner = bounded("glassCorner", 24f, 8f, 40f),
         )
     }
 }
